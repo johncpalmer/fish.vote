@@ -29,3 +29,9 @@ button {
 .card__padding {
   padding: 24px 28px;
 }
+
+// Web3Modal lightbox setup
+.web3modal-modal-lightbox {
+  // Forcefully override all elements
+  z-index: 99999;
+}
