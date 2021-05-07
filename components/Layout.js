@@ -1,8 +1,8 @@
-import Head from "next/head";
-import Link from "next/link";
-import eth from "@state/eth";
-import Jazzicon from "react-jazzicon";
-import styles from "@styles/components/Layout.module.scss";
+import Head from "next/head"; // HTML head
+import Link from "next/link"; // Routing
+import eth from "@state/eth"; // ETH state container
+import Jazzicon from "react-jazzicon"; // Address -> Avatar
+import styles from "@styles/components/Layout.module.scss"; // Component styles
 
 export default function Layout({ children }) {
   return (
@@ -14,7 +14,9 @@ export default function Layout({ children }) {
       <Header />
 
       {/* Page content */}
-      <div className={styles.layout__content}>{children}</div>
+      <div className={styles.layout__content}>
+        <div className={styles.layout__content_sizer}>{children}</div>
+      </div>
     </div>
   );
 }
@@ -28,7 +30,7 @@ function Meta() {
       {/* Fonts (Inter) */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
     </Head>
@@ -36,6 +38,7 @@ function Meta() {
 }
 
 function Header() {
+  // Collect auth status and functions
   const { address, lock, unlock } = eth.useContainer();
 
   return (
@@ -54,9 +57,13 @@ function Header() {
         {address ? (
           // Authenticated state
           <div className={styles.layout__header_auth_connected}>
+            {/* Vote count */}
             <div>
-              <span>232 votes</span>
+              {/* FIXME: get vote count */}
+              <span>XXX votes</span>
             </div>
+
+            {/* Address + lock button */}
             <button onClick={lock}>
               <span>
                 {address.substr(0, 6) +

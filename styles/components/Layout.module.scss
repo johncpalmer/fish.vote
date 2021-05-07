@@ -40,14 +40,14 @@
       cursor: pointer;
       border-radius: 12px;
 
+      span {
+        font-weight: 500;
+      }
+
       div {
         padding-left: 0.75rem;
         padding-right: 0.5rem;
         display: inline-block;
-
-        span {
-          font-weight: 500;
-        }
       }
 
       button {
@@ -64,7 +64,6 @@
 
         span {
           margin: 0px 0.5rem 0px 0.25rem;
-          font-weight: 500;
           vertical-align: middle;
         }
 
@@ -104,6 +103,16 @@
       color: rgb(230, 0, 110);
       transform: scale(0.99);
     }
+  }
+}
+
+.layout__content {
+  padding: 0px 28px;
+
+  .layout__content_sizer {
+    max-width: 800px;
+    margin: 0px auto;
+    padding-top: 60px;
   }
 }
 
