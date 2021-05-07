@@ -33,6 +33,10 @@
       text-align: right;
       justify-content: flex-end;
 
+      h3 {
+        opacity: 0.5;
+      }
+
       button {
         background-color: var(--color-pink);
         color: white;

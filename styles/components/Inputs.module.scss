@@ -1,0 +1,38 @@
+// Text input
+.input__text {
+  label {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    padding-bottom: 12px;
+    display: block;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  input[type="text"],
+  textarea {
+    font-family: "Inter", sans-serif;
+    color: black;
+    border: 1px solid #e3e4e6;
+    border-radius: 20px;
+    font-size: 18px;
+    line-height: 22px;
+    padding: 16px 20px;
+    display: block;
+    width: 100%;
+  }
+
+  input[type="text"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-pink);
+  }
+
+  input[type="text"]::placeholder,
+  textarea::placeholder {
+    color: #7f8082;
+  }
+}

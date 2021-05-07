@@ -1,5 +1,10 @@
+import {
+  TextInputWithTopLabel,
+  TextAreaInputWithTopLabel,
+} from "@components/Inputs";
 import Card from "@components/Card";
 import Layout from "@components/Layout";
+import Spacer from "@components/Spacer";
 import Breadcrumb from "@components/Breadcrumb";
 
 export default function Demo() {
@@ -24,8 +29,33 @@ export default function Demo() {
       >
         <span>Test child content</span>
       </Card>
+      <Card title="Proposal Details" subtext="2 actions">
+        <span>Test child content</span>
+      </Card>
       <Card title="Proposal Description">
         <span>Test child content</span>
+      </Card>
+      <Card title="Card w/ Spacing">
+        <div className="card__padding">
+          <span>Test child content</span>
+        </div>
+      </Card>
+      <Card title="Card w/ Input fields">
+        <div className="card__padding">
+          <Spacer height="8" />
+          <TextInputWithTopLabel
+            labelTitle="Single Input"
+            placeholder="Single Input placeholder"
+          />
+
+          <Spacer height="32" />
+
+          <TextAreaInputWithTopLabel
+            labelTitle="TextArea"
+            minRows={10}
+            placeholder="TextArea placeholder w/ 10 minimum rows."
+          />
+        </div>
       </Card>
     </Layout>
   );

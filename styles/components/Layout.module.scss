@@ -2,6 +2,12 @@
   height: 70px;
   padding: 0px 28px;
   border-bottom: 1px solid #dddade;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+  width: 100%;
+  background-color: var(--color-bg);
 
   > div {
     vertical-align: top;
@@ -107,12 +113,13 @@
 }
 
 .layout__content {
-  padding: 0px 28px;
+  padding: 70px 28px 0px 28px;
 
   .layout__content_sizer {
     max-width: 800px;
     margin: 0px auto;
     padding-top: 60px;
+    padding-bottom: 60px;
   }
 }
 
