@@ -1,0 +1,142 @@
+.layout__header {
+  height: 70px;
+  padding: 0px 28px;
+  border-bottom: 1px solid #dddade;
+
+  > div {
+    vertical-align: top;
+    display: inline-block;
+    height: 100%;
+  }
+
+  // Right: logo
+  .layout__header_logo {
+    width: 100px;
+
+    a {
+      transition: ease 0.2s;
+
+      :hover {
+        opacity: 0.7;
+      }
+
+      img {
+        margin-top: 23px;
+        display: block;
+        width: 95px;
+      }
+    }
+  }
+
+  // Left: Authentication
+  .layout__header_auth {
+    width: calc(100% - 100px);
+
+    // Connected state
+    .layout__header_auth_connected {
+      float: right;
+      margin-top: 16.5px;
+      background-color: rgb(237, 238, 242);
+      cursor: pointer;
+      border-radius: 12px;
+
+      div {
+        padding-left: 0.75rem;
+        padding-right: 0.5rem;
+        display: inline-block;
+
+        span {
+          font-weight: 500;
+        }
+      }
+
+      button {
+        outline: none;
+        background-color: rgb(247, 248, 250);
+        border: 1px solid rgb(237, 238, 242);
+        user-select: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 12px;
+        font-size: 16px;
+        will-change: transform;
+        transition: transform 450ms ease 0s;
+
+        span {
+          margin: 0px 0.5rem 0px 0.25rem;
+          font-weight: 500;
+          vertical-align: middle;
+        }
+
+        div {
+          vertical-align: middle;
+        }
+      }
+
+      button:focus,
+      button:hover {
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgb(255, 153, 201);
+        transform: scale(0.99);
+      }
+    }
+
+    // Authentication button
+    .layout__header_auth_connect {
+      background-color: rgb(253, 234, 241);
+      border: 1px solid rgb(253, 234, 241);
+      color: var(--color-pink);
+      font-weight: 500;
+      transition: transform 450ms ease 0s;
+      font-size: 16px;
+      border-radius: 12px;
+      padding: 0.5rem;
+      cursor: pointer;
+      float: right;
+      margin-top: calc((56px - 1.5rem) / 2);
+      will-change: transform;
+    }
+
+    // Authentication button hover/focus states
+    .layout__header_auth_connect:focus,
+    .layout__header_auth_connect:hover {
+      border: 1px solid rgb(241, 201, 218);
+      color: rgb(230, 0, 110);
+      transform: scale(0.99);
+    }
+  }
+}
+
+// Responsiveness
+@media screen and (max-width: 480px) {
+  .layout__header {
+    height: 115px;
+
+    > div {
+      width: 100% !important;
+      height: auto;
+      display: block;
+      padding: 0px;
+      text-align: center;
+    }
+
+    .layout__header_logo {
+      a {
+        display: inline-block;
+      }
+    }
+
+    .layout__header_auth {
+      > div,
+      > button {
+        text-align: center;
+        float: none !important;
+        margin-top: 5px !important;
+      }
+
+      .layout__header_auth_connected {
+        display: inline-block;
+      }
+    }
+  }
+}
