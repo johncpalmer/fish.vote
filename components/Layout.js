@@ -1,6 +1,7 @@
 import Head from "next/head"; // HTML head
 import Link from "next/link"; // Routing
 import eth from "@state/eth"; // ETH state container
+import governance from "@state/governance"; // Governance state container
 import styles from "@styles/components/Layout.module.scss"; // Component styles
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"; // Address -> Avatar
 
@@ -38,8 +39,29 @@ function Meta() {
 }
 
 function Header() {
+  // Collect user balance
+  const { uni } = governance.useContainer();
   // Collect auth status and functions
   const { address, lock, unlock } = eth.useContainer();
+
+  /**
+   * Returns UNI balance for authenticated user
+   * @returns {String}
+   */
+  const returnVoteCount = () => {
+    // Locale decimals setting (max 2 decimal places)
+    const localeDecimals = {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    };
+
+    // If votes loaded
+    return uni
+      ? // Return formatted vote count
+        `${uni.toLocaleString("us-en", localeDecimals)} UNI`
+      : // Else, show loading status
+        "Loading...";
+  };
 
   return (
     <div className={styles.layout__header}>
@@ -59,8 +81,7 @@ function Header() {
           <div className={styles.layout__header_auth_connected}>
             {/* Vote count */}
             <div>
-              {/* FIXME: get vote count */}
-              <span>XXX votes</span>
+              <span>{returnVoteCount()}</span>
             </div>
 
             {/* Address + lock button */}

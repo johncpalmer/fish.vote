@@ -82,4 +82,4 @@ const UNI_ACTIONS = [
 ];
 
 // Export constants
-export { UNI_CONSTANTS, UNI_ACTIONS };
+export { UNI_NETWORK, UNI_CONSTANTS, UNI_ACTIONS };

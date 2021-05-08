@@ -68,6 +68,7 @@ export default function Selector({
     option: (provided) => ({
       ...provided,
       padding: "12px 16px",
+      cursor: "pointer",
     }),
   };
 

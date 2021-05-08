@@ -2,11 +2,13 @@ import {
   InputWithTopLabel,
   TextAreaInputWithTopLabel,
 } from "@components/Inputs"; // Components: Inputs
+import eth from "@state/eth"; // Global state: eth
 import { useState } from "react"; // State management
 import Card from "@components/Card"; // Component: Card
 import Action from "@components/Action"; // Component: Action
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Layout from "@components/Layout"; // Component: Layout
+import governance from "@state/governance"; // Global state: governance
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Create.module.scss"; // Page styles
 
@@ -23,6 +25,10 @@ const defaultActionState = [
 ];
 
 export default function Create() {
+  // Global state
+  const { address, unlock } = eth.useContainer();
+  const { uni } = governance.useContainer();
+
   // Title + Descriptions
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -109,12 +115,22 @@ export default function Create() {
 
       {/* Submission card */}
       <Card title="Submit your proposal">
-        <div className="card__padding">
+        <div className={styles.card__submit}>
           <p>
             Submitting your autonomous proposal will require staking 100 UNI
             tokens. You can terminate the proposal at any time to retrieve your
             tokens.
           </p>
+
+          {address ? (
+            uni >= 100 ? (
+              <button>Submit Proposal</button>
+            ) : (
+              <button disabled={true}>Insufficient Balance</button>
+            )
+          ) : (
+            <button onClick={unlock}>Connect to a wallet</button>
+          )}
         </div>
       </Card>
     </Layout>

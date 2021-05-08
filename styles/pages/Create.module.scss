@@ -21,3 +21,46 @@
     opacity: 0.8;
   }
 }
+
+// Submit card
+.card__submit {
+  padding: 24px 28px 28px 28px;
+
+  p {
+    margin: 0px;
+    font-weight: 500;
+    color: #111111;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  button {
+    background-color: var(--color-pink);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    display: inline-block;
+    cursor: pointer;
+    will-change: transform;
+    transition: transform 450ms ease 0s;
+    margin-top: 24px;
+  }
+
+  button:hover {
+    background-color: rgb(230, 0, 110);
+    transform: scale(0.99);
+  }
+
+  button:disabled {
+    background-color: #f076a5;
+    cursor: not-allowed;
+  }
+
+  button:disabled:hover {
+    background-color: #f076a5;
+    transform: none;
+  }
+}
