@@ -1,11 +1,8 @@
-// Text input
-.input__text {
+// General styles for all inputs
+.input__general {
   label {
     font-weight: 500;
     font-size: 16px;
-    line-height: 20px;
-    padding-bottom: 12px;
-    display: block;
   }
 
   textarea {
@@ -13,6 +10,7 @@
   }
 
   input[type="text"],
+  input[type="number"],
   textarea {
     font-family: "Inter", sans-serif;
     color: black;
@@ -22,17 +20,52 @@
     line-height: 22px;
     padding: 16px 20px;
     display: block;
-    width: 100%;
   }
 
   input[type="text"]:focus,
+  input[type="number"]:focus,
   textarea:focus {
     outline: none;
     border-color: var(--color-pink);
   }
 
   input[type="text"]::placeholder,
+  input[type="number"]::placeholder,
   textarea::placeholder {
     color: #7f8082;
+  }
+}
+
+// Styles for general text input
+.input__text {
+  label {
+    line-height: 20px;
+    padding-bottom: 12px;
+    display: block;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+  }
+}
+
+// Styles for action input text
+.input__text_action {
+  width: calc(100% - 136px);
+  margin-left: 136px;
+  display: flex;
+  -webkit-box-pack: justify;
+  align-items: center;
+
+  label {
+    min-width: 80px;
+    text-align: right;
+  }
+
+  input {
+    margin-left: 20px;
+    flex: 50%;
   }
 }

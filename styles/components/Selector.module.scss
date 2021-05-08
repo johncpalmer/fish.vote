@@ -1,0 +1,23 @@
+// Custom select module indicator
+.selector__indicator {
+  background-color: var(--color-pink);
+  color: white;
+  padding: 7px 8px;
+  border-radius: 12px;
+
+  span {
+    vertical-align: middle;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  img {
+    margin-left: 6px;
+    margin-top: 0.5px;
+    vertical-align: middle;
+  }
+}
+
+.selector__indicator:hover {
+  opacity: 0.9;
+}

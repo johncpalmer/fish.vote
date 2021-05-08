@@ -1,5 +1,5 @@
 import {
-  TextInputWithTopLabel,
+  InputWithTopLabel,
   TextAreaInputWithTopLabel,
 } from "@components/Inputs";
 import Card from "@components/Card";
@@ -43,7 +43,8 @@ export default function Demo() {
       <Card title="Card w/ Input fields">
         <div className="card__padding">
           <Spacer height="8" />
-          <TextInputWithTopLabel
+          <InputWithTopLabel
+            type="text"
             labelTitle="Single Input"
             placeholder="Single Input placeholder"
           />

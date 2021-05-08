@@ -1,8 +1,8 @@
 import Head from "next/head"; // HTML head
 import Link from "next/link"; // Routing
 import eth from "@state/eth"; // ETH state container
-import Jazzicon from "react-jazzicon"; // Address -> Avatar
 import styles from "@styles/components/Layout.module.scss"; // Component styles
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon"; // Address -> Avatar
 
 export default function Layout({ children }) {
   return (
@@ -70,7 +70,7 @@ function Header() {
                   "..." +
                   address.slice(address.length - 4)}
               </span>
-              <Jazzicon diameter={16} seed={address} />
+              <Jazzicon diameter={16} seed={jsNumberForAddress(address)} />
             </button>
           </div>
         ) : (

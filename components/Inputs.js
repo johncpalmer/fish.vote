@@ -2,7 +2,7 @@ import TextareaAutosize from "react-textarea-autosize"; // Auto-resizing textare
 import styles from "@styles/components/Inputs.module.scss"; // Component styles
 
 // Single text input with label
-function TextInputWithTopLabel({
+function InputWithTopLabel({
   // Label title
   labelTitle,
   // Value handlers
@@ -10,13 +10,15 @@ function TextInputWithTopLabel({
   onChangeHandler,
   // Placeholder text
   placeholder,
+  // Value type
+  type,
 }) {
   return (
-    <div className={styles.input__text}>
-      <label for={labelTitle}>{labelTitle}</label>
+    <div className={`${styles.input__general} ${styles.input__text}`}>
+      <label htmlFor={labelTitle}>{labelTitle}</label>
       <input
         id={labelTitle}
-        type="text"
+        type={type}
         value={value}
         onChange={(e) => onChangeHandler(e.target.value)}
         placeholder={placeholder}
@@ -38,8 +40,8 @@ function TextAreaInputWithTopLabel({
   minRows,
 }) {
   return (
-    <div className={styles.input__text}>
-      <label for={labelTitle}>{labelTitle}</label>
+    <div className={`${styles.input__general} ${styles.input__text}`}>
+      <label htmlFor={labelTitle}>{labelTitle}</label>
       <TextareaAutosize
         id={labelTitle}
         minRows={minRows}
@@ -51,5 +53,37 @@ function TextAreaInputWithTopLabel({
   );
 }
 
+// Single action text input with side label
+function ActionInputWithSideLabel({
+  // Label title
+  labelTitle,
+  // Value handlers
+  value,
+  onChangeHandler,
+  // Array index to update
+  onChangeIndex,
+  // Placeholder text
+  placeholder,
+  // Value type
+  type,
+}) {
+  return (
+    <div className={`${styles.input__general} ${styles.input__text_action}`}>
+      <label htmlFor={labelTitle}>{labelTitle}</label>
+      <input
+        id={labelTitle}
+        type={type}
+        value={value}
+        onChange={(e) => onChangeHandler(e.target.value, onChangeIndex)}
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
+
 // Export input fields
-export { TextInputWithTopLabel, TextAreaInputWithTopLabel };
+export {
+  InputWithTopLabel,
+  ActionInputWithSideLabel,
+  TextAreaInputWithTopLabel,
+};

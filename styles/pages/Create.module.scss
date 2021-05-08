@@ -1,0 +1,23 @@
+// Custom add action button
+.card__add_action {
+  height: 74px;
+  padding: 0px 28px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  -webkit-box-pack: justify;
+  align-items: center;
+
+  button {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-pink);
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+}

@@ -6,6 +6,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider"; // WalletConne
 
 // WalletConnect options for Web3Modal
 const providerOptions = {
+  // Change network based on environment variable
+  network: process.env.NEXT_PUBLIC_UNIFY_MAINNET ? "mainnet" : "kovan",
   walletconnect: {
     package: WalletConnectProvider,
     options: {
@@ -61,7 +63,6 @@ function useEth() {
   const initialSetupWeb3Modal = async () => {
     // Create new web3Modal
     const web3Modal = new Web3Modal({
-      network: "mainnet",
       cacheProvider: true,
       providerOptions,
     });
