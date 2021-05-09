@@ -49,6 +49,10 @@ function useGovernance() {
     setProposalFactory(proposalFactory);
   };
 
+  /**
+   * Collect UNI balance and update in state
+   * @param {ethers.Contract} contract UNI token contract
+   */
   const collectUniBalance = async (contract) => {
     // Collect raw balance
     const balanceRaw = await contract.balanceOf(address);
@@ -56,9 +60,12 @@ function useGovernance() {
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
     // Update balance in state
     setUni(balance);
-    console.log("Balance: ", balance);
   };
 
+  /**
+   * Collect if allowance is is infinite or not for token factory and update in state
+   * @param {ethers.Contract} contract Token Factory contract
+   */
   const collectInfiniteAllowance = async (contract) => {
     // Collect raw allowance
     const allowanceRaw = await contract.allowance(
@@ -66,31 +73,25 @@ function useGovernance() {
       UNI_NETWORK.crowd_proposal_factory.address
     );
 
-    // Check if allowance is infinite (greater than UNI token supply)
+    // Check if allowance is infinite (greater than UNI token supply of 1e9 UNI)
     const inifiniteApproved = allowanceRaw.gt(1e9);
     // Update inifinite allowance status in state
     setInfiniteAllowance(inifiniteApproved);
-    console.log("Allowance: ", inifiniteApproved);
   };
 
-  const utf8ToHex = (str) => {
-    return (
-      "0x" +
-      Array.from(str)
-        .map((c) =>
-          c.charCodeAt(0) < 128
-            ? c.charCodeAt(0).toString(16)
-            : encodeURIComponent(c).replace(/\%/g, "").toLowerCase()
-        )
-        .join("")
-    );
-  };
-
+  /**
+   * Generates padded bytes based on type and value
+   * @param {String} type solidity type
+   * @param {String} value matching to solidity type
+   * @returns {String} emulating ethers.Bytes
+   */
   const generateBytesByType = (type, value) => {
     switch (type) {
+      // If type of value is address:
       case "address":
         // Pad address for 20 bytes and drop 0x
         return ethers.utils.hexZeroPad(value, 32).substring(2);
+      // Else if, type of value is uint256
       case "uint256":
         // Convert string to BigNumber to HexString
         const valueHex = ethers.BigNumber.from(value).toHexString();
@@ -99,6 +100,12 @@ function useGovernance() {
     }
   };
 
+  /**
+   * Generates bytes per function
+   * @param {String} signature of function
+   * @param {String[]} values of function params
+   * @returns {String} emulating ethers.Bytes
+   */
   const generateBytes = (signature, values) => {
     // Collect types array from signature
     const typesString = signature.split("(").pop().split(")")[0];
@@ -114,6 +121,16 @@ function useGovernance() {
     return "0x".concat(...bytes);
   };
 
+  /**
+   * Creates a new CrowdProposal via the CrowdProposalFactory
+   * Must ensure that user has already approved infinite spend for factory
+   * @param {String[]} contracts array of target addresses
+   * @param {String[]} functions array of function signatures to be called
+   * @param {String[]} targets array of target params to fill
+   * @param {String[]} values array of function param values to fill
+   * @param {String} title of proposal
+   * @param {String} description of proposal
+   */
   const createProposal = async (
     contracts,
     functions,
@@ -127,11 +144,14 @@ function useGovernance() {
     
     ${description}`;
 
+    // Generate raw calldata
     const calldataRaw = targets.map((target, i) =>
-      // Loop over each and zip target and values arrays
+      // By zipping target and values arrays if they exist
       typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
     );
+    // Convert stringified calldata to bytes
     const calldataBytes = functions.map((func, i) =>
+      // By generating bytes for each individual function signature and param values
       generateBytes(func, calldataRaw[i])
     );
 
@@ -153,19 +173,26 @@ function useGovernance() {
     await tx.wait(1);
   };
 
+  /**
+   * Infinite approves factory contract
+   */
   const inifiniteApproveFactory = async () => {
     // Collect approval transaction
     const tx = await uniContract.approve(
       UNI_NETWORK.crowd_proposal_factory.address,
+      // Of infinite approval
       ethers.constants.MaxUint256
     );
 
     // Wait for 1 confirmation
     await tx.wait(1);
-    // Optimistically update allowance status
+    // Force update allowance status in global state
     await collectInfiniteAllowance(uniContract);
   };
 
+  /**
+   * Collections to run on load
+   */
   const setupGovernance = async () => {
     // If authenticated
     if (address && provider && provider.provider) {

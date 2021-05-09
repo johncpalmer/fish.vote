@@ -5,6 +5,7 @@ import {
 import eth from "@state/eth"; // Global state: eth
 import { useState } from "react"; // State management
 import Card from "@components/Card"; // Component: Card
+import { useRouter } from "next/router"; // Routing
 import Action from "@components/Action"; // Component: Action
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Layout from "@components/Layout"; // Component: Layout
@@ -26,6 +27,9 @@ const defaultActionState = [
 ];
 
 export default function Create() {
+  // Router
+  const router = useRouter();
+
   // Global state
   const {
     uni,
@@ -74,6 +78,8 @@ export default function Create() {
         title,
         description
       );
+      // Assuming proposal creation is successful, route home
+      router.push("/");
     } catch (error) {
       // Catch and log error
       console.log("Error when creating proposal: " + error);
