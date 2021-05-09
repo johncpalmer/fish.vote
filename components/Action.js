@@ -152,7 +152,7 @@ export default function Action({ onChangeHandler, index }) {
                   key={i}
                   labelTitle={target.name}
                   value={targets[i]}
-                  type={target.type}
+                  type={target.inputType}
                   placeholder={target.placeholder}
                   onChangeHandler={updateTargetsAtIndex}
                   onChangeIndex={i}
@@ -171,7 +171,7 @@ export default function Action({ onChangeHandler, index }) {
                     key={i}
                     labelTitle={value.name}
                     value={values[i]}
-                    type={value.type}
+                    type={value.inputType}
                     placeholder={value.placeholder}
                     onChangeHandler={updateValuesAtIndex}
                     onChangeIndex={i}

@@ -7,7 +7,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider"; // WalletConne
 // WalletConnect options for Web3Modal
 const providerOptions = {
   // Change network based on environment variable
-  network: process.env.NEXT_PUBLIC_UNIFY_MAINNET ? "mainnet" : "kovan",
+  network:
+    process.env.NEXT_PUBLIC_UNIFY_MAINNET === "true" ? "mainnet" : "kovan",
   walletconnect: {
     package: WalletConnectProvider,
     options: {

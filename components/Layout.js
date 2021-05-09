@@ -55,6 +55,11 @@ function Header() {
       maximumFractionDigits: 2,
     };
 
+    // When nil balance immediately show
+    if (uni === 0) {
+      return "0 UNI";
+    }
+
     // If votes loaded
     return uni
       ? // Return formatted vote count

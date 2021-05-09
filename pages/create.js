@@ -9,6 +9,7 @@ import Action from "@components/Action"; // Component: Action
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Layout from "@components/Layout"; // Component: Layout
 import governance from "@state/governance"; // Global state: governance
+import { UNI_NETWORK } from "@utils/constants"; // Constants
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Create.module.scss"; // Page styles
 
@@ -26,12 +27,18 @@ const defaultActionState = [
 
 export default function Create() {
   // Global state
+  const {
+    uni,
+    infiniteAllowance,
+    createProposal,
+    inifiniteApproveFactory,
+  } = governance.useContainer();
   const { address, unlock } = eth.useContainer();
-  const { uni } = governance.useContainer();
 
-  // Title + Descriptions
+  // Local state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   // Actions
   const [actions, setActions] = useState(
@@ -48,6 +55,51 @@ export default function Create() {
     let temp = actions;
     temp[index] = value;
     setActions([...temp]);
+  };
+
+  /**
+   * Submit proposal creation with button loading toggle
+   */
+  const createProposalWithLoading = async () => {
+    // Toggle loading
+    setButtonLoading(true);
+
+    try {
+      // Create proposal
+      await createProposal(
+        actions.map((action) => action[0]),
+        actions.map((action) => action[1]),
+        actions.map((action) => action[2]),
+        actions.map((action) => action[3]),
+        title,
+        description
+      );
+    } catch (error) {
+      // Catch and log error
+      console.log("Error when creating proposal: " + error);
+    }
+
+    // Toggle loading
+    setButtonLoading(false);
+  };
+
+  /**
+   * Approve factory contract with button loading toggle
+   */
+  const approveFactoryWithLoading = async () => {
+    // Toggle loading
+    setButtonLoading(true);
+
+    try {
+      // Approve factory to spend max(uin256) - 1 UNI
+      await inifiniteApproveFactory();
+    } catch (error) {
+      // Catch and log error
+      console.log("Error when approving factory contract: " + error);
+    }
+
+    // Toggle loading
+    setButtonLoading(false);
   };
 
   return (
@@ -117,14 +169,32 @@ export default function Create() {
       <Card title="Submit your proposal">
         <div className={styles.card__submit}>
           <p>
-            Submitting your autonomous proposal will require staking 100 UNI
-            tokens. You can terminate the proposal at any time to retrieve your
-            tokens.
+            Submitting your autonomous proposal will require staking{" "}
+            {UNI_NETWORK.minimum_uni} UNI tokens. You can terminate the proposal
+            at any time to retrieve your tokens.
           </p>
 
           {address ? (
-            uni >= 100 ? (
-              <button>Submit Proposal</button>
+            uni >= UNI_NETWORK.minimum_uni ? (
+              infiniteAllowance ? (
+                <button
+                  onClick={createProposalWithLoading}
+                  // Disable button when awaiting transaction submission
+                  disabled={buttonLoading}
+                >
+                  {buttonLoading ? "Submitting Proposal..." : "Submit Proposal"}
+                </button>
+              ) : (
+                <button
+                  onClick={approveFactoryWithLoading}
+                  // Disable button when awaiting approval submission
+                  disabled={buttonLoading}
+                >
+                  {buttonLoading
+                    ? "Approving Spend..."
+                    : "Approve Spending UNI"}
+                </button>
+              )
             ) : (
               <button disabled={true}>Insufficient Balance</button>
             )
