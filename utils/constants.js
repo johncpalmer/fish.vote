@@ -47,21 +47,19 @@ const UNI_ACTIONS = [
     functions: [
       {
         name: "transfer",
-        signature: "transfer(address, uint256)",
+        signature: "transfer(address,uint256)",
         targets: [
           {
             name: "recipient",
             placeholder: "address",
-            type: "address",
-            inputType: "text",
+            type: "text",
           },
         ],
         values: [
           {
             name: "amount",
             placeholder: "value (18 decimals)",
-            type: "uint256",
-            inputType: "number",
+            type: "number",
           },
         ],
       },

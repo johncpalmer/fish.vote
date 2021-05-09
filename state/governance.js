@@ -73,6 +73,47 @@ function useGovernance() {
     console.log("Allowance: ", inifiniteApproved);
   };
 
+  const utf8ToHex = (str) => {
+    return (
+      "0x" +
+      Array.from(str)
+        .map((c) =>
+          c.charCodeAt(0) < 128
+            ? c.charCodeAt(0).toString(16)
+            : encodeURIComponent(c).replace(/\%/g, "").toLowerCase()
+        )
+        .join("")
+    );
+  };
+
+  const generateBytesByType = (type, value) => {
+    switch (type) {
+      case "address":
+        // Pad address for 20 bytes and drop 0x
+        return ethers.utils.hexZeroPad(value, 32).substring(2);
+      case "uint256":
+        // Convert string to BigNumber to HexString
+        const valueHex = ethers.BigNumber.from(value).toHexString();
+        // Pad HexString to 32 bytes and drop 0x
+        return ethers.utils.hexZeroPad(valueHex, 32).substring(2);
+    }
+  };
+
+  const generateBytes = (signature, values) => {
+    // Collect types array from signature
+    const typesString = signature.split("(").pop().split(")")[0];
+    const typesArray = typesString.split(",");
+
+    // Map over each type
+    const bytes = typesArray.map((type, i) =>
+      // Generate bytes by type
+      generateBytesByType(type, values[i])
+    );
+
+    // Return bytes
+    return "0x".concat(...bytes);
+  };
+
   const createProposal = async (
     contracts,
     functions,
@@ -90,11 +131,12 @@ function useGovernance() {
       // Loop over each and zip target and values arrays
       typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
     );
-    //const calldataBytes =
-    console.log(ethers.utils.hexlify(calldataRaw));
+    const calldataBytes = functions.map((func, i) =>
+      generateBytes(func, calldataRaw[i])
+    );
 
     // Create a new proposal
-    /*const tx = proposalFactory.createCrowdProposal(
+    const tx = await proposalFactory.createCrowdProposal(
       // List of contracts
       contracts,
       // Send 0 value from contract
@@ -102,13 +144,13 @@ function useGovernance() {
       // Function signatures
       functions,
       // Call data from values and targets
-      targets,
+      calldataBytes,
+      // Proposal description
       postMarkdown
     );
 
     // Wait for 1 confirmation
     await tx.wait(1);
-    return;*/
   };
 
   const inifiniteApproveFactory = async () => {
