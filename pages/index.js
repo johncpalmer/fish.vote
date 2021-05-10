@@ -1,17 +1,16 @@
-import axios from "axios"; // Requests
+import dayjs from "dayjs"; // Date parsing
 import Link from "next/link"; // Routing: Links
 import Card from "@components/Card"; // Component: Card
 import { useRouter } from "next/router"; // Routing: Router
 import Layout from "@components/Layout"; // Component: Layout
 import Loader from "react-loader-spinner"; // Loaders
-import { useState, useEffect } from "react"; // State management
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Home.module.scss"; // Component styles
+import governance from "@state/governance";
 
 export default function Home() {
   const router = useRouter(); // Setup router
-  const [loading, setLoading] = useState(true); // Proposal loading state
-  const [proposals, setProposals] = useState([]); // Proposals array
+  const { proposals, loadingProposals } = governance.useContainer();
 
   /**
    * Routes clicker to /create
@@ -21,22 +20,6 @@ export default function Home() {
     e.preventDefault();
     router.push("/create");
   };
-
-  /**
-   * Fetch proposals from api endpoint
-   */
-  const fetchProposals = async () => {
-    // Collect proposal data
-    const response = await axios.get("/api/proposals");
-    const data = response.data;
-
-    // Update state
-    setProposals(data);
-    setLoading(false);
-  };
-
-  // Collect proposals on page load
-  useEffect(fetchProposals, []);
 
   return (
     <Layout>
@@ -51,13 +34,15 @@ export default function Home() {
           handler: routeToCreate,
         }}
       >
-        {loading ? (
+        {loadingProposals ? (
+          // If proposals are still loading, show spinner
           <div className="card__padding">
             <center>
               <Loader type="Oval" color="#e7347a" height={50} width={50} />
             </center>
           </div>
         ) : proposals.length < 1 ? (
+          // Else if no proposals exist, show empty state
           <div className="card__padding">
             <div className={styles.home__empty}>
               <h3>No Autonomous Proposals Found</h3>
@@ -66,13 +51,21 @@ export default function Home() {
         ) : (
           <div className={styles.home__loading}>
             {proposals.map((proposal, i) => {
+              // Else if proposals exist
               return (
+                // Loop over each proposal and render a proposal link
                 <Link href={`/proposal/${proposal.contract}`} key={i}>
                   <a className={styles.home__proposal}>
+                    {/* Proposal title + date */}
                     <div>
                       <h4>{proposal.title}</h4>
-                      <span>{proposal.timestamp}</span>
+                      <span>
+                        Created{" "}
+                        {dayjs.unix(proposal.timestamp).format("MMMM D, YYYY")}
+                      </span>
                     </div>
+
+                    {/* Proposal current status */}
                     <div>
                       <span>Status</span>
                     </div>

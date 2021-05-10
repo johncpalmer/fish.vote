@@ -32,7 +32,7 @@ export default function Breadcrumb({
       {/* Render proposal details */}
       {created && proposer ? (
         <div className={styles.breadcrumb__details}>
-          <span>Created {dayjs(created).format("MMMM D, YYYY")}</span>
+          <span>Created {dayjs.unix(created).format("MMMM D, YYYY")}</span>
           <div />
           <span>
             Proposed by{" "}

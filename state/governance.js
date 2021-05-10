@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"; // Local state management
 import { UNI_NETWORK } from "@utils/constants"; // Constants
 import { createContainer } from "unstated-next"; // Global state provider
 import CrowdProposalFactoryABI from "@utils/abi/CrowdProposalFactory"; // ABI: CrowdProposalFactory
+import axios from "axios";
 
 function useGovernance() {
   // Global state
@@ -16,6 +17,8 @@ function useGovernance() {
 
   // Governance state
   const [uni, setUni] = useState(null);
+  const [proposals, setProposals] = useState(null);
+  const [loadingProposals, setLoadingProposals] = useState(true);
   const [infiniteAllowance, setInfiniteAllowance] = useState(null);
 
   /**
@@ -190,6 +193,60 @@ function useGovernance() {
     await collectInfiniteAllowance(uniContract);
   };
 
+  const collectProposals = async () => {
+    // Toggle loading
+    setLoadingProposals(true);
+
+    // Collect proposals
+    const response = await axios.get("/api/proposals");
+    const data = response.data;
+
+    // Update data
+    setProposals(data);
+    // Toggle loading
+    setLoadingProposals(false);
+
+    // Optional proposals return
+    return data;
+  };
+
+  const collectProposalByContract = async (contract) => {
+    // Setup vars
+    let allProposals = proposals;
+    let proposalDetails = {
+      success: false,
+      data: [],
+    };
+
+    // If no proposals
+    if (!allProposals) {
+      // Collect proposals
+      allProposals = await collectProposals();
+    }
+
+    // Collect all proposal contracts
+    const allProposalContracts = allProposals.map(
+      (proposal) => proposal.contract
+    );
+    // If contract exists in all proposals
+    if (allProposalContracts.includes(contract)) {
+      // Update proposal details
+      proposalDetails.success = true;
+      proposalDetails.data = allProposals.filter(
+        (proposal) => proposal.contract === contract
+      )[0];
+    }
+
+    // Return proposal details
+    return proposalDetails;
+  };
+
+  const collectProposalsOnLoad = async () => {
+    if (!proposals) {
+      await collectProposals();
+    }
+  };
+
   /**
    * Collections to run on load
    */
@@ -204,12 +261,17 @@ function useGovernance() {
     }
   };
 
+  // Collect propoposals on load
+  useEffect(collectProposalsOnLoad, []);
   // Setup governance parameters on auth
   useEffect(setupGovernance, [address, provider]);
 
   return {
     uni,
+    proposals,
+    loadingProposals,
     createProposal,
+    collectProposalByContract,
     infiniteAllowance,
     inifiniteApproveFactory,
   };
