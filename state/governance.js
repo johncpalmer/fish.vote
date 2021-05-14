@@ -4,6 +4,7 @@ import UNIABI from "@utils/abi/uni"; // ABI: UNI Governance Token
 import { useState, useEffect } from "react"; // Local state management
 import { UNI_NETWORK } from "@utils/constants"; // Constants
 import { createContainer } from "unstated-next"; // Global state provider
+import CrowdProposalABI from "@utils/abi/CrowdProposal";
 import CrowdProposalFactoryABI from "@utils/abi/CrowdProposalFactory"; // ABI: CrowdProposalFactory
 import axios from "axios";
 
@@ -63,6 +64,25 @@ function useGovernance() {
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
     // Update balance in state
     setUni(balance);
+  };
+
+  const delegateToContract = async (contract) => {
+    const tx = await uniContract.delegate(contract);
+    await tx.wait(1);
+    await collectProposals();
+    return;
+  };
+
+  const proposeContract = async (contract) => {
+    const proposalContract = new ethers.Contract(
+      contract,
+      CrowdProposalABI,
+      provider
+    );
+    const tx = await proposalContract.vote();
+    await tx.wait(1);
+    await collectProposals();
+    return;
   };
 
   /**
@@ -278,6 +298,8 @@ function useGovernance() {
     collectProposalByContract,
     infiniteAllowance,
     inifiniteApproveFactory,
+    delegateToContract,
+    proposeContract,
   };
 }
 

@@ -6,7 +6,13 @@ export default function Card({
   // Optional subtext
   subtext,
   // Optional card button action
-  action: { name, handler, disabled = false } = {},
+  action: {
+    name,
+    handler,
+    disabled = false,
+    loading = false,
+    loadingText = "",
+  } = {},
   // Child content to inject
   children,
 }) {
@@ -22,8 +28,8 @@ export default function Card({
         <div className={styles.card__top_action}>
           {subtext ? <h3>{subtext}</h3> : null}
           {name && handler ? (
-            <button onClick={handler} disabled={disabled}>
-              {name}
+            <button onClick={handler} disabled={disabled || loading}>
+              {!loading ? name : loadingText}
             </button>
           ) : null}
         </div>

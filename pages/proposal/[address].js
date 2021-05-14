@@ -18,11 +18,17 @@ export default function Proposal({ address }) {
 
   // Global state
   const { address: authed, unlock } = eth.useContainer();
-  const { uni, collectProposalByContract } = governance.useContainer();
+  const {
+    uni,
+    collectProposalByContract,
+    delegateToContract,
+    proposeContract,
+  } = governance.useContainer();
 
   // Local state
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   /**
    * Fetch proposal details
@@ -43,6 +49,64 @@ export default function Proposal({ address }) {
     setLoading(false);
   };
 
+  const delegateWithLoading = async () => {
+    setButtonLoading(true);
+
+    try {
+      await delegateToContract(data.args[0]);
+      setData([...(await collectProposalByContract(address))]);
+    } catch {
+      console.log("Error when delegating to contract");
+    }
+
+    setButtonLoading(false);
+  };
+
+  const proposeWithLoading = async () => {
+    setButtonLoading(true);
+
+    try {
+      await proposeWithLoading(data.args[0]);
+      setData([...(await collectProposalByContract(address))]);
+    } catch {
+      console.log("Error when proposing contract");
+    }
+
+    setButtonLoading(false);
+  };
+
+  const supportActions = () => {
+    let actions = {};
+
+    if (data.status !== "Terminated") {
+      if (authed) {
+        if (uni != 0) {
+          if (data.status === "In Progress") {
+            // Check if loading delegation status
+            actions.name = "Delegate Votes";
+            actions.handler = () => delegateWithLoading();
+            actions.loading = buttonLoading;
+            actions.loadingText = "Delegating Votes...";
+          } else {
+            action.name = "Submit Proposal";
+            actions.handler = () => proposeWithLoading();
+            actions.loading = buttonLoading;
+            actions.loadingText = "Submitting Proposal...";
+          }
+        } else {
+          actions.name = "Insufficient Balance";
+          actions.handler = () => null;
+          disabled = true;
+        }
+      } else {
+        actions.name = "Connect to a wallet";
+        actions.handler = () => unlock();
+      }
+    }
+
+    return actions;
+  };
+
   useEffect(fetchProposal, []);
 
   return (
@@ -60,26 +124,7 @@ export default function Proposal({ address }) {
             proposer={data.args[1]}
           />
 
-          <Card
-            title="Support progress"
-            action={
-              authed
-                ? uni != 0
-                  ? {
-                      name: "Delegate Votes",
-                      handler: () => console.log("Delegate Votes"),
-                    }
-                  : {
-                      name: "Insufficient Balance",
-                      handler: () => console.log("Insufficient Balance"),
-                      disabled: true,
-                    }
-                : {
-                    name: "Connect to a wallet",
-                    handler: () => unlock(),
-                  }
-            }
-          >
+          <Card title="Support progress" action={supportActions()}>
             <div className={styles.card__progress}>
               <div className={styles.card__progress_bar}>
                 <div
