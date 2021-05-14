@@ -1,29 +1,31 @@
-import Layout from "@components/Layout"; // Component: Layout
-import { useRouter } from "next/router"; // Routing
-import governance from "@state/governance"; // Global governance state
-import { useState, useEffect } from "react"; // React state management
-import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
-import Card from "@components/Card";
-import styles from "@styles/pages/Proposal.module.scss";
-import eth from "@state/eth";
 import {
   collectNameByContract,
   generateActionSignatureHTML,
-} from "@utils/constants";
-import Markdown from "markdown-to-jsx";
+} from "@utils/constants"; // Parsing functions
+import eth from "@state/eth"; // Global state: eth
+import Card from "@components/Card"; // Component: Card
+import Markdown from "markdown-to-jsx"; // Markdown rendering
+import Layout from "@components/Layout"; // Component: Layout
+import { useRouter } from "next/router"; // Routing
+import Loader from "react-loader-spinner"; // Loader
+import governance from "@state/governance"; // Global governance state
+import { useState, useEffect } from "react"; // React state management
+import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
+import styles from "@styles/pages/Proposal.module.scss"; // Component styles
 
 export default function Proposal({ address }) {
   // Routing
   const router = useRouter();
 
   // Global state
-  const { address: authed, unlock } = eth.useContainer();
   const {
     uni,
+    proposals,
     collectProposalByContract,
     delegateToContract,
     proposeContract,
   } = governance.useContainer();
+  const { address: authed, unlock } = eth.useContainer();
 
   // Local state
   const [data, setData] = useState(null);
@@ -45,74 +47,97 @@ export default function Proposal({ address }) {
 
     // Else, toggle loading and update data
     setData(proposal.data);
-    console.log(proposal.data);
     setLoading(false);
   };
 
+  /**
+   * Delegate to contract with loading state
+   */
   const delegateWithLoading = async () => {
-    setButtonLoading(true);
+    setButtonLoading(true); // Toggle loading
 
     try {
+      // Call delegation with contract
       await delegateToContract(data.args[0]);
-      setData([...(await collectProposalByContract(address))]);
     } catch {
+      // Log error
       console.log("Error when delegating to contract");
     }
 
-    setButtonLoading(false);
+    setButtonLoading(false); // Toggle loading
   };
 
+  /**
+   * Propose contract to governance with loading state
+   */
   const proposeWithLoading = async () => {
-    setButtonLoading(true);
+    setButtonLoading(true); // Toggle loading
 
     try {
-      await proposeWithLoading(data.args[0]);
-      setData([...(await collectProposalByContract(address))]);
+      // Call propose with contract
+      await proposeContract(data.args[0]);
     } catch {
+      // Log error
       console.log("Error when proposing contract");
     }
 
-    setButtonLoading(false);
+    setButtonLoading(false); // Toggle loading
   };
 
+  /**
+   * Support action button rendering
+   * @returns {Object[]?} containing button name, handler, loading?, loadingText?
+   */
   const supportActions = () => {
+    // Setup button object
     let actions = {};
 
-    if (data.status !== "Terminated") {
+    // If terminated or finalized, show nothing
+    if (data.status !== "Terminated" || data.status !== "Proposed") {
+      // Check for authentication
       if (authed) {
+        // If UNI balance
         if (uni != 0) {
-          if (data.status === "In Progress") {
-            // Check if loading delegation status
+          // If proposal does not have enough votes to be proposed
+          if (parseFloat(data.votes) < 10000000) {
+            // Enable delegating votes
             actions.name = "Delegate Votes";
             actions.handler = () => delegateWithLoading();
             actions.loading = buttonLoading;
             actions.loadingText = "Delegating Votes...";
           } else {
+            // Else, enable submitting proposal (Finalized state)
             action.name = "Submit Proposal";
             actions.handler = () => proposeWithLoading();
             actions.loading = buttonLoading;
             actions.loadingText = "Submitting Proposal...";
           }
         } else {
+          // Else, present insufficient balance
           actions.name = "Insufficient Balance";
           actions.handler = () => null;
           disabled = true;
         }
       } else {
+        // If not authenticated, prompt for connecting
         actions.name = "Connect to a wallet";
         actions.handler = () => unlock();
       }
     }
 
+    // Return buttons object
     return actions;
   };
 
-  useEffect(fetchProposal, []);
+  // Fetch proposal on page load (and proposals array change)
+  useEffect(fetchProposal, [proposals]);
 
   return (
     <Layout>
       {!loading ? (
+        // If page data has loaded
         <>
+          {/* Page title breadcrumb */}
           <Breadcrumb
             title={data.title}
             lastRoute={{
@@ -124,13 +149,17 @@ export default function Proposal({ address }) {
             proposer={data.args[1]}
           />
 
+          {/* Support progress card */}
           <Card title="Support progress" action={supportActions()}>
             <div className={styles.card__progress}>
+              {/* Render status bar based on vote count */}
               <div className={styles.card__progress_bar}>
                 <div
                   style={{ width: `${parseFloat(data.votes) / 10000000}%` }}
                 />
               </div>
+
+              {/* Vote delegation count */}
               <div className={styles.card__delegated}>
                 <h4>Votes Delegated</h4>
                 <h1>
@@ -144,16 +173,23 @@ export default function Proposal({ address }) {
             </div>
           </Card>
 
+          {/* Proposal details */}
           <Card
             title="Proposal details"
             subtext={`${data.args[4].length} action${
+              // Render (s) if > 1 action
               data.args[4].length === 1 ? "" : "s"
             }`}
           >
             <div className={styles.card__details}>
+              {/* Render governance actions */}
               <div className={styles.card__details_actions}>
                 {data.args[2].map((contract, i) => {
+                  // For each contract in proposal
+
+                  // Collect contract name
                   const name = collectNameByContract(contract);
+                  // Collect signature data
                   const signatureElements = generateActionSignatureHTML(
                     data.args[4][i],
                     data.args[5][i]
@@ -161,8 +197,12 @@ export default function Proposal({ address }) {
 
                   return (
                     <div>
+                      {/* Action number */}
                       <span>{i + 1}</span>
+
+                      {/* Action details */}
                       <p>
+                        {/* Action contract */}
                         <a
                           href={`https://etherscan.io/address/${contract}`}
                           target="_blank"
@@ -177,14 +217,19 @@ export default function Proposal({ address }) {
                 })}
               </div>
 
+              {/* Proposal description */}
               <div className={styles.card__details_content}>
                 {data.args[6].replace(`# ${data.title}`, "") !== "" ? (
+                  // Render if markdown exists beyond header (thus, description)
                   <Markdown>
                     {data.args[6]
+                      // Remove markdown for header
                       .replace(`# ${data.title}`, "")
+                      // Filter out new lines for description seperator
                       .replace(/\n/g, "<br>")}
                   </Markdown>
                 ) : (
+                  // If no description:
                   <p>No description provided.</p>
                 )}
               </div>
@@ -192,7 +237,10 @@ export default function Proposal({ address }) {
           </Card>
         </>
       ) : (
-        <p>Loading...</p>
+        // If page is loading, show page load status
+        <center>
+          <Loader type="Oval" color="#e7347a" height={50} width={50} />
+        </center>
       )}
     </Layout>
   );

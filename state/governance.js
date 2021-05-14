@@ -1,12 +1,12 @@
+import axios from "axios"; // Requests
 import eth from "@state/eth"; // Chain state container
 import { ethers } from "ethers"; // Ethers
 import UNIABI from "@utils/abi/uni"; // ABI: UNI Governance Token
 import { useState, useEffect } from "react"; // Local state management
 import { UNI_NETWORK } from "@utils/constants"; // Constants
 import { createContainer } from "unstated-next"; // Global state provider
-import CrowdProposalABI from "@utils/abi/CrowdProposal";
+import CrowdProposalABI from "@utils/abi/CrowdProposal"; // ABI: CrowdProposal
 import CrowdProposalFactoryABI from "@utils/abi/CrowdProposalFactory"; // ABI: CrowdProposalFactory
-import axios from "axios";
 
 function useGovernance() {
   // Global state
@@ -66,21 +66,37 @@ function useGovernance() {
     setUni(balance);
   };
 
+  /**
+   * Delegates to a contract and refreshes proposals
+   * @param {String} contract address for CrowdProposal
+   */
   const delegateToContract = async (contract) => {
+    // Delegate to contract and wait for 1 confirmation
     const tx = await uniContract.delegate(contract);
     await tx.wait(1);
+
+    // Recollect proposals with updated information
     await collectProposals();
     return;
   };
 
+  /**
+   * Proposes a contract with sufficient votes
+   * @param {String} contract address for CrowdProposal
+   */
   const proposeContract = async (contract) => {
+    // Generate CrowdProposal contract object
     const proposalContract = new ethers.Contract(
       contract,
       CrowdProposalABI,
       provider
     );
+
+    // Call vote function and wait for 1 confirmation
     const tx = await proposalContract.vote();
     await tx.wait(1);
+
+    // Recollect proposals with updated information
     await collectProposals();
     return;
   };
@@ -234,6 +250,11 @@ function useGovernance() {
     return data;
   };
 
+  /**
+   * Collects proposal by contract address
+   * @param {String} contract address of CrowdProposal
+   * @returns {Object[]} details of a CrowdProposal contract
+   */
   const collectProposalByContract = async (contract) => {
     // Setup vars
     let allProposals = proposals;
@@ -265,6 +286,9 @@ function useGovernance() {
     return proposalDetails;
   };
 
+  /**
+   * Collects proposals on load if they dont exist in-mem
+   */
   const collectProposalsOnLoad = async () => {
     if (!proposals) {
       await collectProposals();

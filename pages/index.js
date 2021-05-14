@@ -4,12 +4,14 @@ import Card from "@components/Card"; // Component: Card
 import { useRouter } from "next/router"; // Routing: Router
 import Layout from "@components/Layout"; // Component: Layout
 import Loader from "react-loader-spinner"; // Loaders
+import governance from "@state/governance"; // Global state: governance
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Home.module.scss"; // Component styles
-import governance from "@state/governance";
 
 export default function Home() {
   const router = useRouter(); // Setup router
+
+  // Global state
   const { proposals, loadingProposals } = governance.useContainer();
 
   /**
@@ -21,6 +23,11 @@ export default function Home() {
     router.push("/create");
   };
 
+  /**
+   * Renders status icon color based on status
+   * @param {String} status of proposal
+   * @returns {String} hex string of color
+   */
   const renderStatusColor = (status) => {
     switch (status) {
       case "Terminated":
@@ -80,6 +87,7 @@ export default function Home() {
                     <div>
                       <div
                         style={{
+                          // Render indicator light based on status
                           backgroundColor: renderStatusColor(proposal.status),
                         }}
                       />

@@ -93,20 +93,36 @@ const UNI_ACTIONS = [
   },
 ];
 
+/**
+ * Maps contract address to name
+ * @param {String} contract address of CrowdProposal contract
+ * @returns {String} contract name
+ */
 const collectNameByContract = (contract) => {
-  let contractName = "";
+  let contractName = ""; // Initialize contract name
+
+  // For each property in UNI_CONSTANTS
   for (const property of Object.keys(UNI_NETWORK)) {
     if (
+      // If property is a contract type
       property !== "minimum_uni" &&
+      // And the address matches
       UNI_NETWORK[property].address.toLowerCase() === contract.toLowerCase()
     ) {
+      // Update contract name
       contractName = UNI_NETWORK[property].name;
     }
   }
 
-  return contractName;
+  return contractName; // Return contract name
 };
 
+/**
+ * Parses hexstring based on function signature types for appropriate params
+ * @param {String} signature function signature
+ * @param {String} bytes HexString
+ * @returns {Object[String[], String[]]} Two arrays, one for types and one for parsed params
+ */
 const generateActionBySignatureBytes = (signature, bytes) => {
   // Collect types array from signature
   const typesString = signature.split("(").pop().split(")")[0];
@@ -156,16 +172,28 @@ const generateActionBySignatureBytes = (signature, bytes) => {
   return { types: typesArray, parsed: parsedParams };
 };
 
+/**
+ * Uses generateActionBySignatureBytes to return renderable HTML for actions
+ * @param {String} signature function signature
+ * @param {String} bytes HexString
+ * @returns {HTMLElement[]} array of elements ot render
+ */
 const generateActionSignatureHTML = (signature, bytes) => {
+  // Collect parsed params
   const { parsed } = generateActionBySignatureBytes(signature, bytes);
+  // Generate signature name
   const signatureName = signature.split("(")[0];
 
+  // Initialize elements array with signature name span
   let elements = [<span>{signatureName}(</span>];
 
+  // For each parsed param
   for (let i = 0; i < parsed.length; i++) {
     const param = parsed[i];
 
+    // Render param according to type
     if (ethers.utils.isAddress(param)) {
+      // Link if type(param) === address
       elements.push(
         <a
           href={`https://etherscan.io/address/${param}`}
@@ -176,14 +204,17 @@ const generateActionSignatureHTML = (signature, bytes) => {
         </a>
       );
     } else {
+      // Else, span
       elements.push(<span>{param}</span>);
     }
 
+    // Add a comma span after all params unless last param
     if (i < parsed.length - 1) {
       elements.push(<span>, </span>);
     }
   }
 
+  // Push closing function bracket and return
   elements.push(<span>)</span>);
   return elements;
 };

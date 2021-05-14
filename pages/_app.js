@@ -7,6 +7,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"; // Spinn
 
 export default function Unify({ Component, pageProps }) {
   return (
+    // Wrap application in state provider
     <StateProvider>
       <Component {...pageProps} />
     </StateProvider>

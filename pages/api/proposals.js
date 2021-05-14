@@ -1,11 +1,11 @@
-import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
-import markdownHeadings from "markdown-headings"; // Markdown headings extraction
 import {
   provider,
   contractUNI,
   proposalFactory,
   getProposalContract,
 } from "@utils/ethers"; // Ethers imports
+import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
+import markdownHeadings from "markdown-headings"; // Markdown headings extraction
 
 /**
  * Collects header from Markdown
@@ -27,7 +27,7 @@ const getHeader = (markdown) => {
 /**
  * Parses event logs for data to retrieve for landing page
  * @param {CrowdProposalCreated[]} event raw event JSON
- * @returns {Object[]} containing contract, timestamp, and title
+ * @returns {Object[]} containing contract details
  */
 const parseEvents = async (event) => {
   // Collect block and markdown header
@@ -42,11 +42,15 @@ const parseEvents = async (event) => {
   const proposalContract = getProposalContract(event.args[0]);
   const proposalId = await proposalContract.govProposalId();
   const terminated = await proposalContract.terminated();
+  // Setup proposal status
   const proposalStatus = terminated
-    ? "Terminated"
-    : proposalId.toString() !== "0"
+    ? // If terminated return "Terminated"
+      "Terminated"
+    : // Else if proposal Id assigned, return Proposed
+    proposalId.toString() !== "0"
     ? "Proposed"
-    : "In Progress";
+    : // Else, return In Progress
+      "In Progress";
 
   return {
     // Deployed proposal address
