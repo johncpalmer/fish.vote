@@ -8,6 +8,10 @@ import styles from "@styles/pages/Proposal.module.scss";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import eth from "@state/eth";
+import {
+  collectNameByContract,
+  generateActionSignatureHTML,
+} from "@utils/constants";
 
 export default function Proposal({ address }) {
   // Routing
@@ -36,7 +40,6 @@ export default function Proposal({ address }) {
 
     // Else, toggle loading and update data
     setData(proposal.data);
-    console.log(proposal.data);
     setLoading(false);
   };
 
@@ -104,11 +107,24 @@ export default function Proposal({ address }) {
             <div className={styles.card__details}>
               <div className={styles.card__details_actions}>
                 {data.args[2].map((contract, i) => {
+                  const name = collectNameByContract(contract);
+                  const signatureElements = generateActionSignatureHTML(
+                    data.args[4][i],
+                    data.args[5][i]
+                  );
+
                   return (
                     <div>
                       <span>{i + 1}</span>
                       <p>
-                        {contract}.{data.args[4][i]}.{data.args[5][i]}
+                        <a
+                          href={`https://etherscan.io/address/${contract}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {name}
+                        </a>
+                        .{signatureElements.map((element) => element)}
                       </p>
                     </div>
                   );

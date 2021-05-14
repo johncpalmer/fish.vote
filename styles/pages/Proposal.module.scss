@@ -47,25 +47,34 @@
 
 .card__details {
   .card__details_actions {
-    padding: 16px 28px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    div {
+      padding: 16px 28px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
-    span {
-      display: inline-block;
-      vertical-align: top;
-      width: 5%;
-      color: rgba(20, 21, 24, 0.5);
-      font-weight: 500;
-      font-size: 20px;
-      line-height: 24px;
-    }
+      > span {
+        display: inline-block;
+        vertical-align: top;
+        width: 5%;
+        color: rgba(20, 21, 24, 0.5);
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 24px;
+      }
 
-    p {
-      display: inline-block;
-      vertical-align: top;
-      word-break: break-all;
-      width: 95%;
-      margin: 0px;
+      p {
+        font-size: 20px;
+        line-height: 28px;
+        color: #141518;
+        display: inline-block;
+        vertical-align: top;
+        word-break: break-all;
+        width: 95%;
+        margin: 0px;
+
+        a {
+          color: var(--color-pink);
+        }
+      }
     }
   }
 

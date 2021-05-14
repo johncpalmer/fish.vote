@@ -176,6 +176,8 @@ function useGovernance() {
     await tx.wait(1);
     // Regenerate proposals
     await collectProposals();
+    // Collect updated uni balance
+    await collectUniBalance();
   };
 
   /**
