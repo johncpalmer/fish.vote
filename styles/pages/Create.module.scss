@@ -64,3 +64,55 @@
     transform: none;
   }
 }
+
+.proposal__mobile {
+  margin-top: 28px;
+  display: none !important;
+  background: #ffffff;
+  box-shadow: 0px 2px 24px 32px rgba(0, 0, 0, 0.01),
+    0px 2px 24px rgba(0, 0, 0, 0.11);
+  border-radius: 16px;
+  padding: 56px 16px;
+  text-align: center;
+
+  h3 {
+    font-weight: 500;
+    color: rgba(17, 17, 17, 0.8);
+    margin: 16px 0px;
+    font-size: 20px;
+    line-height: 150%;
+  }
+
+  p {
+    margin: 0px;
+    color: #888;
+    font-weight: 500;
+    font-family: 13px;
+    line-height: 150%;
+  }
+
+  a {
+    color: var(--color-pink);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 150%;
+    margin-top: 16px;
+    transition: ease 0.2s;
+    display: block;
+
+    :hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+// Responsiveness
+@media screen and (max-width: 580px) {
+  .proposal__desktop {
+    display: none;
+  }
+
+  .proposal__mobile {
+    display: block !important;
+  }
+}

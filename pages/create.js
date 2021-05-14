@@ -2,6 +2,7 @@ import {
   InputWithTopLabel,
   TextAreaInputWithTopLabel,
 } from "@components/Inputs"; // Components: Inputs
+import Link from "next/link"; // Routing
 import eth from "@state/eth"; // Global state: eth
 import { useState } from "react"; // State management
 import Card from "@components/Card"; // Component: Card
@@ -113,102 +114,120 @@ export default function Create() {
       {/* Breadcrumb title */}
       <Breadcrumb title="Create a new proposal" />
 
-      {/* Proposal description card */}
-      <Card title="Proposal Description">
-        <div className="card__padding">
-          <Spacer height="8" />
+      {/* Create desktop view */}
+      <div className={styles.proposal__desktop}>
+        {/* Proposal description card */}
+        <Card title="Proposal Description">
+          <div className="card__padding">
+            <Spacer height="8" />
 
-          {/* Title */}
-          <InputWithTopLabel
-            labelTitle="Title"
-            type="text"
-            value={title}
-            onChangeHandler={setTitle}
-            placeholder="Enter the title of your proposal..."
-          />
+            {/* Title */}
+            <InputWithTopLabel
+              labelTitle="Title"
+              type="text"
+              value={title}
+              onChangeHandler={setTitle}
+              placeholder="Enter the title of your proposal..."
+            />
 
-          <Spacer height="32" />
+            <Spacer height="32" />
 
-          {/* Description */}
-          <TextAreaInputWithTopLabel
-            labelTitle="Overview"
-            minRows={10}
-            value={description}
-            onChangeHandler={setDescription}
-            placeholder="Describe your proposal..."
-          />
-        </div>
-      </Card>
+            {/* Description */}
+            <TextAreaInputWithTopLabel
+              labelTitle="Overview"
+              minRows={10}
+              value={description}
+              onChangeHandler={setDescription}
+              placeholder="Describe your proposal..."
+            />
+          </div>
+        </Card>
 
-      {/* Actions card */}
-      <Card title="Actions">
-        {/* Actions */}
-        <div>
-          {actions.map((_, i) => {
-            // For each action, render an Action component
-            return (
-              <Action
-                key={i}
-                index={i}
-                // Inject update handler (lets child manage state by self)
-                onChangeHandler={updateActionsAtIndex}
-              />
-            );
-          })}
-        </div>
+        {/* Actions card */}
+        <Card title="Actions">
+          {/* Actions */}
+          <div>
+            {actions.map((_, i) => {
+              // For each action, render an Action component
+              return (
+                <Action
+                  key={i}
+                  index={i}
+                  // Inject update handler (lets child manage state by self)
+                  onChangeHandler={updateActionsAtIndex}
+                />
+              );
+            })}
+          </div>
 
-        {/* Add Actions */}
-        <div className={styles.card__add_action}>
-          <button
-            // On click:
-            onClick={() =>
-              // Update actions with [...actions, defaultAction]
-              setActions((previous) => [...previous, defaultActionState])
-            }
-          >
-            + Add Action
-          </button>
-        </div>
-      </Card>
+          {/* Add Actions */}
+          <div className={styles.card__add_action}>
+            <button
+              // On click:
+              onClick={() =>
+                // Update actions with [...actions, defaultAction]
+                setActions((previous) => [...previous, defaultActionState])
+              }
+            >
+              + Add Action
+            </button>
+          </div>
+        </Card>
 
-      {/* Submission card */}
-      <Card title="Submit your proposal">
-        <div className={styles.card__submit}>
-          <p>
-            Submitting your autonomous proposal will require staking{" "}
-            {UNI_NETWORK.minimum_uni} UNI tokens. You can terminate the proposal
-            at any time to retrieve your tokens.
-          </p>
+        {/* Submission card */}
+        <Card title="Submit your proposal">
+          <div className={styles.card__submit}>
+            <p>
+              Submitting your autonomous proposal will require staking{" "}
+              {UNI_NETWORK.minimum_uni} UNI tokens. You can terminate the
+              proposal at any time to retrieve your tokens.
+            </p>
 
-          {address ? (
-            uni >= UNI_NETWORK.minimum_uni ? (
-              infiniteAllowance ? (
-                <button
-                  onClick={createProposalWithLoading}
-                  // Disable button when awaiting transaction submission
-                  disabled={buttonLoading}
-                >
-                  {buttonLoading ? "Submitting Proposal..." : "Submit Proposal"}
-                </button>
+            {address ? (
+              uni >= UNI_NETWORK.minimum_uni ? (
+                infiniteAllowance ? (
+                  <button
+                    onClick={createProposalWithLoading}
+                    // Disable button when awaiting transaction submission
+                    disabled={buttonLoading}
+                  >
+                    {buttonLoading
+                      ? "Submitting Proposal..."
+                      : "Submit Proposal"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={approveFactoryWithLoading}
+                    // Disable button when awaiting approval submission
+                    disabled={buttonLoading}
+                  >
+                    {buttonLoading
+                      ? "Approving Spend..."
+                      : "Approve Spending UNI"}
+                  </button>
+                )
               ) : (
-                <button
-                  onClick={approveFactoryWithLoading}
-                  // Disable button when awaiting approval submission
-                  disabled={buttonLoading}
-                >
-                  {buttonLoading
-                    ? "Approving Spend..."
-                    : "Approve Spending UNI"}
-                </button>
+                <button disabled={true}>Insufficient Balance</button>
               )
             ) : (
-              <button disabled={true}>Insufficient Balance</button>
-            )
-          ) : (
-            <button onClick={unlock}>Connect wallet</button>
-          )}
-        </div>
-      </Card>
+              <button onClick={unlock}>Connect wallet</button>
+            )}
+          </div>
+        </Card>
+      </div>
+
+      {/* Create mobile view */}
+      <div className={styles.proposal__mobile}>
+        <img src="/vectors/create.svg" alt="Create" />
+        <h3>Head to Desktop</h3>
+        <p>
+          Proposal authoring is only supported on desktop for now. Head to a
+          nearby computer to create a new autonomous proposal.
+        </p>
+        <Link href="/">
+          <a>{"<- Back to proposals"}</a>
+        </Link>
+      </div>
     </Layout>
   );
 }
