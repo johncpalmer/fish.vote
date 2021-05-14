@@ -1,4 +1,5 @@
 import { ethers } from "ethers"; // Ethers
+import UNIABI from "@utils/abi/uni"; // UNI Governnace Token ABI
 import { UNI_NETWORK } from "@utils/constants"; // Constants
 import CrowdProposalABI from "@utils/abi/CrowdProposal"; // CrowdProposal ABI
 import CrowdProposalFactoryABI from "@utils/abi/CrowdProposalFactory"; // CrowdProposalFactory ABI
@@ -22,6 +23,13 @@ const proposalFactory = new ethers.Contract(
   signer
 );
 
+// Setup UNI governance token contract
+const contractUNI = new ethers.Contract(
+  UNI_NETWORK.uni_governance_token.address,
+  UNIABI,
+  provider
+);
+
 /**
  * Generates new CrowdProposal contract wrapper by address
  * @param {String} address of CrowdProposal contract
@@ -33,4 +41,4 @@ const getProposalContract = (address) => {
 };
 
 // Export providers
-export { provider, signer, proposalFactory, getProposalContract };
+export { provider, signer, contractUNI, proposalFactory, getProposalContract };

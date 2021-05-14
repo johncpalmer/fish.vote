@@ -83,12 +83,14 @@ export default function Proposal({ address }) {
           >
             <div className={styles.card__progress}>
               <div className={styles.card__progress_bar}>
-                <div style={{ width: "40%" }} />
+                <div
+                  style={{ width: `${parseFloat(data.votes) / 10000000}%` }}
+                />
               </div>
               <div className={styles.card__delegated}>
                 <h4>Votes Delegated</h4>
                 <h1>
-                  <span>3,542,001</span> / 10,000,000
+                  <span>{data.votes}</span> / 10,000,000
                 </h1>
               </div>
               <p>
@@ -130,18 +132,19 @@ export default function Proposal({ address }) {
                   );
                 })}
               </div>
+
               <div className={styles.card__details_content}>
-                <Markdown>
-                  {data.args[6]
-                    .replace(`# ${data.title}`, "")
-                    .replace(/\n/g, "<br>")}
-                </Markdown>
+                {data.args[6].replace(`# ${data.title}`, "") !== "" ? (
+                  <Markdown>
+                    {data.args[6]
+                      .replace(`# ${data.title}`, "")
+                      .replace(/\n/g, "<br>")}
+                  </Markdown>
+                ) : (
+                  <p>No description provided.</p>
+                )}
               </div>
             </div>
-          </Card>
-
-          <Card title={`X Supporters`} subtext="Votes">
-            <span>Test child content</span>
           </Card>
         </>
       ) : (
