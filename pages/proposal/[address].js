@@ -116,7 +116,7 @@ export default function Proposal({ address }) {
           // Else, present insufficient balance
           actions.name = "Insufficient Balance";
           actions.handler = () => null;
-          disabled = true;
+          actions.disabled = true;
         }
       } else {
         // If not authenticated, prompt for connecting
