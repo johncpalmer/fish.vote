@@ -21,6 +21,17 @@ export default function Home() {
     router.push("/create");
   };
 
+  const renderStatusColor = (status) => {
+    switch (status) {
+      case "Terminated":
+        return "#ff0033";
+      case "In Progress":
+        return "#EFC223";
+      case "Proposed":
+        return "#1DB023";
+    }
+  };
+
   return (
     <Layout>
       {/* Page header */}
@@ -67,7 +78,12 @@ export default function Home() {
 
                     {/* Proposal current status */}
                     <div>
-                      <span>Status</span>
+                      <div
+                        style={{
+                          backgroundColor: renderStatusColor(proposal.status),
+                        }}
+                      />
+                      <span>{proposal.status}</span>
                     </div>
                   </a>
                 </Link>

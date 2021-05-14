@@ -55,8 +55,7 @@ export default function Proposal({ address }) {
               path: "/",
               name: "Autonomous Proposals",
             }}
-            // FIXME:
-            status="In progress"
+            status={data.status}
             created={data.timestamp}
             proposer={data.args[1]}
           />

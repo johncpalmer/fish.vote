@@ -1,6 +1,11 @@
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
 import markdownHeadings from "markdown-headings"; // Markdown headings extraction
-import { provider, contractUNI, proposalFactory } from "@utils/ethers"; // Ethers imports
+import {
+  provider,
+  contractUNI,
+  proposalFactory,
+  getProposalContract,
+} from "@utils/ethers"; // Ethers imports
 
 /**
  * Collects header from Markdown
@@ -33,9 +38,21 @@ const parseEvents = async (event) => {
   const votesRaw = await contractUNI.getCurrentVotes(event.args[0]);
   const votesParsed = formatEther(votesRaw.toString());
 
+  // Collect proposal status
+  const proposalContract = getProposalContract(event.args[0]);
+  const proposalId = await proposalContract.govProposalId();
+  const terminated = await proposalContract.terminated();
+  const proposalStatus = terminated
+    ? "Terminated"
+    : proposalId.toString() !== "0"
+    ? "Proposed"
+    : "In Progress";
+
   return {
     // Deployed proposal address
     contract: event.args[0],
+    // Contract status
+    status: proposalStatus,
     // Contract vote count
     votes: votesParsed,
     // Time of deployment
