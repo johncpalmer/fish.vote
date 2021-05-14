@@ -5,13 +5,12 @@ import { useState, useEffect } from "react"; // React state management
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import Card from "@components/Card";
 import styles from "@styles/pages/Proposal.module.scss";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import eth from "@state/eth";
 import {
   collectNameByContract,
   generateActionSignatureHTML,
 } from "@utils/constants";
+import Markdown from "markdown-to-jsx";
 
 export default function Proposal({ address }) {
   // Routing
@@ -40,6 +39,7 @@ export default function Proposal({ address }) {
 
     // Else, toggle loading and update data
     setData(proposal.data);
+    console.log(proposal.data);
     setLoading(false);
   };
 
@@ -131,10 +131,11 @@ export default function Proposal({ address }) {
                 })}
               </div>
               <div className={styles.card__details_content}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  children={data.args[6].replace(`# ${data.title}`, "")}
-                />
+                <Markdown>
+                  {data.args[6]
+                    .replace(`# ${data.title}`, "")
+                    .replace(/\n/g, "<br>")}
+                </Markdown>
               </div>
             </div>
           </Card>

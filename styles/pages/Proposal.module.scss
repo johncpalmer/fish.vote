@@ -80,9 +80,21 @@
 
   .card__details_content {
     padding: 24px 28px 36px 28px;
+    color: rgba(17, 17, 17, 0.8);
 
-    > div {
-      font-family: "Inter", sans-serif !important;
+    span {
+      line-height: 150%;
+      font-size: 16px;
+      font-weight: 500px;
+    }
+
+    br:nth-of-type(1),
+    br:nth-of-type(2) {
+      display: none;
+    }
+
+    a {
+      color: var(--color-pink);
     }
   }
 }
