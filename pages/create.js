@@ -112,7 +112,13 @@ export default function Create() {
   return (
     <Layout>
       {/* Breadcrumb title */}
-      <Breadcrumb title="Create a new proposal" />
+      <Breadcrumb
+        title="Create a new proposal"
+        lastRoute={{
+          path: "/",
+          name: "Autonomous Proposals",
+        }}
+      />
 
       {/* Create desktop view */}
       <div className={styles.proposal__desktop}>

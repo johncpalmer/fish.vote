@@ -2,12 +2,24 @@ import Head from "next/head"; // HTML head
 import Link from "next/link"; // Routing
 import eth from "@state/eth"; // ETH state container
 import governance from "@state/governance"; // Governance state container
+import NextNProgress from "nextjs-progressbar"; // Navigation progress bar
 import styles from "@styles/components/Layout.module.scss"; // Component styles
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"; // Address -> Avatar
 
 export default function Layout({ children }) {
   return (
     <div>
+      {/* Navigation progress bar */}
+      <NextNProgress
+        color="#E7347A"
+        startPosition={0.3}
+        stopDelayMs={200}
+        height="3"
+        options={{
+          showSpinner: false,
+        }}
+      />
+
       {/* Html head content */}
       <Meta />
 
