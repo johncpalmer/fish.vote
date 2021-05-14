@@ -174,6 +174,8 @@ function useGovernance() {
 
     // Wait for 1 confirmation
     await tx.wait(1);
+    // Regenerate proposals
+    await collectProposals();
   };
 
   /**

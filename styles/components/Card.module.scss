@@ -55,6 +55,16 @@
         background-color: rgb(230, 0, 110);
         transform: scale(0.99);
       }
+
+      button:disabled {
+        background-color: #f076a5;
+        cursor: not-allowed;
+      }
+
+      button:disabled:hover {
+        background-color: #f076a5;
+        transform: none;
+      }
     }
   }
 }
