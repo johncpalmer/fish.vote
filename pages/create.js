@@ -205,7 +205,7 @@ export default function Create() {
               <button disabled={true}>Insufficient Balance</button>
             )
           ) : (
-            <button onClick={unlock}>Connect to a wallet</button>
+            <button onClick={unlock}>Connect wallet</button>
           )}
         </div>
       </Card>

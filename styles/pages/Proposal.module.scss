@@ -82,6 +82,11 @@
     padding: 24px 28px 36px 28px;
     color: rgba(17, 17, 17, 0.8);
 
+    p {
+      text-align: center;
+    }
+
+    p,
     span {
       line-height: 150%;
       font-size: 16px;
@@ -95,6 +100,63 @@
 
     a {
       color: var(--color-pink);
+    }
+  }
+}
+
+// Responsiveness
+@media screen and (max-width: 500px) {
+  .card__progress {
+    padding: 16px;
+
+    .card__delegated {
+      margin: 16px 0px;
+
+      h4 {
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 14.5px;
+      }
+
+      h1 {
+        margin-top: 4px;
+        font-size: 22px;
+        line-height: 26.6px;
+      }
+    }
+
+    p {
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+
+  .card__details {
+    .card__details_actions {
+      div {
+        padding: 12px 16px;
+
+        > span {
+          font-size: 13px;
+          line-height: 18.2px;
+        }
+
+        p {
+          font-size: 13px;
+          line-height: 18.2px;
+        }
+      }
+    }
+
+    .card__details_content {
+      padding: 16px;
+
+      p,
+      span {
+        line-height: 19.5px;
+        font-size: 13px;
+        font-weight: 500px;
+      }
     }
   }
 }

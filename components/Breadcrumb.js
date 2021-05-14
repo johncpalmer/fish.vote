@@ -35,13 +35,25 @@ export default function Breadcrumb({
           <span>Created {dayjs.unix(created).format("MMMM D, YYYY")}</span>
           <div />
           <span>
-            Proposed by{" "}
+            Proposed by {/* Desktop (no truncation) */}
             <a
+              className={styles.breadcrumb__address_desktop}
               href={`https://etherscan.io/address/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               {proposer}
+            </a>
+            {/* Mobile (truncated) */}
+            <a
+              className={styles.breadcrumb__address_mobile}
+              href={`https://etherscan.io/address/${proposer}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {proposer.substr(0, 4) +
+                "..." +
+                proposer.slice(proposer.length - 4)}
             </a>
           </span>
         </div>

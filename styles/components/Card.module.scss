@@ -68,3 +68,27 @@
     }
   }
 }
+
+// Responsiveness
+@media screen and (max-width: 500px) {
+  .card {
+    margin: 24px 0px;
+
+    .card__top {
+      height: 59px;
+      padding: 0px 16px;
+
+      h3 {
+        font-size: 16px;
+        line-height: 19px;
+      }
+
+      .card__top_action {
+        button {
+          font-size: 13px;
+          padding: 8px 16px;
+        }
+      }
+    }
+  }
+}

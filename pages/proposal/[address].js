@@ -120,7 +120,7 @@ export default function Proposal({ address }) {
         }
       } else {
         // If not authenticated, prompt for connecting
-        actions.name = "Connect to a wallet";
+        actions.name = "Connect wallet";
         actions.handler = () => unlock();
       }
     }

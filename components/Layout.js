@@ -74,7 +74,19 @@ function Header() {
       <div className={styles.layout__header_logo}>
         <Link href="/">
           <a>
-            <img src="/vectors/logo.svg" alt="Unify logo" />
+            {/* Logo: Desktop */}
+            <img
+              className={styles.layout__header_logo_desktop}
+              src="/vectors/logo.svg"
+              alt="Unify logo"
+            />
+
+            {/* Logo: Mobile */}
+            <img
+              className={styles.layout__header_logo_mobile}
+              src="/vectors/logo-mobile.svg"
+              alt="Unify logo"
+            />
           </a>
         </Link>
       </div>
@@ -105,7 +117,7 @@ function Header() {
             className={styles.layout__header_auth_connect}
             onClick={unlock}
           >
-            Connect to a wallet
+            Connect wallet
           </button>
         )}
       </div>

@@ -19,17 +19,24 @@
   .layout__header_logo {
     width: 100px;
 
+    .layout__header_logo_desktop {
+      margin-top: 23px;
+      width: 95px;
+      display: block;
+    }
+
+    .layout__header_logo_mobile {
+      display: none !important;
+      width: 22px;
+      margin-top: 19px;
+      display: inline-block;
+    }
+
     a {
       transition: ease 0.2s;
 
       :hover {
         opacity: 0.7;
-      }
-
-      img {
-        margin-top: 23px;
-        display: block;
-        width: 95px;
       }
     }
   }
@@ -124,34 +131,41 @@
 }
 
 // Responsiveness
-@media screen and (max-width: 480px) {
-  .layout__header {
-    height: 115px;
-
-    > div {
-      width: 100% !important;
-      height: auto;
-      display: block;
-      padding: 0px;
-      text-align: center;
+@media screen and (max-width: 500px) {
+  .layout__content {
+    .layout__content_sizer {
+      padding-top: 20px;
     }
+  }
+
+  .layout__header {
+    height: 60px;
 
     .layout__header_logo {
       a {
         display: inline-block;
       }
+
+      .layout__header_logo_desktop {
+        display: none;
+      }
+
+      .layout__header_logo_mobile {
+        display: inline-block !important;
+      }
     }
 
     .layout__header_auth {
-      > div,
-      > button {
-        text-align: center;
-        float: none !important;
-        margin-top: 5px !important;
+      > div {
+        margin-top: 10px !important;
+
+        > div {
+          display: none !important;
+        }
       }
 
-      .layout__header_auth_connected {
-        display: inline-block;
+      > button {
+        margin-top: 10px !important;
       }
     }
   }

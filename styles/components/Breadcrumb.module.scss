@@ -34,7 +34,7 @@
     line-height: 53px;
     font-weight: 600;
     margin: 12px 0px;
-    word-break: break-all;
+    word-break: break-word;
   }
 
   .breadcrumb__details {
@@ -45,6 +45,10 @@
       color: rgba(17, 17, 17, 0.5);
       vertical-align: middle;
       display: inline-block;
+
+      .breadcrumb__address_mobile {
+        display: none;
+      }
 
       a {
         color: #5f585b;
@@ -67,6 +71,37 @@
       display: inline-block;
       margin: 0px 11px;
       border-radius: 50%;
+    }
+  }
+}
+
+// Responsiveness
+@media screen and (max-width: 500px) {
+  .breadcrumb {
+    .breadcrumb__status {
+      font-size: 13px;
+      line-height: 17px;
+      margin-top: 24px;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 33.6px;
+      margin: 8px 0px;
+    }
+
+    .breadcrumb__details {
+      span {
+        line-height: 25px;
+
+        .breadcrumb__address_desktop {
+          display: none;
+        }
+
+        .breadcrumb__address_mobile {
+          display: inline;
+        }
+      }
     }
   }
 }
