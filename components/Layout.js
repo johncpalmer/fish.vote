@@ -89,15 +89,15 @@ function Header() {
             {/* Logo: Desktop */}
             <img
               className={styles.layout__header_logo_desktop}
-              src="/vectors/logo.svg"
-              alt="Unify logo"
+              src="/vectors/logo-mobile.svg"
+              alt="Fish logo"
             />
 
             {/* Logo: Mobile */}
             <img
               className={styles.layout__header_logo_mobile}
               src="/vectors/logo-mobile.svg"
-              alt="Unify logo"
+              alt="Fish logo"
             />
           </a>
         </Link>
