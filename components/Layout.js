@@ -39,7 +39,14 @@ function Meta() {
     <Head>
       {/* TODO: Meta */}
       {/* TODO: Favicon */}
+      <meta name="description" content="Autonomous proposals for UNI" />
+      <meta property="og:title" content="Fish.vote" key="ogtitle" />
+      <meta property="og:description" content="Autonomous proposals for UNI" key="ogdesc" />
+      <meta name="twitter:title" content="Fish.vote" />
+      <meta name="twitter:description" content="Autonomous proposals for UNI" />
+      <meta name="twitter:image" content={`${process.env.BASE_URL}/twitter-card.png`}></meta>
 
+      <title>Fish - Autonomous Proposals</title>
       {/* Fonts (Inter) */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
@@ -89,15 +96,15 @@ function Header() {
             {/* Logo: Desktop */}
             <img
               className={styles.layout__header_logo_desktop}
-              src="/vectors/logo.svg"
-              alt="Unify logo"
+              src="/vectors/logo-mobile.svg"
+              alt="Fish logo"
             />
 
             {/* Logo: Mobile */}
             <img
               className={styles.layout__header_logo_mobile}
               src="/vectors/logo-mobile.svg"
-              alt="Unify logo"
+              alt="Fish logo"
             />
           </a>
         </Link>
