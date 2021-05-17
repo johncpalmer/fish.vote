@@ -37,16 +37,34 @@ export default function Layout({ children }) {
 function Meta() {
   return (
     <Head>
-      {/* TODO: Meta */}
-      {/* TODO: Favicon */}
-      <meta name="description" content="Autonomous proposals for UNI" />
-      <meta property="og:title" content="Fish.vote" key="ogtitle" />
-      <meta property="og:description" content="Autonomous proposals for UNI" key="ogdesc" />
-      <meta name="twitter:title" content="Fish.vote" />
-      <meta name="twitter:description" content="Autonomous proposals for UNI" />
-      <meta name="twitter:image" content={`${process.env.BASE_URL}/twitter-card.png`}></meta>
-
+      {/* Primary Meta Tags */}
       <title>Fish - Autonomous Proposals</title>
+      <meta name="title" content="Fish - Autonomous Proposals" />
+      <meta name="description" content="Autonomous proposals for UNI" />
+
+      {/* Open Graph + Facebook */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://fish.vote" />
+      <meta property="og:title" content="Fish - Autonomous Proposals" />
+      <meta property="og:description" content="Autonomous proposals for UNI" />
+      <meta property="og:image" content="https://fish.vote/twitter-card.png" />
+
+      {/* Twitter */}
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:url" content="https://fish.vote" />
+      <meta property="twitter:title" content="Fish - Autonomous Proposals" />
+      <meta
+        property="twitter:description"
+        content="Autonomous proposals for UNI"
+      />
+      <meta
+        property="twitter:image"
+        content="https://fish.vote/twitter-card.png"
+      />
+
+      {/* Favicon */}
+      <link rel="shortcut icon" href="/favicon.ico" />
+
       {/* Fonts (Inter) */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
