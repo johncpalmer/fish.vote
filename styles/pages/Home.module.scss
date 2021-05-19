@@ -1,12 +1,12 @@
 // No proposals div
 .home__empty {
   text-align: center;
-  max-width: 300px;
+  max-width: 320px;
   margin: 70px auto;
 
   h3 {
     font-weight: 500;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 30px;
     color: rgba(17, 17, 17, 0.8);
     margin: 0px;
@@ -15,14 +15,14 @@
   p {
     margin: 12px 0px;
     color: #5f6476;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 150%;
   }
 
   a {
     color: var(--color-pink);
-    font-size: 14px;
+    font-size: 15px;
     line-height: 19.5px;
     font-weight: 500;
   }
@@ -65,7 +65,7 @@
       font-weight: 500;
       font-size: 13px;
       line-height: 150%;
-      color: #000;
+      color: #24262d;
       opacity: 0.5;
       margin: 4px 0px 0px 0px;
     }
@@ -106,7 +106,7 @@
   }
 
   p {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 150%;
     color: #5f6476;
     font-weight: 400;
@@ -137,7 +137,23 @@
 // Responsiveness
 @media screen and (max-width: 500px) {
   .home__empty {
+    max-width: 300px;
     margin: 44px auto;
+
+    h3 {
+      font-size: 16px;
+    }
+  }
+
+  .home__description {
+    padding-top: 20px;
+
+    p {
+      span {
+        font-weight: 500;
+        color: var(--color-pink);
+      }
+    }
   }
 
   .home__proposal {
@@ -145,12 +161,13 @@
 
     div:nth-of-type(1) {
       h4 {
-        font-size: 13px;
+        font-size: 15px;
         line-height: 18px;
+        margin-bottom: 2px;
       }
 
       span {
-        font-size: 11px;
+        font-size: 13px;
         line-height: 16.5px;
         margin: 0px;
       }
@@ -170,6 +187,7 @@
         margin-top: 8px;
         font-size: 13px;
         line-height: 19px;
+        color: #24262d;
       }
     }
   }

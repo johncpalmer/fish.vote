@@ -90,7 +90,7 @@ export default function Home() {
         <div className={`card__padding ${styles.home__description}`}>
           <h5>What is fish.vote?</h5>
           <p>
-            Fish.vote is an app for creating{" "}
+            Fish.vote is an app where anyone can create{" "}
             <a
               href="https://medium.com/compound-finance/compound-autonomous-proposals-354e7a2ad6b7"
               target="_blank"
@@ -98,10 +98,9 @@ export default function Home() {
             >
               Crowd Proposals
             </a>{" "}
-            on UNI governance. Anyone can create a proposal containing multiple
-            smart contract actions. When a proposal gains 10 million delegate
+            on UNI governance. When a proposal gains 10 million delegate
             votes, it is converted to a formal UNI governance proposal that is
-            voted on by the UNI community. In order to highlight thoughful
+            voted on by the UNI community. In order to highlight thoughtful
             proposals, the fish.vote home page only displays proposals with 400
             delegate votes or more.
           </p>
