@@ -18,7 +18,7 @@ const UNI_CONSTANTS = {
     },
     crowd_proposal_factory: {
       name: "Proposal_Factory",
-      address: "",
+      address: "0xa363203A324A3f134348a0F2Ffa4f5487aDC3346",
     },
   },
   kovan: {
