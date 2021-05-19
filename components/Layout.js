@@ -80,7 +80,7 @@ function Meta() {
       <link rel="shortcut icon" href="/favicon.ico" />
 
       {/* Fortmatic verification */}
-      <meta name="fortmatic-site-verification" content="HYBSsjGuq8Qa0C07" />
+      <meta name="fortmatic-site-verification" content="YB1r9idOuJBbDdbk" />
 
       {/* Fonts (Inter) */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
