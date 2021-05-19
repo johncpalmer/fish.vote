@@ -1,5 +1,4 @@
 <img src="https://www.fish.vote/vectors/logo-mobile.svg" alt="Fish.Vote logo" width="50" />
-<br />
 
 # Fish Vote
 
