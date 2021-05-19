@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"; // Local state management
 import { createContainer } from "unstated-next"; // Global state provider
 
 // Onboarding wallet providers
-const walletProviders = [
+const wallets = [
   { walletName: "metamask" },
   {
     walletName: "walletConnect",
@@ -31,6 +31,7 @@ function useEth() {
   const unlock = async () => {
     // Enables wallet selection via BNC onboard
     await onboard.walletSelect();
+    await onboard.walletCheck();
   };
 
   // --> Lifecycle: on mount
@@ -46,7 +47,7 @@ function useEth() {
         heading: "Connect to fish.vote",
         description:
           "Please select a wallet to authenticate with fish.vote to use Uniswap crowd proposals.",
-        wallets: walletProviders,
+        wallets: wallets,
       },
       // Track subscriptions
       subscriptions: {
@@ -60,18 +61,25 @@ function useEth() {
         },
         // On wallet update
         wallet: async (wallet) => {
-          // Collect ethers provider
-          const provider = new ethers.providers.Web3Provider(wallet.provider);
+          if (wallet.provider) {
+            // Collect ethers provider
+            const provider = new ethers.providers.Web3Provider(wallet.provider);
 
-          // Collect address
-          const signer = await provider.getSigner();
-          const address = await signer.getAddress();
+            // Collect address
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
 
-          // Update provider and address
-          setProvider(provider);
-          setAddress(address);
+            // Update provider and address
+            setProvider(provider);
+            setAddress(address);
+          } else {
+            setProvider(null);
+            setAddress("");
+          }
         },
       },
+      // Force connect on walletCheck for WalletConnect
+      walletCheck: [{ checkName: "connect" }],
     });
 
     // Update onboard
