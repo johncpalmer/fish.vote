@@ -51,6 +51,22 @@
   }
 }
 
+// Styles specific to textarea input {
+.input__textarea {
+  position: relative;
+
+  span {
+    color: black;
+    opacity: 0.3;
+    font-size: 13px;
+    line-height: 16px;
+    position: absolute;
+    right: 20px;
+    bottom: 8px;
+    display: block;
+  }
+}
+
 // Styles for action input text
 .input__text_action {
   width: calc(100% - 136px);

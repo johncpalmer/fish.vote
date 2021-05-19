@@ -142,7 +142,7 @@ export default function Proposal({ address }) {
             title={data.title}
             lastRoute={{
               path: "/",
-              name: "Autonomous Proposals",
+              name: "Home",
             }}
             status={data.status}
             created={data.timestamp}

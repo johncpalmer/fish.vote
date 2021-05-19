@@ -63,7 +63,7 @@ export default function Home() {
           // Else if no proposals exist, show empty state
           <div className="card__padding">
             <div className={styles.home__empty}>
-              <h3>No Autonomous Proposals Found</h3>
+              <h3>No Crowd Proposals Found</h3>
             </div>
           </div>
         ) : (

@@ -30,6 +30,9 @@ export default function Layout({ children }) {
       <div className={styles.layout__content}>
         <div className={styles.layout__content_sizer}>{children}</div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
@@ -38,24 +41,30 @@ function Meta() {
   return (
     <Head>
       {/* Primary Meta Tags */}
-      <title>Fish - Autonomous Proposals</title>
-      <meta name="title" content="Fish - Autonomous Proposals" />
-      <meta name="description" content="Autonomous proposals for UNI" />
+      <title>Fish - Crowd Proposals</title>
+      <meta name="title" content="Fish - Crowd Proposals" />
+      <meta
+        name="description"
+        content="Crowd Proposals for Uniswap governance"
+      />
 
       {/* Open Graph + Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://fish.vote" />
-      <meta property="og:title" content="Fish - Autonomous Proposals" />
-      <meta property="og:description" content="Autonomous proposals for UNI" />
+      <meta property="og:title" content="Fish - Crowd Proposals" />
+      <meta
+        property="og:description"
+        content="Crowd proposals for Uniswap governance"
+      />
       <meta property="og:image" content="https://fish.vote/twitter-card.png" />
 
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://fish.vote" />
-      <meta property="twitter:title" content="Fish - Autonomous Proposals" />
+      <meta property="twitter:title" content="Fish - Crowd Proposals" />
       <meta
         property="twitter:description"
-        content="Autonomous proposals for UNI"
+        content="Crowd proposals for Uniswap governance"
       />
       <meta
         property="twitter:image"
@@ -157,6 +166,47 @@ function Header() {
             Connect wallet
           </button>
         )}
+      </div>
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <div className={styles.layout__footer}>
+      <div>
+        <ul>
+          <li>
+            <span>&copy; Fish 2021</span>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/uniswapgrants"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Uniswap Grants Wave 3
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li>
+            <a
+              href="https://twitter.com/fishvote_"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Twitter
+            </a>
+          </li>
+          <li>
+            <a href="mailto:contact@fish.vote?subject=Mail from Fish.Vote">
+              Contact
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   );

@@ -40,7 +40,9 @@ function TextAreaInputWithTopLabel({
   minRows,
 }) {
   return (
-    <div className={`${styles.input__general} ${styles.input__text}`}>
+    <div
+      className={`${styles.input__general} ${styles.input__text} ${styles.input__textarea}`}
+    >
       <label htmlFor={labelTitle}>{labelTitle}</label>
       <TextareaAutosize
         id={labelTitle}
@@ -49,6 +51,7 @@ function TextAreaInputWithTopLabel({
         onChange={(e) => onChangeHandler(e.target.value)}
         placeholder={placeholder}
       />
+      <span>markdown supported</span>
     </div>
   );
 }

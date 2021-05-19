@@ -116,7 +116,7 @@ export default function Create() {
         title="Create a new proposal"
         lastRoute={{
           path: "/",
-          name: "Autonomous Proposals",
+          name: "Home",
         }}
       />
 
@@ -184,7 +184,7 @@ export default function Create() {
         <Card title="Submit your proposal">
           <div className={styles.card__submit}>
             <p>
-              Submitting your autonomous proposal will require staking{" "}
+              Submitting your crowd proposal will require staking{" "}
               {UNI_NETWORK.minimum_uni} UNI tokens. You can terminate the
               proposal at any time to retrieve your tokens.
             </p>
@@ -228,7 +228,7 @@ export default function Create() {
         <h3>Head to Desktop</h3>
         <p>
           Proposal authoring is only supported on desktop for now. Head to a
-          nearby computer to create a new autonomous proposal.
+          nearby computer to create a new crowd proposal.
         </p>
         <Link href="/">
           <a>{"<- Back to proposals"}</a>
