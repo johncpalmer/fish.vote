@@ -69,6 +69,11 @@
   }
 }
 
+// Force top margin
+.card__shortMargin {
+  margin-top: 24px;
+}
+
 // Responsiveness
 @media screen and (max-width: 500px) {
   .card {

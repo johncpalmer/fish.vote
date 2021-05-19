@@ -121,6 +121,7 @@
 
 .layout__content {
   padding: 70px 28px 0px 28px;
+  min-height: calc(100vh - 120px);
 
   .layout__content_sizer {
     max-width: 800px;
@@ -128,6 +129,10 @@
     padding-top: 60px;
     padding-bottom: 60px;
   }
+}
+
+.layout__content_short {
+  padding-top: 24px;
 }
 
 .layout__footer {

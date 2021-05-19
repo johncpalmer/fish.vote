@@ -4,10 +4,10 @@ import styles from "@styles/components/Selector.module.scss"; // Component style
 // Custom select indicator
 const IndicatorsContainer = () => {
   return (
-    <divc className={styles.selector__indicator}>
+    <div className={styles.selector__indicator}>
       <span>Select</span>
       <img src="/vectors/chevron.svg" alt="Select chevron" />
-    </divc>
+    </div>
   );
 };
 

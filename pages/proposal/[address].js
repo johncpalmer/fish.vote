@@ -196,7 +196,7 @@ export default function Proposal({ address }) {
                   );
 
                   return (
-                    <div>
+                    <div key={i}>
                       {/* Action number */}
                       <span>{i + 1}</span>
 

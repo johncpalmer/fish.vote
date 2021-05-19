@@ -6,7 +6,7 @@ import NextNProgress from "nextjs-progressbar"; // Navigation progress bar
 import styles from "@styles/components/Layout.module.scss"; // Component styles
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"; // Address -> Avatar
 
-export default function Layout({ children }) {
+export default function Layout({ children, short }) {
   return (
     <div>
       {/* Navigation progress bar */}
@@ -27,7 +27,12 @@ export default function Layout({ children }) {
       <Header />
 
       {/* Page content */}
-      <div className={styles.layout__content}>
+      <div
+        className={`${styles.layout__content} ${
+          // Fix padding on forced short top margin pages
+          short ? styles.layout__content_short : ""
+        }`}
+      >
         <div className={styles.layout__content_sizer}>{children}</div>
       </div>
 
@@ -174,12 +179,15 @@ function Header() {
 function Footer() {
   return (
     <div className={styles.layout__footer}>
+      {/* Footer: Left */}
       <div>
         <ul>
           <li>
+            {/* Copyright */}
             <span>&copy; Fish 2021</span>
           </li>
           <li>
+            {/* UGP quicklink */}
             <a
               href="https://twitter.com/uniswapgrants"
               target="_blank"
@@ -190,9 +198,12 @@ function Footer() {
           </li>
         </ul>
       </div>
+
+      {/* Footer: Right */}
       <div>
         <ul>
           <li>
+            {/* Twitter quicklink */}
             <a
               href="https://twitter.com/fishvote_"
               target="_blank"
@@ -202,6 +213,7 @@ function Footer() {
             </a>
           </li>
           <li>
+            {/* Contact link */}
             <a href="mailto:contact@fish.vote?subject=Mail from Fish.Vote">
               Contact
             </a>

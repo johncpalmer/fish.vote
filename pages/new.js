@@ -7,7 +7,7 @@ import Loader from "react-loader-spinner"; // Loaders
 import governance from "@state/governance"; // Global state: governance
 import styles from "@styles/pages/Home.module.scss"; // Component styles
 
-export default function Home() {
+export default function New() {
   const router = useRouter(); // Setup router
 
   // Global state
@@ -58,21 +58,21 @@ export default function Home() {
   };
 
   /**
-   * Filter proposals with greater than or equal to 400 votes
+   * Filter proposals with less than 400 votes
    * @param {Object[]} proposals list
-   * @returns {Object[]} of proposals with >= 400 votes
+   * @returns {Object[]} of proposals with < 400 votes
    */
-  const filterTopProposals = (proposals) => {
-    // Filter array for object where votes value >= 400
-    return proposals.filter((proposal) => parseFloat(proposal.votes) >= 400);
+  const filterNewProposals = (proposals) => {
+    // Filter array for object where votes value < 400
+    return proposals.filter((proposal) => parseFloat(proposal.votes) < 400);
   };
 
   return (
     <Layout short>
-      {/* Page switch */}
+      {/* Path switch */}
       <center>
         <Switch
-          activePath={0}
+          activePath={1}
           firstPath={{ name: "Home", path: "/" }}
           secondPath={{ name: "New", path: "/new" }}
         />
@@ -81,22 +81,21 @@ export default function Home() {
       {/* About card */}
       <Card shortMargin>
         <div className={`card__padding ${styles.home__description}`}>
-          <h5>What is fish.vote?</h5>
+          <h5>Creating a proposal</h5>
           <p>
-            Fish.vote is an app for creating{" "}
+            On fish.vote, anyone can publish a{" "}
             <a
               href="https://medium.com/compound-finance/compound-autonomous-proposals-354e7a2ad6b7"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Crowd Proposals
-            </a>{" "}
-            on UNI governance. Anyone can create a proposal containing multiple
-            smart contract actions. When a proposal gains 10 million delegate
-            votes, it is converted to a formal UNI governance proposal that is
-            voted on by the UNI community. In order to highlight thoughful
-            proposals, the fish.vote home page only displays proposals with 400
-            delegate votes or more.
+              Crowd Proposal
+            </a>
+            . Then comes the most important part: gathering support from the
+            broader UNI community. We recommend sharing the link to your
+            proposal publicly and finding others who support you. Once your
+            proposal reaches 400 delegate votes, it will be displayed on the
+            fish.vote home page.
           </p>
           <p>
             Until today, only whales with 10 million votes could submit
@@ -107,7 +106,7 @@ export default function Home() {
 
       {/* Show all automated proposals */}
       <Card
-        title="Top proposals"
+        title="New proposals"
         action={{
           name: "Create Proposal",
           handler: routeToCreate,
@@ -120,26 +119,30 @@ export default function Home() {
               <Loader type="Oval" color="#e7347a" height={50} width={50} />
             </center>
           </div>
-        ) : // Check if no proposals with > 400 votes
-        filterTopProposals(proposals).length < 1 ? (
+        ) : // Check if no proposals with < 400 votes
+        filterNewProposals(proposals).length < 1 ? (
           // Else if no proposals exist, show empty state
           <div className="card__padding">
             <div className={styles.home__empty}>
               <h3>Nothing here yet</h3>
               <p>
-                The home page only shows proposals with 400 votes or more. Once
-                there are proposals with more support, they’ll appear here.
+                No one has created a crowd proposal on fish.vote yet. Check back
+                soon.
               </p>
 
-              {/* Link to new prpoosals page */}
-              <Link href="/new">
-                <a>{"Read new proposals ->"}</a>
-              </Link>
+              {/* Link to new twitter */}
+              <a
+                href="https://twitter.com/fishvote_"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {"Follow on Twitter ->"}
+              </a>
             </div>
           </div>
         ) : (
           <div className={styles.home__loading}>
-            {filterTopProposals(proposals).map((proposal, i) => {
+            {filterNewProposals(proposals).map((proposal, i) => {
               // Else if proposals exist
               return (
                 // Loop over each proposal and render a proposal link
