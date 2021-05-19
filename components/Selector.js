@@ -50,7 +50,7 @@ export default function Selector({
       ...provided,
       padding: 0,
       fontSize: 18,
-      fontWeight: 500,
+      fontWeight: 400,
       fontFamily: "Inter, sans-serif",
       color: "black",
     }),

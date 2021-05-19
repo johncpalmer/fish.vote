@@ -35,3 +35,10 @@ button {
   // Forcefully override all elements
   z-index: 99999;
 }
+
+// Responsive
+@media screen and (max-width: 500px) {
+  .card__padding {
+    padding: 20px 16px;
+  }
+}

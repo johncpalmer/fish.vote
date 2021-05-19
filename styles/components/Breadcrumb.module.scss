@@ -4,15 +4,14 @@
     font-size: 15px;
     line-height: 20px;
     font-weight: 600;
-    color: #111111;
-    opacity: 0.5;
+    color: #5f6476;
     will-change: opacity;
     transition: 0.1s ease-in-out;
     display: block;
   }
 
   .breadcrumb__last:hover {
-    opacity: 0.4;
+    opacity: 0.8;
   }
 
   // Current proposal status
