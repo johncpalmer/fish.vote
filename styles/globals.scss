@@ -25,6 +25,10 @@ button {
   font-family: "Inter", sans-serif;
 }
 
+button:focus {
+  outline: none;
+}
+
 // Card (generalized) styling
 .card__padding {
   padding: 24px 28px;

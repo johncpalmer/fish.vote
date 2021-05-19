@@ -52,7 +52,7 @@ export default function Selector({
       fontSize: 18,
       fontWeight: 400,
       fontFamily: "Inter, sans-serif",
-      color: "black",
+      color: "#24262d",
     }),
     // Popup menu styles
     menu: (provided) => ({
