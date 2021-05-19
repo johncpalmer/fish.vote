@@ -111,7 +111,7 @@ export default function Create() {
               placeholder="Enter the title of your proposal..."
             />
 
-            <Spacer height="32" />
+            <Spacer height="24" />
 
             {/* Description */}
             <TextAreaInputWithTopLabel
