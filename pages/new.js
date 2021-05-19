@@ -83,7 +83,7 @@ export default function New() {
         <div className={`card__padding ${styles.home__description}`}>
           <h5>Creating a proposal</h5>
           <p>
-            On fish.vote, anyone can publish a{" "}
+            On Fish.vote, anyone can publish a{" "}
             <a
               href="https://medium.com/compound-finance/compound-autonomous-proposals-354e7a2ad6b7"
               target="_blank"
@@ -91,11 +91,11 @@ export default function New() {
             >
               Crowd Proposal
             </a>
-            . Then comes the most important part: gathering support from the
+            . Then comes the most important work: gathering support from the
             broader UNI community. We recommend sharing the link to your
             proposal publicly and finding others who support you. Once your
             proposal reaches 400 delegate votes, it will be displayed on the
-            fish.vote home page.
+            Fish.vote home page.
           </p>
           <p>
             Until today, only whales with 10 million votes could submit
