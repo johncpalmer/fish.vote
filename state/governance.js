@@ -132,8 +132,13 @@ function useGovernance() {
         return ethers.utils.hexZeroPad(value, 32).substring(2);
       // Else if, type of value is uint256
       case "uint256":
-        // Convert string to BigNumber to HexString
-        const valueHex = ethers.BigNumber.from(value).toHexString();
+        // Format value with appropriate decimals
+        const valueDecimals = ethers.utils.parseUnits(
+          Number(value).toFixed(18),
+          18
+        );
+        // Convert BigNumber to HexString
+        const valueHex = valueDecimals.toHexString();
         // Pad HexString to 32 bytes and drop 0x
         return ethers.utils.hexZeroPad(valueHex, 32).substring(2);
     }

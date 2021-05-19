@@ -10,6 +10,7 @@ import { useRouter } from "next/router"; // Routing
 import Action from "@components/Action"; // Component: Action
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Layout from "@components/Layout"; // Component: Layout
+import Loader from "react-loader-spinner"; // Loaders
 import governance from "@state/governance"; // Global state: governance
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Create.module.scss"; // Page styles
@@ -158,12 +159,20 @@ export default function Create() {
         {/* Submission card */}
         <Card title="Submit your proposal">
           <div className={styles.card__submit}>
-            <p>
-              After your proposal is created, it will appear at the bottom of
-              the New page. If it receives more than 400 delegate votes, your
-              proposal will appear on the Home page. You can terminate your
-              proposal at any time after creation.
-            </p>
+            {buttonLoading ? (
+              // Render loading status if tx submitting
+              <center>
+                <Loader type="Oval" color="#e7347a" height={50} width={50} />
+              </center>
+            ) : (
+              // Else, render paragraph
+              <p>
+                After your proposal is created, it will appear at the bottom of
+                the New page. If it receives more than 400 delegate votes, your
+                proposal will appear on the Home page. You can terminate your
+                proposal at any time after creation.
+              </p>
+            )}
 
             {address ? (
               <button

@@ -66,7 +66,7 @@ const UNI_ACTIONS = [
         values: [
           {
             name: "amount",
-            placeholder: "value (18 decimals)",
+            placeholder: "value",
             type: "number",
           },
         ],
@@ -162,8 +162,11 @@ const generateActionBySignatureBytes = (signature, bytes) => {
         // Remove uint256 bytes from tempBytes
         tempBytes = tempBytes.substring(64, tempBytes.length);
 
+        // Parse uint256 as decimal value
+        const decimalUint256 = ethers.utils.formatUnits(parsedUint256, 18);
+
         // Updated parsedParams array
-        parsedParams.push(parsedUint256);
+        parsedParams.push(decimalUint256);
         break;
     }
   }

@@ -63,8 +63,15 @@ export default function New() {
    * @returns {Object[]} of proposals with < 400 votes
    */
   const filterNewProposals = (proposals) => {
-    // Filter array for object where votes value < 400
-    return proposals.filter((proposal) => parseFloat(proposal.votes) < 400);
+    // Filter array for object
+    const voteFilter = proposals.filter(
+      // Where votes value < 400
+      (proposal) => parseFloat(proposal.votes) < 400
+    );
+    // Return array sorted by votes
+    return voteFilter.sort((a, b) =>
+      parseFloat(a.votes) < parseFloat(b.votes) ? 1 : -1
+    );
   };
 
   return (
