@@ -57,10 +57,13 @@ function useEth() {
           if (address) {
             // Update address
             setAddress(address);
+          } else {
+            setAddress("");
           }
         },
         // On wallet update
         wallet: async (wallet) => {
+          // If wallet provider exists
           if (wallet.provider) {
             // Collect ethers provider
             const provider = new ethers.providers.Web3Provider(wallet.provider);
