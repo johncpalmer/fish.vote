@@ -46,8 +46,8 @@ function Meta() {
   return (
     <Head>
       {/* Primary Meta Tags */}
-      <title>Fish - Crowd Proposals</title>
-      <meta name="title" content="Fish - Crowd Proposals" />
+      <title>Fish.vote</title>
+      <meta name="title" content="Fish.vote" />
       <meta
         name="description"
         content="Crowd Proposals for Uniswap governance"
@@ -56,7 +56,7 @@ function Meta() {
       {/* Open Graph + Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://fish.vote" />
-      <meta property="og:title" content="Fish - Crowd Proposals" />
+      <meta property="og:title" content="Fish.vote" />
       <meta
         property="og:description"
         content="Crowd proposals for Uniswap governance"
@@ -66,7 +66,7 @@ function Meta() {
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://fish.vote" />
-      <meta property="twitter:title" content="Fish - Crowd Proposals" />
+      <meta property="twitter:title" content="Fish.vote" />
       <meta
         property="twitter:description"
         content="Crowd proposals for Uniswap governance"
