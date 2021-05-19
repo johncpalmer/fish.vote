@@ -169,6 +169,7 @@ function useGovernance() {
    * @param {String[]} values array of function param values to fill
    * @param {String} title of proposal
    * @param {String} description of proposal
+   * @returns {String} created proposal address
    */
   const createProposal = async (
     contracts,
@@ -209,11 +210,21 @@ function useGovernance() {
     );
 
     // Wait for 1 confirmation
-    await tx.wait(1);
+    const confirmed_tx = await tx.wait(1);
+
+    // Collect proposal address from tx event
+    const creation_event = confirmed_tx.events.filter(
+      (event) =>
+        // Check if event key exists and filter by creation events
+        event && "event" in event && event.event === "CrowdProposalCreated"
+    )[0];
+    const proposal_address = creation_event.args[0];
+
     // Regenerate proposals
     await collectProposals();
-    // Collect updated uni balance
-    await collectUniBalance();
+
+    // Return proposal address
+    return proposal_address;
   };
 
   /**

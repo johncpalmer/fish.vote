@@ -11,7 +11,6 @@ import Action from "@components/Action"; // Component: Action
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Layout from "@components/Layout"; // Component: Layout
 import governance from "@state/governance"; // Global state: governance
-import { UNI_NETWORK } from "@utils/constants"; // Constants
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import styles from "@styles/pages/Create.module.scss"; // Page styles
 
@@ -32,13 +31,8 @@ export default function Create() {
   const router = useRouter();
 
   // Global state
-  const {
-    uni,
-    infiniteAllowance,
-    createProposal,
-    inifiniteApproveFactory,
-  } = governance.useContainer();
   const { address, unlock } = eth.useContainer();
+  const { createProposal, inifiniteApproveFactory } = governance.useContainer();
 
   // Local state
   const [title, setTitle] = useState("");
@@ -71,7 +65,7 @@ export default function Create() {
 
     try {
       // Create proposal
-      await createProposal(
+      const proposal_address = await createProposal(
         actions.map((action) => action[0]),
         actions.map((action) => action[1]),
         actions.map((action) => action[2]),
@@ -79,30 +73,11 @@ export default function Create() {
         title,
         description
       );
-      // Assuming proposal creation is successful, route to new
-      router.push("/new");
+      // Assuming proposal creation is successful, route to new proposal
+      router.push(`/proposal/${proposal_address}`);
     } catch (error) {
       // Catch and log error
       console.log("Error when creating proposal: " + error);
-    }
-
-    // Toggle loading
-    setButtonLoading(false);
-  };
-
-  /**
-   * Approve factory contract with button loading toggle
-   */
-  const approveFactoryWithLoading = async () => {
-    // Toggle loading
-    setButtonLoading(true);
-
-    try {
-      // Approve factory to spend max(uin256) - 1 UNI
-      await inifiniteApproveFactory();
-    } catch (error) {
-      // Catch and log error
-      console.log("Error when approving factory contract: " + error);
     }
 
     // Toggle loading
@@ -184,37 +159,20 @@ export default function Create() {
         <Card title="Submit your proposal">
           <div className={styles.card__submit}>
             <p>
-              Submitting your crowd proposal will require staking{" "}
-              {UNI_NETWORK.minimum_uni} UNI tokens. You can terminate the
-              proposal at any time to retrieve your tokens.
+              After your proposal is created, it will appear at the bottom of
+              the New page. If it receives more than 400 delegate votes, your
+              proposal will appear on the Home page. You can terminate your
+              proposal at any time after creation.
             </p>
 
             {address ? (
-              uni >= UNI_NETWORK.minimum_uni ? (
-                infiniteAllowance ? (
-                  <button
-                    onClick={createProposalWithLoading}
-                    // Disable button when awaiting transaction submission
-                    disabled={buttonLoading}
-                  >
-                    {buttonLoading
-                      ? "Submitting Proposal..."
-                      : "Submit Proposal"}
-                  </button>
-                ) : (
-                  <button
-                    onClick={approveFactoryWithLoading}
-                    // Disable button when awaiting approval submission
-                    disabled={buttonLoading}
-                  >
-                    {buttonLoading
-                      ? "Approving Spend..."
-                      : "Approve Spending UNI"}
-                  </button>
-                )
-              ) : (
-                <button disabled={true}>Insufficient Balance</button>
-              )
+              <button
+                onClick={createProposalWithLoading}
+                // Disable button when awaiting transaction submission
+                disabled={buttonLoading}
+              >
+                {buttonLoading ? "Submitting Proposal..." : "Submit Proposal"}
+              </button>
             ) : (
               <button onClick={unlock}>Connect wallet</button>
             )}

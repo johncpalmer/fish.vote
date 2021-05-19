@@ -74,9 +74,8 @@ export default async (_, res) => {
   const events = (await proposalFactory.queryFilter(filter)).reverse();
 
   // For each event
-  const proposals = ( // Parse to appropriate return format
-    await Promise.all(events.map((event) => parseEvents(event)))
-  )
+  const proposals = // Parse to appropriate return format
+  (await Promise.all(events.map((event) => parseEvents(event))))
     // Filter out terminated proposals
     .filter((proposal) => proposal.status !== "Terminated");
 

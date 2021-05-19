@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 // Declare constants by network
 const UNI_CONSTANTS = {
   mainnet: {
-    minimum_uni: 100,
+    minimum_uni: 0,
     governer_alpha: {
       name: "Governer",
       address: "0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F",
@@ -22,7 +22,7 @@ const UNI_CONSTANTS = {
     },
   },
   kovan: {
-    minimum_uni: 0.5,
+    minimum_uni: 0,
     governer_alpha: {
       name: "Governer",
       address: "0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F",
@@ -37,7 +37,7 @@ const UNI_CONSTANTS = {
     },
     crowd_proposal_factory: {
       name: "Proposal_Factory",
-      address: "0x9a4920f5550772028493ed92ae2316aaF0b26cF4",
+      address: "0x8b00c3151dcc62213ea0f0a409103e18118acd85",
     },
   },
 };
