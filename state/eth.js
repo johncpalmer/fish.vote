@@ -1,84 +1,86 @@
 import { ethers } from "ethers"; // Ethers
-import Web3Modal from "web3modal"; // Web3Modal
+import Onboard from "bnc-onboard"; // BNC Onboard
 import { useState, useEffect } from "react"; // Local state management
 import { createContainer } from "unstated-next"; // Global state provider
-import WalletConnectProvider from "@walletconnect/web3-provider"; // WalletConnect
 
-// WalletConnect options for Web3Modal
-const providerOptions = {
-  // Change network based on environment variable
-  network:
-    process.env.NEXT_PUBLIC_UNIFY_MAINNET === "true" ? "mainnet" : "kovan",
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      // Inject Infura RPC ID
-      infuraId: process.env.NEXT_PUBLIC_INFURA_RPC,
-    },
+// Onboarding wallet providers
+const walletProviders = [
+  { walletName: "metamask" },
+  {
+    walletName: "walletConnect",
+    infuraKey: process.env.NEXT_PUBLIC_INFURA_RPC,
   },
-};
+  {
+    walletName: "fortmatic",
+    apiKey: process.env.NEXT_PUBLIC_FORTMATIC_KEY,
+  },
+  {
+    walletName: "portis",
+    apiKey: process.env.NEXT_PUBLIC_PORTIS_KEY,
+  },
+];
 
 function useEth() {
   const [address, setAddress] = useState(null); // User address
+  const [onboard, setOnboard] = useState(null); // Onboard provider
   const [provider, setProvider] = useState(null); // Ethers provider
-  const [web3Modal, setWeb3Modal] = useState(null); // Web3 modal
 
   /**
    * Unlock wallet, store ethers provider and address
    */
   const unlock = async () => {
-    // Initiate WalletConnect
-    const walletConnectProvider = await web3Modal.connect();
-    await walletConnectProvider.enable();
-
-    // Create new Ethers Web3Provider
-    const provider = new ethers.providers.Web3Provider(walletConnectProvider);
-    const signer = await provider.getSigner();
-
-    // Collect primary account
-    const address = await signer.getAddress();
-
-    // Store account, and web3 instance
-    setProvider(provider);
-    setAddress(address);
+    // Enables wallet selection via BNC onboard
+    await onboard.walletSelect();
   };
 
-  /**
-   * Lock wallet, remove ethers instance
-   */
-  const lock = async () => {
-    // If provider is present
-    if (provider && provider.provider && provider.provider.close) {
-      // Close provider
-      await provider.provider.close();
-    }
+  // --> Lifecycle: on mount
+  useEffect(async () => {
+    // Onboard provider
+    const onboard = Onboard({
+      // Ethereum network
+      networkId: process.env.NEXT_PUBLIC_UNIFY_MAINNET === "true" ? 1 : 42,
+      // Hide Blocknative branding
+      hideBranding: true,
+      // Setup custom wallets for selection
+      walletSelect: {
+        heading: "Connect to fish.vote",
+        description:
+          "Please select a wallet to authenticate with fish.vote to use Uniswap crowd proposals.",
+        wallets: walletProviders,
+      },
+      // Track subscriptions
+      subscriptions: {
+        // On address change
+        address: (address) => {
+          // If address exists
+          if (address) {
+            // Update address
+            setAddress(address);
+          }
+        },
+        // On wallet update
+        wallet: async (wallet) => {
+          // Collect ethers provider
+          const provider = new ethers.providers.Web3Provider(wallet.provider);
 
-    // Nullify signer instance
-    setProvider(null);
-    setAddress("");
-  };
+          // Collect address
+          const signer = await provider.getSigner();
+          const address = await signer.getAddress();
 
-  /**
-   * Setup Web3Modal on page load (requires window)
-   */
-  const initialSetupWeb3Modal = async () => {
-    // Create new web3Modal
-    const web3Modal = new Web3Modal({
-      cacheProvider: true,
-      providerOptions,
+          // Update provider and address
+          setProvider(provider);
+          setAddress(address);
+        },
+      },
     });
 
-    // Set web3Modal globally in context
-    setWeb3Modal(web3Modal);
-  };
-
-  // Setup eth provider on load
-  useEffect(initialSetupWeb3Modal, []);
+    // Update onboard
+    setOnboard(onboard);
+  }, []);
 
   return {
     provider,
     address,
-    lock,
     unlock,
   };
 }

@@ -79,6 +79,9 @@ function Meta() {
       {/* Favicon */}
       <link rel="shortcut icon" href="/favicon.ico" />
 
+      {/* Fortmatic verification */}
+      <meta name="fortmatic-site-verification" content="HYBSsjGuq8Qa0C07" />
+
       {/* Fonts (Inter) */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
@@ -93,7 +96,7 @@ function Header() {
   // Collect user balance
   const { uni } = governance.useContainer();
   // Collect auth status and functions
-  const { address, lock, unlock } = eth.useContainer();
+  const { address, unlock } = eth.useContainer();
 
   /**
    * Returns UNI balance for authenticated user
@@ -153,7 +156,7 @@ function Header() {
             </div>
 
             {/* Address + lock button */}
-            <button onClick={lock}>
+            <button onClick={unlock}>
               <span>
                 {address.substr(0, 6) +
                   "..." +

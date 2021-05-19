@@ -8,8 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@walletconnect/web3-provider": "^1.4.1",
     "axios": "^0.21.1",
+    "bnc-onboard": "^1.25.0",
     "dayjs": "^1.10.4",
     "ethers": "^5.1.4",
     "markdown-headings": "^2.0.0",
@@ -23,10 +23,6 @@
     "react-select": "^4.3.0",
     "react-textarea-autosize": "^8.3.2",
     "sass": "^1.32.12",
-    "unstated-next": "^1.1.0",
-    "web3modal": "^1.9.3"
-  },
-  "devDependencies": {
-    "@nomiclabs/hardhat-waffle": "^2.0.1"
+    "unstated-next": "^1.1.0"
   }
 }
