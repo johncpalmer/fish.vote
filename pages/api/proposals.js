@@ -73,10 +73,12 @@ export default async (_, res) => {
   const filter = proposalFactory.filters.CrowdProposalCreated();
   const events = (await proposalFactory.queryFilter(filter)).reverse();
 
-  // For each event, parse to appropriate return format
-  const proposals = await Promise.all(
-    events.map((event) => parseEvents(event))
-  );
+  // For each event
+  const proposals = ( // Parse to appropriate return format
+    await Promise.all(events.map((event) => parseEvents(event)))
+  )
+    // Filter out terminated proposals
+    .filter((proposal) => proposal.status !== "Terminated");
 
   // Send proposals
   res.send(proposals);
