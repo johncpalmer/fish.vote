@@ -49,7 +49,7 @@ export default function Selector({
     valueContainer: (provided) => ({
       ...provided,
       padding: 0,
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: 400,
       fontFamily: "Inter, sans-serif",
       color: "#24262d",

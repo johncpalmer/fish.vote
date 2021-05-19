@@ -79,8 +79,8 @@ export default function Create() {
         title,
         description
       );
-      // Assuming proposal creation is successful, route home
-      router.push("/");
+      // Assuming proposal creation is successful, route to new
+      router.push("/new");
     } catch (error) {
       // Catch and log error
       console.log("Error when creating proposal: " + error);
