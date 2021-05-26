@@ -143,7 +143,7 @@ export default function Proposal({ address }) {
   useEffect(fetchProposal, [proposals]);
 
   return (
-    <Layout>
+    <Layout proposal={true}>
       {!loading ? (
         // If page data has loaded
         <>

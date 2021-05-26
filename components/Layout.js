@@ -6,7 +6,7 @@ import NextNProgress from "nextjs-progressbar"; // Navigation progress bar
 import styles from "@styles/components/Layout.module.scss"; // Component styles
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"; // Address -> Avatar
 
-export default function Layout({ children, short }) {
+export default function Layout({ children, short, proposal }) {
   return (
     <div>
       {/* Navigation progress bar */}
@@ -21,7 +21,7 @@ export default function Layout({ children, short }) {
       />
 
       {/* Html head content */}
-      <Meta />
+      <Meta proposal={proposal} />
 
       {/* Header */}
       <Header />
@@ -42,11 +42,19 @@ export default function Layout({ children, short }) {
   );
 }
 
-function Meta() {
+function Meta({ proposal }) {
   return (
     <Head>
       {/* Primary Meta Tags */}
-      <title>Fish.vote</title>
+      {proposal ? null : (
+        // If not proposal page, add title
+        <>
+          <title>Fish.vote</title>
+          <meta property="og:title" content="Fish.vote" />
+          <meta property="twitter:title" content="Fish.vote" />
+        </>
+      )}
+
       <meta name="title" content="Fish.vote" />
       <meta
         name="description"
@@ -56,7 +64,7 @@ function Meta() {
       {/* Open Graph + Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://fish.vote" />
-      <meta property="og:title" content="Fish.vote" />
+
       <meta
         property="og:description"
         content="Crowd proposals for Uniswap governance"
@@ -66,7 +74,7 @@ function Meta() {
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://fish.vote" />
-      <meta property="twitter:title" content="Fish.vote" />
+
       <meta
         property="twitter:description"
         content="Crowd proposals for Uniswap governance"
