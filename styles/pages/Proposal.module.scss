@@ -79,7 +79,6 @@
 
   .card__details_content {
     padding: 24px 28px 36px 28px;
-    color: rgba(17, 17, 17, 0.8);
 
     p,
     span,
@@ -87,7 +86,7 @@
       line-height: 150%;
       font-size: 16px;
       font-weight: 400;
-      color: #24262d;
+      color: #5f6476;
     }
 
     br:nth-of-type(1),
@@ -108,7 +107,7 @@
       code {
         line-height: 150%;
         font-size: 16px;
-        color: #24262d;
+        color: #5f6476;
         font-weight: 400;
         font-family: "Inter", sans-serif;
         background-color: transparent;
@@ -158,13 +157,13 @@
         padding: 12px 16px;
 
         > span {
-          font-size: 13px;
-          line-height: 18.2px;
+          font-size: 15px;
+          line-height: 150%;
         }
 
         p {
-          font-size: 13px;
-          line-height: 18.2px;
+          font-size: 15px;
+          line-height: 150%;
         }
       }
     }
@@ -176,8 +175,7 @@
       span,
       li,
       code {
-        line-height: 19.5px;
-        font-size: 13px !important;
+        font-size: 15px !important;
       }
 
       ul {
