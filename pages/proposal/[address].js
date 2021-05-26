@@ -4,6 +4,7 @@ import {
 } from "@utils/constants"; // Parsing functions
 import eth from "@state/eth"; // Global state: eth
 import gfm from "remark-gfm"; // Markdown: GitHub formatting
+import Head from "next/head"; // SSR Meta
 import Card from "@components/Card"; // Component: Card
 import Layout from "@components/Layout"; // Component: Layout
 import { useRouter } from "next/router"; // Routing
@@ -146,6 +147,17 @@ export default function Proposal({ address }) {
       {!loading ? (
         // If page data has loaded
         <>
+          {/* Page custom meta */}
+          <Head>
+            {/* Update page title for proposals */}
+            <title>Fish.vote | {data.title}</title>
+            <meta property="og:title" content={`Fish.vote | ${data.title}`} />
+            <meta
+              property="twitter:title"
+              content={`Fish.vote | ${data.title}`}
+            />
+          </Head>
+
           {/* Page title breadcrumb */}
           <Breadcrumb
             title={data.title}
