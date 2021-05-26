@@ -18,6 +18,7 @@ function useGovernance() {
 
   // Governance state
   const [uni, setUni] = useState(null);
+  const [delegate, setDelegate] = useState(null);
   const [proposals, setProposals] = useState(null);
   const [loadingProposals, setLoadingProposals] = useState(true);
   const [infiniteAllowance, setInfiniteAllowance] = useState(null);
@@ -54,7 +55,7 @@ function useGovernance() {
   };
 
   /**
-   * Collect UNI balance and update in state
+   * Collect UNI balance and delegate and updates in state
    * @param {ethers.Contract} contract UNI token contract
    */
   const collectUniBalance = async (contract) => {
@@ -64,6 +65,11 @@ function useGovernance() {
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
     // Update balance in state
     setUni(balance);
+
+    // Collect delegate
+    const delegate = await contract.delegates(address);
+    // Update delegate in state
+    setDelegate(delegate);
   };
 
   /**
@@ -332,6 +338,7 @@ function useGovernance() {
 
   return {
     uni,
+    delegate,
     proposals,
     loadingProposals,
     createProposal,

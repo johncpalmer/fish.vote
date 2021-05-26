@@ -21,6 +21,7 @@ export default function Proposal({ address }) {
   // Global state
   const {
     uni,
+    delegate,
     proposals,
     collectProposalByContract,
     delegateToContract,
@@ -99,19 +100,26 @@ export default function Proposal({ address }) {
       if (authed) {
         // If UNI balance
         if (uni != 0) {
-          // If proposal does not have enough votes to be proposed
-          if (parseFloat(data.votes) < 10000000) {
-            // Enable delegating votes
-            actions.name = "Delegate Votes";
-            actions.handler = () => delegateWithLoading();
-            actions.loading = buttonLoading;
-            actions.loadingText = "Delegating Votes...";
+          // If you haven't already delegated
+          if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
+            // If proposal does not have enough votes to be proposed
+            if (parseFloat(data.votes) < 10000000) {
+              // Enable delegating votes
+              actions.name = "Delegate Votes";
+              actions.handler = () => delegateWithLoading();
+              actions.loading = buttonLoading;
+              actions.loadingText = "Delegating Votes...";
+            } else {
+              // Else, enable submitting proposal (Finalized state)
+              action.name = "Submit Proposal";
+              actions.handler = () => proposeWithLoading();
+              actions.loading = buttonLoading;
+              actions.loadingText = "Submitting Proposal...";
+            }
           } else {
-            // Else, enable submitting proposal (Finalized state)
-            action.name = "Submit Proposal";
-            actions.handler = () => proposeWithLoading();
-            actions.loading = buttonLoading;
-            actions.loadingText = "Submitting Proposal...";
+            actions.name = "Votes Delegated";
+            actions.handler = () => null;
+            actions.disabled = true;
           }
         } else {
           // Else, present insufficient balance
