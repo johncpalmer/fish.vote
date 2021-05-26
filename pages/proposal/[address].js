@@ -98,7 +98,7 @@ export default function Proposal({ address }) {
     // If terminated or finalized, show nothing
     if (data.status !== "Terminated" || data.status !== "Proposed") {
       // Check for authentication
-      if (authed) {
+      if (authed && delegate) {
         // If UNI balance
         if (uni != 0) {
           // If you haven't already delegated
