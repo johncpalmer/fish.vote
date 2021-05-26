@@ -7,9 +7,7 @@
     background-color: rgba(231, 52, 122, 0.2);
 
     > div {
-      width: 40px;
       height: 13px;
-      position: absolute;
       background-color: var(--color-pink);
       border-radius: 18px;
     }
@@ -87,8 +85,8 @@
     li {
       line-height: 150%;
       font-size: 16px;
-      color: #5f6476;
       font-weight: 400;
+      color: #24262d;
     }
 
     br:nth-of-type(1),
@@ -105,15 +103,20 @@
     }
 
     // FIXME: scrappy fix for Markdown rendering
-    code:first-of-type {
-      line-height: 150%;
-      font-size: 16px;
-      color: #5f6476;
-      font-weight: 400;
-      font-family: "Inter", sans-serif;
+    pre {
+      code {
+        line-height: 150%;
+        font-size: 16px;
+        color: #24262d;
+        font-weight: 400;
+        font-family: "Inter", sans-serif;
+        background-color: transparent;
+        padding: 0px;
+      }
     }
 
-    code:not(:first-of-type) {
+    code {
+      color: #24262d;
       background-color: rgb(245, 245, 245);
       padding: 2px;
       border-radius: 5px;
@@ -169,10 +172,15 @@
       padding: 16px;
 
       p,
-      span {
+      span,
+      li,
+      code {
         line-height: 19.5px;
-        font-size: 13px;
-        font-weight: 500;
+        font-size: 13px !important;
+      }
+
+      ul {
+        padding-left: 25px;
       }
     }
   }

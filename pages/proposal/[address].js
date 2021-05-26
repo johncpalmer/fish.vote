@@ -156,7 +156,20 @@ export default function Proposal({ address }) {
               {/* Render status bar based on vote count */}
               <div className={styles.card__progress_bar}>
                 <div
-                  style={{ width: `${parseFloat(data.votes) / 10000000}%` }}
+                  style={{
+                    width:
+                      // If number of votes > 0 && < 100k
+                      parseFloat(data.votes) > 0 &&
+                      parseFloat(data.votes) < 100000
+                        ? // Show 1%
+                          "1%"
+                        : // Else, show accurate value
+                          `${Math.max(
+                            parseFloat(data.votes) / 10000000,
+                            // Maximum fill: 100%
+                            100
+                          )}%`,
+                  }}
                 />
               </div>
 
