@@ -46,7 +46,15 @@ function Meta({ proposal }) {
   return (
     <Head>
       {/* Primary Meta Tags */}
-      <title>Fish.vote</title>
+      {proposal ? null : (
+        // If not a proposal page, inject title
+        <>
+          <title>Fish.vote</title>
+          <meta property="og:title" content="Fish.vote" />
+          <meta property="twitter:title" content="Fish.vote" />
+        </>
+      )}
+
       <meta name="title" content="Fish.vote" />
       <meta
         name="description"
@@ -56,7 +64,6 @@ function Meta({ proposal }) {
       {/* Open Graph + Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://fish.vote" />
-      <meta property="og:title" content="Fish.vote" />
       <meta
         property="og:description"
         content="Crowd proposals for Uniswap governance"
@@ -66,7 +73,6 @@ function Meta({ proposal }) {
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://fish.vote" />
-      <meta property="twitter:title" content="Fish.vote" />
       <meta
         property="twitter:description"
         content="Crowd proposals for Uniswap governance"

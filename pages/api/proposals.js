@@ -68,17 +68,26 @@ const parseEvents = async (event) => {
   };
 };
 
-export default async (_, res) => {
+/**
+ * Retrieves crowd proposal creations and returns active proposals
+ * @returns {Object[]} array of contracts
+ */
+export const collectProposals = async () => {
   // Filter for all CrowdProposalCreated events
   const filter = proposalFactory.filters.CrowdProposalCreated();
   const events = (await proposalFactory.queryFilter(filter)).reverse();
 
   // For each event
-  const proposals = // Parse to appropriate return format
-  (await Promise.all(events.map((event) => parseEvents(event))))
+  const proposals = ( // Parse to appropriate return format
+    await Promise.all(events.map((event) => parseEvents(event)))
+  )
     // Filter out terminated proposals
     .filter((proposal) => proposal.status !== "Terminated");
 
+  return proposals;
+};
+
+export default async (_, res) => {
   // Send proposals
-  res.send(proposals);
+  res.send(await collectProposals());
 };
