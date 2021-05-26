@@ -3,11 +3,12 @@ import {
   generateActionSignatureHTML,
 } from "@utils/constants"; // Parsing functions
 import eth from "@state/eth"; // Global state: eth
+import gfm from "remark-gfm"; // Markdown: GitHub formatting
 import Card from "@components/Card"; // Component: Card
-import Markdown from "markdown-to-jsx"; // Markdown rendering
 import Layout from "@components/Layout"; // Component: Layout
 import { useRouter } from "next/router"; // Routing
 import Loader from "react-loader-spinner"; // Loader
+import ReactMarkdown from "react-markdown"; // React Markdown
 import governance from "@state/governance"; // Global governance state
 import { useState, useEffect } from "react"; // React state management
 import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
@@ -163,7 +164,7 @@ export default function Proposal({ address }) {
               <div className={styles.card__delegated}>
                 <h4>Votes Delegated</h4>
                 <h1>
-                  <span>{data.votes}</span> / 10,000,000
+                  <span>{parseFloat(data.votes).toFixed(2)}</span> / 10,000,000
                 </h1>
               </div>
               <p>
@@ -221,13 +222,13 @@ export default function Proposal({ address }) {
               <div className={styles.card__details_content}>
                 {data.args[6].replace(`# ${data.title}`, "") !== "" ? (
                   // Render if markdown exists beyond header (thus, description)
-                  <Markdown>
+                  <ReactMarkdown remarkPlugins={[gfm]} linkTarget="_blank">
                     {data.args[6]
                       // Remove markdown for header
                       .replace(`# ${data.title}`, "")
                       // Filter out new lines for description seperator
-                      .replace(/\n/g, "<br>")}
-                  </Markdown>
+                      .replace(/\n/g, "\n")}
+                  </ReactMarkdown>
                 ) : (
                   // If no description:
                   <p>No description provided.</p>

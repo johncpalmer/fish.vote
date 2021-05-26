@@ -58,11 +58,11 @@
         color: rgba(20, 21, 24, 0.5);
         font-weight: 500;
         font-size: 20px;
-        line-height: 24px;
+        line-height: 28px;
       }
 
       p {
-        font-size: 20px;
+        font-size: 18px;
         line-height: 28px;
         color: #24262d;
         display: inline-block;
@@ -82,15 +82,13 @@
     padding: 24px 28px 36px 28px;
     color: rgba(17, 17, 17, 0.8);
 
-    p {
-      text-align: center;
-    }
-
     p,
-    span {
+    span,
+    li {
       line-height: 150%;
       font-size: 16px;
-      font-weight: 500;
+      color: #5f6476;
+      font-weight: 400;
     }
 
     br:nth-of-type(1),
@@ -99,7 +97,26 @@
     }
 
     a {
-      color: var(--color-pink);
+      text-decoration: underline;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    // FIXME: scrappy fix for Markdown rendering
+    code:first-of-type {
+      line-height: 150%;
+      font-size: 16px;
+      color: #5f6476;
+      font-weight: 400;
+      font-family: "Inter", sans-serif;
+    }
+
+    code:not(:first-of-type) {
+      background-color: rgb(245, 245, 245);
+      padding: 2px;
+      border-radius: 5px;
     }
   }
 }
