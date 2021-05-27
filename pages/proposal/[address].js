@@ -6,6 +6,7 @@ import eth from "@state/eth"; // Global state: eth
 import gfm from "remark-gfm"; // Markdown: GitHub formatting
 import Head from "next/head"; // SSR Meta
 import Card from "@components/Card"; // Component: Card
+import Modal from "@components/Modal"; // Component: Modal
 import Layout from "@components/Layout"; // Component: Layout
 import { useRouter } from "next/router"; // Routing
 import ReactMarkdown from "react-markdown"; // React Markdown
@@ -33,6 +34,7 @@ export default function Proposal({ address, defaultProposalData }) {
   // Local state
   const [data, setData] = useState(JSON.parse(defaultProposalData));
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   /**
    * Fetch proposal details
@@ -60,6 +62,8 @@ export default function Proposal({ address, defaultProposalData }) {
     try {
       // Call delegation with contract
       await delegateToContract(data.args[0]);
+      // Close modal if open
+      setModalOpen(false);
     } catch {
       // Log error
       console.log("Error when delegating to contract");
@@ -103,11 +107,9 @@ export default function Proposal({ address, defaultProposalData }) {
           if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
             // If proposal does not have enough votes to be proposed
             if (parseFloat(data.votes) < 10000000) {
-              // Enable delegating votes
+              // Enable delegating votes (open modal)
               actions.name = "Delegate Votes";
-              actions.handler = () => delegateWithLoading();
-              actions.loading = buttonLoading;
-              actions.loadingText = "Delegating Votes...";
+              actions.handler = () => setModalOpen(true);
             } else {
               // Else, enable submitting proposal (Finalized state)
               action.name = "Submit Proposal";
@@ -150,6 +152,35 @@ export default function Proposal({ address, defaultProposalData }) {
         <meta property="og:title" content={`Fish.vote | ${data.title}`} />
         <meta property="twitter:title" content={`Fish.vote | ${data.title}`} />
       </Head>
+
+      {/* Delegation modal (hidden when !modalOpen) */}
+      <Modal open={modalOpen} openHandler={setModalOpen}>
+        <div className={styles.card__delegate_modal}>
+          <h3>Confirm delegation</h3>
+          <p>
+            You are delegating your <span>{uni} Votes</span> to this proposal.
+            Don't worry, you'll retain all the votes that have been delegated to
+            you by other token holders. You can change your mind and delegate
+            votes back to yourself at any time on{" "}
+            <a
+              href="https://sybil.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              sybil.org
+            </a>
+            .
+          </p>
+
+          {/* Delegate votes button */}
+          <button
+            onClick={() => delegateWithLoading()}
+            disabled={buttonLoading}
+          >
+            {buttonLoading ? "Delegating votes..." : "Delegate votes"}
+          </button>
+        </div>
+      </Modal>
 
       {/* Page title breadcrumb */}
       <Breadcrumb

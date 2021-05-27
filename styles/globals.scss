@@ -40,6 +40,18 @@ button:focus {
   z-index: 99999;
 }
 
+// React-responsive-modal overrides
+.react-responsive-modal-overlay {
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.react-responsive-modal-modal {
+  border-radius: 12px;
+  max-width: 500px !important;
+  width: calc(100% - 40px);
+  padding: 24px !important;
+}
+
 // Responsive
 @media screen and (max-width: 500px) {
   .card__padding {
