@@ -91,11 +91,14 @@ function useGovernance() {
    * @param {String} contract address for CrowdProposal
    */
   const proposeContract = async (contract) => {
+    // Collect authenticated signer
+    const signer = await provider.getSigner();
+
     // Generate CrowdProposal contract object
     const proposalContract = new ethers.Contract(
       contract,
       CrowdProposalABI,
-      provider
+      signer
     );
 
     // Call vote function and wait for 1 confirmation
