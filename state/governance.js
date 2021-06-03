@@ -102,7 +102,7 @@ function useGovernance() {
     );
 
     // Call vote function and wait for 1 confirmation
-    const tx = await proposalContract.vote();
+    const tx = await proposalContract.propose();
     await tx.wait(1);
 
     // Recollect proposals with updated information

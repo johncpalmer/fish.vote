@@ -101,32 +101,34 @@ export default function Proposal({ address, defaultProposalData }) {
     if (data.status !== "Terminated" || data.status !== "Proposed") {
       // Check for authentication
       if (authed && delegate) {
-        // If UNI balance
-        if (uni != 0) {
-          // If you haven't already delegated
-          if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
-            // If proposal does not have enough votes to be proposed
-            if (parseFloat(data.votes) < 10000000) {
-              // Enable delegating votes (open modal)
-              actions.name = "Delegate Votes";
-              actions.handler = () => setModalOpen(true);
+        if (parseFloat(data.votes) >= 10000000) {
+          // Enable submitting proposal (Finalized state)
+          actions.name = "Submit Proposal";
+          actions.handler = () => proposeWithLoading();
+          actions.loading = buttonLoading;
+          actions.loadingText = "Submitting Proposal...";
+        } else {
+          // If UNI balance
+          if (uni != 0) {
+            // If you haven't already delegated
+            if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
+              // If proposal does not have enough votes to be proposed
+              if (parseFloat(data.votes) < 10000000) {
+                // Enable delegating votes (open modal)
+                actions.name = "Delegate Votes";
+                actions.handler = () => setModalOpen(true);
+              }
             } else {
-              // Else, enable submitting proposal (Finalized state)
-              action.name = "Submit Proposal";
-              actions.handler = () => proposeWithLoading();
-              actions.loading = buttonLoading;
-              actions.loadingText = "Submitting Proposal...";
+              actions.name = "Votes Delegated";
+              actions.handler = () => null;
+              actions.disabled = true;
             }
           } else {
-            actions.name = "Votes Delegated";
+            // Else, present insufficient balance
+            actions.name = "Insufficient Balance";
             actions.handler = () => null;
             actions.disabled = true;
           }
-        } else {
-          // Else, present insufficient balance
-          actions.name = "Insufficient Balance";
-          actions.handler = () => null;
-          actions.disabled = true;
         }
       } else {
         // If not authenticated, prompt for connecting
