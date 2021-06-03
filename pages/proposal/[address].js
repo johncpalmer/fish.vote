@@ -207,8 +207,8 @@ export default function Proposal({ address, defaultProposalData }) {
                     ? // Show 1%
                       "1%"
                     : // Else, show accurate value
-                      `${Math.max(
-                        parseFloat(data.votes) / 10000000,
+                      `${Math.min(
+                        (parseFloat(data.votes) / 10000000) * 100,
                         // Maximum fill: 100%
                         100
                       )}%`,
