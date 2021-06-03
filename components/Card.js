@@ -12,6 +12,7 @@ export default function Card({
     disabled = false,
     loading = false,
     loadingText = "",
+    customColor = null,
   } = {},
   // Child content to inject
   children,
@@ -37,7 +38,18 @@ export default function Card({
           <div className={styles.card__top_action}>
             {subtext ? <h3>{subtext}</h3> : null}
             {name && handler ? (
-              <button onClick={handler} disabled={disabled || loading}>
+              <button
+                onClick={handler}
+                disabled={disabled || loading}
+                style={
+                  // If custom color, change background
+                  customColor
+                    ? {
+                        backgroundColor: customColor,
+                      }
+                    : null
+                }
+              >
                 {!loading ? name : loadingText}
               </button>
             ) : null}

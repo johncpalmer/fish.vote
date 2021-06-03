@@ -9,7 +9,6 @@
 
     > div {
       height: 13px;
-      background-color: var(--color-pink);
       border-radius: 18px;
     }
   }
@@ -32,10 +31,6 @@
       color: rgba(0, 0, 0, 0.3);
       font-size: 32px;
       line-height: 39px;
-
-      span {
-        color: var(--color-pink);
-      }
     }
   }
 

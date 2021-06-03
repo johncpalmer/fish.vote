@@ -98,7 +98,7 @@ export default function Proposal({ address, defaultProposalData }) {
     let actions = {};
 
     // If terminated or finalized, show nothing
-    if (data.status !== "Terminated" || data.status !== "Proposed") {
+    if (data.status !== "Terminated" && data.status !== "Proposed") {
       // Check for authentication
       if (authed && delegate) {
         if (parseFloat(data.votes) >= 10000000) {
@@ -135,10 +135,25 @@ export default function Proposal({ address, defaultProposalData }) {
         actions.name = "Connect wallet";
         actions.handler = () => unlock();
       }
+      // Else if proposal has already been proposed
+    } else if (data.status === "Proposed") {
+      // Update to proposed button
+      actions.name = "Proposal Submitted";
+      actions.handler = () => null;
+      actions.disabled = true;
+      actions.customColor = "#4DB858";
     }
 
     // Return buttons object
     return actions;
+  };
+
+  /**
+   * Returns (pink || green) depending on status of proposal
+   * @returns {String} color
+   */
+  const getColorByStatus = () => {
+    return data.status === "Proposed" ? "#4DB858" : "var(--color-pink)";
   };
 
   // Fetch proposal on page load (and proposals array change)
@@ -214,6 +229,7 @@ export default function Proposal({ address, defaultProposalData }) {
                         // Maximum fill: 100%
                         100
                       )}%`,
+                backgroundColor: getColorByStatus(),
               }}
             />
           </div>
@@ -222,7 +238,7 @@ export default function Proposal({ address, defaultProposalData }) {
           <div className={styles.card__delegated}>
             <h4>Votes Delegated</h4>
             <h1>
-              <span>
+              <span style={{ color: getColorByStatus() }}>
                 {parseFloat(data.votes).toLocaleString("us-en", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
