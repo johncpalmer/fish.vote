@@ -220,7 +220,13 @@ export default function Proposal({ address, defaultProposalData }) {
           <div className={styles.card__delegated}>
             <h4>Votes Delegated</h4>
             <h1>
-              <span>{parseFloat(data.votes).toFixed(2)}</span> / 10,000,000
+              <span>
+                {parseFloat(data.votes).toLocaleString("us-en", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>{" "}
+              / 10,000,000
             </h1>
           </div>
           <p>
