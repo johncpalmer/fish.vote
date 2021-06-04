@@ -180,9 +180,13 @@ function Header() {
             {/* Address + lock button */}
             <button onClick={unlock}>
               <span>
-                {address.substr(0, 6) +
-                  "..." +
-                  address.slice(address.length - 4)}
+                {address.startsWith("0x")
+                  ? // If ETH address, render truncated address
+                    address.substr(0, 6) +
+                    "..." +
+                    address.slice(address.length - 4)
+                  : // Else, render ENS name
+                    address}
               </span>
               <Jazzicon diameter={16} seed={jsNumberForAddress(address)} />
             </button>

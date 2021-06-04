@@ -51,16 +51,6 @@ function useEth() {
       },
       // Track subscriptions
       subscriptions: {
-        // On address change
-        address: (address) => {
-          // If address exists
-          if (address) {
-            // Update address
-            setAddress(address);
-          } else {
-            setAddress("");
-          }
-        },
         // On wallet update
         wallet: async (wallet) => {
           // If wallet provider exists
@@ -72,9 +62,12 @@ function useEth() {
             const signer = await provider.getSigner();
             const address = await signer.getAddress();
 
+            // Collect ENS name
+            const ensName = await provider.lookupAddress(address);
+
             // Update provider and address
             setProvider(provider);
-            setAddress(address);
+            setAddress(ensName ? ensName : address);
           } else {
             setProvider(null);
             setAddress("");
