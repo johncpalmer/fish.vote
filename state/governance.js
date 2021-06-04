@@ -133,10 +133,15 @@ function useGovernance() {
    * @param {String} value matching to solidity type
    * @returns {String} emulating ethers.Bytes
    */
-  const generateBytesByType = (type, value) => {
+  const generateBytesByType = async (type, value) => {
     switch (type) {
       // If type of value is address:
       case "address":
+        // If address is ENS name
+        if (!value.startsWith("0x")) {
+          value = await provider.resolveName(value);
+        }
+
         // Pad address for 20 bytes and drop 0x
         return ethers.utils.hexZeroPad(value, 32).substring(2);
       // Else if, type of value is uint256
@@ -159,15 +164,18 @@ function useGovernance() {
    * @param {String[]} values of function params
    * @returns {String} emulating ethers.Bytes
    */
-  const generateBytes = (signature, values) => {
+  const generateBytes = async (signature, values) => {
     // Collect types array from signature
     const typesString = signature.split("(").pop().split(")")[0];
     const typesArray = typesString.split(",");
 
     // Map over each type
-    const bytes = typesArray.map((type, i) =>
-      // Generate bytes by type
-      generateBytesByType(type, values[i])
+    const bytes = await Promise.all(
+      typesArray.map(
+        async (type, i) =>
+          // Generate bytes by type
+          await generateBytesByType(type, values[i])
+      )
     );
 
     // Return bytes
@@ -204,9 +212,12 @@ function useGovernance() {
       typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
     );
     // Convert stringified calldata to bytes
-    const calldataBytes = functions.map((func, i) =>
-      // By generating bytes for each individual function signature and param values
-      generateBytes(func, calldataRaw[i])
+    const calldataBytes = await Promise.all(
+      functions.map(
+        async (func, i) =>
+          // By generating bytes for each individual function signature and param values
+          await generateBytes(func, calldataRaw[i])
+      )
     );
 
     // Create a new proposal
