@@ -219,8 +219,13 @@ export default function Proposal({ address, defaultProposalData }) {
             <div
               style={{
                 width:
-                  // If number of votes > 0 && < 100k
-                  parseFloat(data.votes) >= 0 && parseFloat(data.votes) < 100000
+                  // If proposal is proposed
+                  data.status === "Proposed"
+                    ? // Force 100% bar
+                      "100"
+                    : // If number of votes > 0 && < 100k
+                    parseFloat(data.votes) >= 0 &&
+                      parseFloat(data.votes) < 100000
                     ? // Show 1%
                       "1%"
                     : // Else, show accurate value
@@ -239,10 +244,14 @@ export default function Proposal({ address, defaultProposalData }) {
             <h4>Votes Delegated</h4>
             <h1>
               <span style={{ color: getColorByStatus() }}>
-                {parseFloat(data.votes).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {data.status === "Proposed"
+                  ? // If proposal proposed, show 10M+
+                    "10,000,000+"
+                  : // Else, show vote count
+                    parseFloat(data.votes).toLocaleString("us-en", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </span>{" "}
               / 10,000,000
             </h1>

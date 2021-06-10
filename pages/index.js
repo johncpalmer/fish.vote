@@ -98,11 +98,11 @@ export default function Home() {
             >
               Crowd Proposals
             </a>{" "}
-            on UNI governance. When a proposal gains 10 million delegate
-            votes, it is converted to a formal UNI governance proposal that is
-            voted on by the UNI community. In order to highlight thoughtful
-            proposals, the fish.vote home page only displays proposals with 400
-            delegate votes or more.
+            on UNI governance. When a proposal gains 10 million delegate votes,
+            it is converted to a formal UNI governance proposal that is voted on
+            by the UNI community. In order to highlight thoughtful proposals,
+            the fish.vote home page only displays proposals with 400 delegate
+            votes or more.
           </p>
           <p>
             Until today, only whales with 10 million votes could submit
@@ -154,7 +154,11 @@ export default function Home() {
                     {/* Proposal title + vote count */}
                     <div>
                       <h4>{proposal.title}</h4>
-                      <span>{formatVoteCount(parseFloat(proposal.votes))}</span>
+                      <span>
+                        {proposal.status === "Proposed"
+                          ? "10,000,000+"
+                          : formatVoteCount(parseFloat(proposal.votes))}
+                      </span>
                     </div>
 
                     {/* Proposal current status */}
