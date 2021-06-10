@@ -156,7 +156,7 @@ export default function Home() {
                       <h4>{proposal.title}</h4>
                       <span>
                         {proposal.status === "Proposed"
-                          ? "10,000,000+"
+                          ? "10,000,000+ votes"
                           : formatVoteCount(parseFloat(proposal.votes))}
                       </span>
                     </div>
