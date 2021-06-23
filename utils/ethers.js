@@ -23,6 +23,13 @@ const proposalFactory = new ethers.Contract(
   signer
 );
 
+// Setup remnant proposal factory contract
+const oldProposalFactory = new ethers.Contract(
+  UNI_NETWORK.old_crowd_proposal_factory.address,
+  CrowdProposalFactoryABI,
+  signer
+);
+
 // Setup UNI governance token contract
 const contractUNI = new ethers.Contract(
   UNI_NETWORK.uni_governance_token.address,
@@ -41,4 +48,11 @@ const getProposalContract = (address) => {
 };
 
 // Export providers
-export { provider, signer, contractUNI, proposalFactory, getProposalContract };
+export {
+  provider,
+  signer,
+  contractUNI,
+  proposalFactory,
+  oldProposalFactory,
+  getProposalContract,
+};

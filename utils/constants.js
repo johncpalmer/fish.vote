@@ -6,7 +6,7 @@ const UNI_CONSTANTS = {
     minimum_uni: 0,
     governer_alpha: {
       name: "Governer",
-      address: "0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F",
+      address: "0xC4e172459f1E7939D522503B81AFAaC1014CE6F6",
     },
     uni_governance_token: {
       name: "UNI",
@@ -17,6 +17,10 @@ const UNI_CONSTANTS = {
       address: "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
     },
     crowd_proposal_factory: {
+      name: "Proposal_Factory",
+      address: "0x79b328d65a06e89012d177f1b45760a76bfeee08",
+    },
+    old_crowd_proposal_factory: {
       name: "Proposal_Factory",
       address: "0xa363203A324A3f134348a0F2Ffa4f5487aDC3346",
     },
@@ -36,6 +40,10 @@ const UNI_CONSTANTS = {
       address: "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
     },
     crowd_proposal_factory: {
+      name: "Proposal_Factory",
+      address: "0xF78a80fC75260F23d4D2494599a73BDd38d54a32",
+    },
+    old_crowd_proposal_factory: {
       name: "Proposal_Factory",
       address: "0x8b00c3151dcc62213ea0f0a409103e18118acd85",
     },

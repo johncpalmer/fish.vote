@@ -2,6 +2,7 @@ import {
   provider,
   contractUNI,
   proposalFactory,
+  oldProposalFactory,
   getProposalContract,
 } from "@utils/ethers"; // Ethers imports
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
@@ -78,13 +79,24 @@ export const collectProposals = async () => {
   const events = (await proposalFactory.queryFilter(filter)).reverse();
 
   // For each event
-  const proposals = ( // Parse to appropriate return format
-    await Promise.all(events.map((event) => parseEvents(event)))
-  )
+  const proposals = // Parse to appropriate return format
+  (await Promise.all(events.map((event) => parseEvents(event))))
     // Filter out terminated proposals
     .filter((proposal) => proposal.status !== "Terminated");
 
-  return proposals;
+  // Filter for all remnant events
+  const remnantFilter = oldProposalFactory.filters.CrowdProposalCreated();
+  const remnantEvents = (
+    await oldProposalFactory.queryFilter(remnantFilter)
+  ).reverse();
+
+  // For each event
+  const oldProposals = // Parse to appropriate return format
+  (await Promise.all(remnantEvents.map((event) => parseEvents(event))))
+    // Filter out terminated proposals
+    .filter((proposal) => proposal.status !== "Terminated");
+
+  return [...proposals, ...oldProposals];
 };
 
 export default async (_, res) => {
