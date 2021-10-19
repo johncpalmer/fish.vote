@@ -1,7 +1,7 @@
 import Spacer from "@components/Spacer"; // Component: Spacer
 import Selector from "@components/Selector"; // Component: Selector
 import { useEffect, useState } from "react"; // Local state management
-import { UNI_ACTIONS } from "@utils/constants"; // Constants
+import { VEX_ACTIONS } from "@utils/constants"; // Constants
 import styles from "@styles/components/Action.module.scss"; // Component styles
 import { ActionInputWithSideLabel } from "@components/Inputs"; // Components: Inputs
 
@@ -34,7 +34,7 @@ export default function Action({ onChangeHandler, index }) {
   const updateTargetsAndValues = () => {
     // Collect function
     const funcOptions =
-      UNI_ACTIONS[contract.value.key].functions[func.value.key];
+      VEX_ACTIONS[contract.value.key].functions[func.value.key];
 
     // Prefill arrays based on function params
     setTargets(new Array(funcOptions.targets.length).fill(""));
@@ -111,7 +111,7 @@ export default function Action({ onChangeHandler, index }) {
         onChangeHandler={setContract}
         placeholder="Select contract..."
         // Filter all actions for contracts
-        options={UNI_ACTIONS.map((action, i) => ({
+        options={VEX_ACTIONS.map((action, i) => ({
           value: { address: action.address, key: i },
           label: action.contract,
         }))}
@@ -127,7 +127,7 @@ export default function Action({ onChangeHandler, index }) {
             onChangeHandler={setFunc}
             placeholder={`Select ${contract.label} function...`}
             // Filter all actions, by selected contract, for functions
-            options={UNI_ACTIONS[contract.value.key].functions.map(
+            options={VEX_ACTIONS[contract.value.key].functions.map(
               (func, i) => ({
                 value: { signature: func.signature, key: i },
                 label: func.name,
@@ -141,7 +141,7 @@ export default function Action({ onChangeHandler, index }) {
       {contract && func ? (
         // If both contract and function selected, show inputs for targets
         <>
-          {UNI_ACTIONS[contract.value.key].functions[
+          {VEX_ACTIONS[contract.value.key].functions[
             func.value.key
             // Filter for all targets under contract + function
           ].targets.map((target, i) => {
@@ -161,7 +161,7 @@ export default function Action({ onChangeHandler, index }) {
             );
           })}
 
-          {UNI_ACTIONS[contract.value.key].functions[func.value.key].values.map(
+          {VEX_ACTIONS[contract.value.key].functions[func.value.key].values.map(
             // Filter for all values under contract + function
             (value, i) => {
               return (

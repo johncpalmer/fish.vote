@@ -1,23 +1,22 @@
 import axios from "axios"; // Requests
-import eth from "@state/eth"; // Chain state container
+import vechain from "@state/vechain"; // Vechain state container
 import { ethers } from "ethers"; // Ethers
-import UNIABI from "@utils/abi/uni"; // ABI: UNI Governance Token
+import VEXABI from "@utils/abi/vex"; // ABI: VEX Governance Token
+import { find } from 'lodash';
 import { useState, useEffect } from "react"; // Local state management
-import { UNI_NETWORK } from "@utils/constants"; // Constants
+import { VEX_NETWORK } from "@utils/constants"; // Constants
 import { createContainer } from "unstated-next"; // Global state provider
-import CrowdProposalABI from "@utils/abi/CrowdProposal"; // ABI: CrowdProposal
-import CrowdProposalFactoryABI from "@utils/abi/CrowdProposalFactory"; // ABI: CrowdProposalFactory
 
 function useGovernance() {
   // Global state
-  const { address, provider } = eth.useContainer();
+  const { address, provider } = vechain.useContainer();
 
   // Contract state
-  const [uniContract, setUniContract] = useState(null);
+  const [vexContract, setVexContract] = useState(null);
   const [proposalFactory, setProposalFactory] = useState(null);
 
   // Governance state
-  const [uni, setUni] = useState(null);
+  const [vex, setVex] = useState(null);
   const [delegate, setDelegate] = useState(null);
   const [proposals, setProposals] = useState(null);
   const [loadingProposals, setLoadingProposals] = useState(true);
@@ -27,49 +26,44 @@ function useGovernance() {
    * Collect user details
    */
   const collectUser = async () => {
-    // Collect signer from Ethers
-    const signer = await provider.getSigner();
-
-    // Setup UNI governance token contract
-    const contractUNI = new ethers.Contract(
-      UNI_NETWORK.uni_governance_token.address,
-      UNIABI,
-      signer
-    );
+    // Setup VEX governance token contract
+    const contractVEX = provider.thor.account(VEX_NETWORK.vex_governance_token.address);
 
     // Setup CrowdProposalFactory contract
-    const proposalFactory = new ethers.Contract(
-      UNI_NETWORK.crowd_proposal_factory.address,
-      CrowdProposalFactoryABI,
-      signer
-    );
+    // const proposalFactory = new ethers.Contract(
+    //   VEX_NETWORK.crowd_proposal_factory.address,
+    //   CrowdProposalFactoryABI,
+    //   signer
+    // );
 
     // Collect balance
-    await collectUniBalance(contractUNI);
-    // Collect allowance
-    await collectInfiniteAllowance(contractUNI);
+    await collectVexBalance(contractVEX);
 
     // Update contracts in global state
-    setUniContract(contractUNI);
-    setProposalFactory(proposalFactory);
+    setVexContract(contractVEX);
+    // setProposalFactory(proposalFactory);
   };
 
   /**
-   * Collect UNI balance and delegate and updates in state
-   * @param {ethers.Contract} contract UNI token contract
+   * Collect VEX balance and delegate and updates in state
+   * @param {ethers.Contract} contract VEX token contract
    */
-  const collectUniBalance = async (contract) => {
+  const collectVexBalance = async (contract) => {
+
+    const balanceOfABI = find(VEXABI, { name: "balanceOf" });
+    const method = contract.method(balanceOfABI);
     // Collect raw balance
-    const balanceRaw = await contract.balanceOf(address);
+    const balanceRaw = (await method.call(address)).data;
+
     // Format balance to readable format
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
     // Update balance in state
-    setUni(balance);
+    setVex(balance);
 
     // Collect delegate
-    const delegate = await contract.delegates(address);
+    // const delegate = await contract.delegates(address);
     // Update delegate in state
-    setDelegate(delegate);
+    // setDelegate(delegate);
   };
 
   /**
@@ -78,7 +72,7 @@ function useGovernance() {
    */
   const delegateToContract = async (contract) => {
     // Delegate to contract and wait for 1 confirmation
-    const tx = await uniContract.delegate(contract);
+    const tx = await vexContract.delegate(contract);
     await tx.wait(1);
 
     // Recollect proposals with updated information
@@ -90,42 +84,26 @@ function useGovernance() {
    * Proposes a contract with sufficient votes
    * @param {String} contract address for CrowdProposal
    */
-  const proposeContract = async (contract) => {
-    // Collect authenticated signer
-    const signer = await provider.getSigner();
+  // const proposeContract = async (contract) => {
+  //   // Collect authenticated signer
+  //   const signer = await provider.getSigner();
 
-    // Generate CrowdProposal contract object
-    const proposalContract = new ethers.Contract(
-      contract,
-      CrowdProposalABI,
-      signer
-    );
+  //   // Generate CrowdProposal contract object
+  //   const proposalContract = new ethers.Contract(
+  //     contract,
+  //     CrowdProposalABI,
+  //     signer
+  //   );
 
-    // Call vote function and wait for 1 confirmation
-    const tx = await proposalContract.propose();
-    await tx.wait(1);
+  //   // Call vote function and wait for 1 confirmation
+  //   const tx = await proposalContract.propose();
+  //   await tx.wait(1);
 
-    // Recollect proposals with updated information
-    await collectProposals();
-    return;
-  };
+  //   // Recollect proposals with updated information
+  //   await collectProposals();
+  //   return;
+  // };
 
-  /**
-   * Collect if allowance is is infinite or not for token factory and update in state
-   * @param {ethers.Contract} contract Token Factory contract
-   */
-  const collectInfiniteAllowance = async (contract) => {
-    // Collect raw allowance
-    const allowanceRaw = await contract.allowance(
-      address,
-      UNI_NETWORK.crowd_proposal_factory.address
-    );
-
-    // Check if allowance is infinite (greater than UNI token supply of 1e9 UNI)
-    const inifiniteApproved = allowanceRaw.gt(1e9);
-    // Update inifinite allowance status in state
-    setInfiniteAllowance(inifiniteApproved);
-  };
 
   /**
    * Generates padded bytes based on type and value
@@ -193,72 +171,72 @@ function useGovernance() {
    * @param {String} description of proposal
    * @returns {String} created proposal address
    */
-  const createProposal = async (
-    contracts,
-    functions,
-    targets,
-    values,
-    title,
-    description
-  ) => {
-    // Generate post markdown
-    const postMarkdown = `# ${title}
+  // const createProposal = async (
+  //   contracts,
+  //   functions,
+  //   targets,
+  //   values,
+  //   title,
+  //   description
+  // ) => {
+  //   // Generate post markdown
+  //   const postMarkdown = `# ${title}
     
-    ${description}`;
+  //   ${description}`;
 
-    // Generate raw calldata
-    const calldataRaw = targets.map((target, i) =>
-      // By zipping target and values arrays if they exist
-      typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
-    );
-    // Convert stringified calldata to bytes
-    const calldataBytes = await Promise.all(
-      functions.map(
-        async (func, i) =>
-          // By generating bytes for each individual function signature and param values
-          await generateBytes(func, calldataRaw[i])
-      )
-    );
+  //   // Generate raw calldata
+  //   const calldataRaw = targets.map((target, i) =>
+  //     // By zipping target and values arrays if they exist
+  //     typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
+  //   );
+  //   // Convert stringified calldata to bytes
+  //   const calldataBytes = await Promise.all(
+  //     functions.map(
+  //       async (func, i) =>
+  //         // By generating bytes for each individual function signature and param values
+  //         await generateBytes(func, calldataRaw[i])
+  //     )
+  //   );
 
-    // Create a new proposal
-    const tx = await proposalFactory.createCrowdProposal(
-      // List of contracts
-      contracts,
-      // Send 0 value from contract
-      new Array(contracts.length).fill("0"),
-      // Function signatures
-      functions,
-      // Call data from values and targets
-      calldataBytes,
-      // Proposal description
-      postMarkdown
-    );
+  //   // Create a new proposal
+  //   const tx = await proposalFactory.createCrowdProposal(
+  //     // List of contracts
+  //     contracts,
+  //     // Send 0 value from contract
+  //     new Array(contracts.length).fill("0"),
+  //     // Function signatures
+  //     functions,
+  //     // Call data from values and targets
+  //     calldataBytes,
+  //     // Proposal description
+  //     postMarkdown
+  //   );
 
-    // Wait for 1 confirmation
-    const confirmed_tx = await tx.wait(1);
+  //   // Wait for 1 confirmation
+  //   const confirmed_tx = await tx.wait(1);
 
-    // Collect proposal address from tx event
-    const creation_event = confirmed_tx.events.filter(
-      (event) =>
-        // Check if event key exists and filter by creation events
-        event && "event" in event && event.event === "CrowdProposalCreated"
-    )[0];
-    const proposal_address = creation_event.args[0];
+  //   // Collect proposal address from tx event
+  //   const creation_event = confirmed_tx.events.filter(
+  //     (event) =>
+  //       // Check if event key exists and filter by creation events
+  //       event && "event" in event && event.event === "CrowdProposalCreated"
+  //   )[0];
+  //   const proposal_address = creation_event.args[0];
 
-    // Regenerate proposals
-    await collectProposals();
+  //   // Regenerate proposals
+  //   await collectProposals();
 
-    // Return proposal address
-    return proposal_address;
-  };
+  //   // Return proposal address
+  //   return proposal_address;
+  // };
 
   /**
    * Infinite approves factory contract
    */
   const inifiniteApproveFactory = async () => {
     // Collect approval transaction
-    const tx = await uniContract.approve(
-      UNI_NETWORK.crowd_proposal_factory.address,
+    const tx = await vexContract.approve(
+      VEX_NETWORK.crowd_proposal_factory.address,
       // Of infinite approval
       ethers.constants.MaxUint256
     );
@@ -266,7 +244,7 @@ function useGovernance() {
     // Wait for 1 confirmation
     await tx.wait(1);
     // Force update allowance status in global state
-    await collectInfiniteAllowance(uniContract);
+    await collectInfiniteAllowance(vexContract);
   };
 
   const collectProposals = async () => {
@@ -336,12 +314,12 @@ function useGovernance() {
    */
   const setupGovernance = async () => {
     // If authenticated
-    if (address && provider && provider.provider) {
+    if (address && provider) {
       // Run setup functions
       collectUser();
     } else {
       // Else, nullify state
-      setUni(null);
+      setVex(null);
     }
   };
 
@@ -351,16 +329,16 @@ function useGovernance() {
   useEffect(setupGovernance, [address, provider]);
 
   return {
-    uni,
+    vex,
     delegate,
     proposals,
     loadingProposals,
-    createProposal,
+    // createProposal,
     collectProposalByContract,
     infiniteAllowance,
     inifiniteApproveFactory,
     delegateToContract,
-    proposeContract,
+    // proposeContract,
   };
 }
 

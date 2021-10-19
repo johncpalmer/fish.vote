@@ -172,6 +172,67 @@
   }
 }
 
+.card__modal {
+  h3 {
+    margin: 0px;
+    font-weight: 500;
+    color: #222;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 150%;
+    color: #5f6476;
+    font-weight: 400;
+
+    span {
+      color: #e1006d;
+      font-weight: 500;
+    }
+
+    a {
+      color: #3f4aab;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+  }
+
+  // TODO: can refactor button to a component itself
+  button {
+    background-color: var(--color-pink);
+    color: white;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 12px;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    will-change: transform;
+    transition: transform 450ms ease 0s;
+  }
+
+  button:hover {
+    background-color: rgb(230, 0, 110);
+    transform: scale(0.99);
+  }
+
+  button:disabled {
+    background-color: #f076a5;
+    cursor: not-allowed;
+  }
+
+  button:disabled:hover {
+    background-color: #f076a5;
+    transform: none;
+  }
+}
+
+
 // Responsiveness
 @media screen and (max-width: 850px) {
   .layout__footer {
@@ -223,6 +284,21 @@
       > button {
         margin-top: 10px !important;
       }
+    }
+  }
+  .card__modal {
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 150%;
+    }
+
+    button {
+      font-size: 14px;
+      padding: 10px 16px;
     }
   }
 }

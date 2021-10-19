@@ -16,13 +16,13 @@ cp .env.sample .env.local
 Install dependencies:
 
 ```bash
-yarn
+npm install
 ```
 
 Run locally
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

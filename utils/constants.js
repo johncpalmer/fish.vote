@@ -1,65 +1,50 @@
 import { ethers } from "ethers";
 
 // Declare constants by network
-const UNI_CONSTANTS = {
+const VEX_CONSTANTS = {
   mainnet: {
-    minimum_uni: 0,
-    governer_alpha: {
-      name: "Governer",
-      address: "0xC4e172459f1E7939D522503B81AFAaC1014CE6F6",
+    governor_alpha: {
+      name: "Governor",
+      address: "",
     },
-    uni_governance_token: {
-      name: "UNI",
-      address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-    },
-    timelock: {
-      name: "Timelock",
-      address: "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
-    },
-    crowd_proposal_factory: {
-      name: "Proposal_Factory",
-      address: "0x79b328d65a06e89012d177f1b45760a76bfeee08",
-    },
-    old_crowd_proposal_factory: {
-      name: "Proposal_Factory",
-      address: "0xa363203A324A3f134348a0F2Ffa4f5487aDC3346",
-    },
-  },
-  kovan: {
-    minimum_uni: 0,
-    governer_alpha: {
-      name: "Governer",
-      address: "0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F",
-    },
-    uni_governance_token: {
-      name: "UNI",
-      address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+    vex_governance_token: {
+      name: "VEX",
+      address: "",
     },
     timelock: {
       name: "Timelock",
-      address: "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
-    },
-    crowd_proposal_factory: {
-      name: "Proposal_Factory",
-      address: "0xF78a80fC75260F23d4D2494599a73BDd38d54a32",
-    },
-    old_crowd_proposal_factory: {
-      name: "Proposal_Factory",
-      address: "0x8b00c3151dcc62213ea0f0a409103e18118acd85",
+      address: "",
     },
   },
-};
+
+  // Effective contract addresses on the Vechain testnet
+  testnet: {
+    governor_alpha: {
+      name: "Governor",
+      address: "0xc32e9418c019B87B691115Cc1acDf0c5318F5ea8",
+    },
+    vex_governance_token: {
+      name: "VEX",
+      address: "0x94338d10D0f71d3E6c177F7bA8483119fD320506",
+    },
+    timelock: {
+      name: "Timelock",
+      address: "0x383716B0b9bE14d326F83903864963Ea7833E813",
+    },
+  }
+}
 
 // Collect current network
-const MAINNET = process.env.NEXT_PUBLIC_UNIFY_MAINNET === "true";
+const MAINNET = process.env.NEXT_PUBLIC_VECHAIN_MAINNET === "true";
+
 // Return network array based on network
-const UNI_NETWORK = UNI_CONSTANTS[MAINNET ? "mainnet" : "kovan"];
+const VEX_NETWORK = VEX_CONSTANTS[MAINNET ? "mainnet" : "testnet"]
 
 // Declare possible governance actions
-const UNI_ACTIONS = [
+const VEX_ACTIONS = [
   {
-    contract: "UNI Token",
-    address: UNI_NETWORK.uni_governance_token.address,
+    contract: "VEX Token",
+    address: VEX_NETWORK.vex_governance_token.address,
     functions: [
       {
         name: "transfer",
@@ -83,7 +68,7 @@ const UNI_ACTIONS = [
   },
   {
     contract: "Timelock",
-    address: UNI_NETWORK.timelock.address,
+    address: VEX_NETWORK.timelock.address,
     functions: [
       {
         name: "Set Pending Admin",
@@ -109,16 +94,16 @@ const UNI_ACTIONS = [
 const collectNameByContract = (contract) => {
   let contractName = ""; // Initialize contract name
 
-  // For each property in UNI_CONSTANTS
-  for (const property of Object.keys(UNI_NETWORK)) {
+  // For each property in VEX_CONSTANTS
+  for (const property of Object.keys(VEX_NETWORK)) {
     if (
       // If property is a contract type
-      property !== "minimum_uni" &&
+      property !== "minimum_vex" &&
       // And the address matches
-      UNI_NETWORK[property].address.toLowerCase() === contract.toLowerCase()
+      VEX_NETWORK[property].address.toLowerCase() === contract.toLowerCase()
     ) {
       // Update contract name
-      contractName = UNI_NETWORK[property].name;
+      contractName = VEX_NETWORK[property].name;
     }
   }
 
@@ -234,7 +219,7 @@ const generateActionSignatureHTML = (signature, bytes) => {
 export {
   collectNameByContract,
   generateActionSignatureHTML,
-  UNI_NETWORK,
-  UNI_CONSTANTS,
-  UNI_ACTIONS,
+  VEX_NETWORK,
+  VEX_CONSTANTS,
+  VEX_ACTIONS,
 };
