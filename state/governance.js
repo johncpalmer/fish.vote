@@ -13,7 +13,7 @@ function useGovernance() {
 
   // Contract state
   const [vexContract, setVexContract] = useState(null);
-  const [proposalFactory, setProposalFactory] = useState(null);
+  const [governanceContract, setGovernanceContract] = useState(null);
 
   // Governance state
   const [vex, setVex] = useState(null);
@@ -26,45 +26,40 @@ function useGovernance() {
    * Collect user details
    */
   const collectUser = async () => {
-    // Setup VEX governance token contract
-    const contractVEX = provider.thor.account(VEX_NETWORK.vex_governance_token.address);
-
-    // Setup CrowdProposalFactory contract
-    // const proposalFactory = new ethers.Contract(
-    //   VEX_NETWORK.crowd_proposal_factory.address,
-    //   CrowdProposalFactoryABI,
-    //   signer
-    // );
-
-    // Collect balance
-    await collectVexBalance(contractVEX);
-
-    // Update contracts in global state
-    setVexContract(contractVEX);
-    // setProposalFactory(proposalFactory);
+    await collectVexBalance();
+    await collectDelegate();
   };
 
   /**
-   * Collect VEX balance and delegate and updates in state
-   * @param {ethers.Contract} contract VEX token contract
+   * Collect VEX balance and updates in state
    */
-  const collectVexBalance = async (contract) => {
-
-    const balanceOfABI = find(VEXABI, { name: "balanceOf" });
-    const method = contract.method(balanceOfABI);
+  const collectVexBalance = async () => {
     // Collect raw balance
+    const balanceOfABI = find(VEXABI, { name: "balanceOf" });
+    const method = vexContract.method(balanceOfABI);
     const balanceRaw = (await method.call(address)).data;
 
     // Format balance to readable format
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
     // Update balance in state
     setVex(balance);
-
-    // Collect delegate
-    // const delegate = await contract.delegates(address);
-    // Update delegate in state
-    // setDelegate(delegate);
   };
+
+  /**
+   * Collect delegates of the user updates in state
+   */
+  const collectDelegate = async () => {
+    // Collect delegate
+    const delegatesABI = find(VEXABI, { name: 'delegates' });
+    const method = vexContract.method(delegatesABI);
+    const delegate = (await method.call(address)).data;
+
+    console.log(delegate);
+
+    // Update delegate in state
+    setDelegate(delegate);
+  }
+
 
   /**
    * Delegates to a contract and refreshes proposals
@@ -248,20 +243,22 @@ function useGovernance() {
   };
 
   const collectProposals = async () => {
-    // Toggle loading
-    setLoadingProposals(true);
+    if (governanceContract) {
+      // Toggle loading
+      setLoadingProposals(true);
 
-    // Collect proposals
-    const response = await axios.get("/api/proposals");
-    const data = response.data;
+      // Collect proposals
+      const response = await axios.get("/api/proposals");
+      const data = response.data;
 
-    // Update data
-    setProposals(data);
-    // Toggle loading
-    setLoadingProposals(false);
+      // Update data
+      setProposals(data);
+      // Toggle loading
+      setLoadingProposals(false);
 
-    // Optional proposals return
-    return data;
+      // Optional proposals return
+      return data;
+    }
   };
 
   /**
@@ -301,18 +298,32 @@ function useGovernance() {
   };
 
   /**
-   * Collects proposals on load if they dont exist in-mem
+   * Sets up contract addresses when provider is available
    */
-  const collectProposalsOnLoad = async () => {
-    if (!proposals) {
-      await collectProposals();
+  const setupGovernance = async () => {
+    // If vechain provider is already available
+    if (provider) {
+      if (!vexContract) {
+        // Setup VEX governance token contract
+        const contractVEX = provider.thor.account(VEX_NETWORK.vex_governance_token.address);
+
+        // Update VEX contract in global state
+        await setVexContract(contractVEX);
+      }
+      if (!governanceContract) {
+        // Setup GovernorAlpha contract
+        const contractGov = provider.thor.account(VEX_NETWORK.governor_alpha.address);
+
+        // Update Governor contract in global state
+        await setGovernanceContract(contractGov);
+      }
     }
   };
 
   /**
    * Collections to run on load
    */
-  const setupGovernance = async () => {
+  const setupUser = async () => {
     // If authenticated
     if (address && provider) {
       // Run setup functions
@@ -323,13 +334,17 @@ function useGovernance() {
     }
   };
 
-  // Collect propoposals on load
-  useEffect(collectProposalsOnLoad, []);
+  // Setup contract addresses on load
+  useEffect(setupGovernance, [provider]);
+
   // Setup governance parameters on auth
-  useEffect(setupGovernance, [address, provider]);
+  useEffect(setupUser, [address]);
+
+  useEffect(collectProposals, [governanceContract]);
 
   return {
     vex,
+    governanceContract,
     delegate,
     proposals,
     loadingProposals,
