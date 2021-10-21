@@ -214,30 +214,28 @@ function useGovernance() {
   };
 
   const collectProposals = async () => {
-    if (governanceContract) {
-      // Toggle loading
-      setLoadingProposals(true);
+    // Toggle loading
+    setLoadingProposals(true);
 
-      // Collect proposals
-      const response = await axios.get("/api/proposals");
-      const data = response.data;
+    // Collect proposals
+    const response = await axios.get("/api/proposals");
+    const data = response.data;
 
-      // Update data
-      setProposals(data);
-      // Toggle loading
-      setLoadingProposals(false);
+    // Update data
+    setProposals(data);
+    // Toggle loading
+    setLoadingProposals(false);
 
-      // Optional proposals return
-      return data;
-    }
+    // Optional proposals return
+    return data;
   };
 
   /**
-   * Collects proposal by contract address
-   * @param {String} contract address of CrowdProposal
-   * @returns {Object[]} details of a CrowdProposal contract
+   * Collects proposal by id
+   * @param {String} id of proposal
+   * @returns {Object[]} details of a GovernorAlpha proposal
    */
-  const collectProposalByContract = async (contract) => {
+  const collectProposalById = async (id) => {
     // Setup vars
     let allProposals = proposals;
     let proposalDetails = {
@@ -251,16 +249,16 @@ function useGovernance() {
       allProposals = await collectProposals();
     }
 
-    // Collect all proposal contracts
-    const allProposalContracts = allProposals.map(
-      (proposal) => proposal.contract
+    // Collect all proposal ids
+    const allProposalIds = allProposals.map(
+      (proposal) => proposal.id
     );
     // If contract exists in all proposals
-    if (allProposalContracts.includes(contract)) {
+    if (allProposalIds.includes(id)) {
       // Update proposal details
       proposalDetails.success = true;
       proposalDetails.data = allProposals.filter(
-        (proposal) => proposal.contract === contract
+        (proposal) => proposal.id === id
       )[0];
     }
 
@@ -296,12 +294,21 @@ function useGovernance() {
    */
   const setupUser = async () => {
     // If authenticated
-    if (address && provider) {
+    if (address && provider && vexContract) {
       // Run setup functions
       collectUser();
     } else {
       // Else, nullify state
       setVex(null);
+    }
+  };
+
+  /**
+   * Collects proposals on load if they dont exist in-mem
+   */
+  const collectProposalsOnLoad = async () => {
+    if (!proposals) {
+      await collectProposals();
     }
   };
 
@@ -311,7 +318,7 @@ function useGovernance() {
   // Setup governance parameters on auth
   useEffect(setupUser, [address]);
 
-  useEffect(collectProposals, [governanceContract]);
+  useEffect(collectProposalsOnLoad, []);
 
   return {
     vex,
@@ -320,7 +327,7 @@ function useGovernance() {
     proposals,
     loadingProposals,
     createProposal,
-    collectProposalByContract,
+    collectProposalById,
     delegateToContract,
     // proposeContract,
   };

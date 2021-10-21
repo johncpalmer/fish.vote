@@ -32,8 +32,6 @@ const parseEvents = async (event) => {
   const block = event.meta.blockNumber;
   const markdownHeader = event.decoded.description;
   const proposalId = event.decoded.id;
-  console.log(block);
-  console.log(markdownHeader);
 
   // Collect proposal vote count
   const proposalsABI = find(GovernorAlphaABI, {name: 'proposals'});
@@ -44,8 +42,6 @@ const parseEvents = async (event) => {
   const stateMethod = governorAlphaContract.method(stateABI);
   const proposalStateRaw = (await stateMethod.call(proposalId)).decoded[0];
 
-  console.log("proposal is", proposal);
-  console.log(proposalStateRaw);
   const votesForRaw = proposal.decoded.forVotes;
   const votesAgainstRaw = proposal.decoded.againstVotes;
 
@@ -58,11 +54,17 @@ const parseEvents = async (event) => {
     votesFor: votesForRaw,
     votesAgainst: votesAgainstRaw, 
     // Time of proposal
-    timestamp: block.timestamp,
+    timestamp: event.meta.blockTimestamp,
     // Proposal title
     title: markdownHeader,
-    // Contract arguments
-    args: event.decoded.calldatas,
+    // Proposer
+    proposer: event.decoded.proposer,
+    // Action parameters
+    targets: event.decoded.targets,
+    values: event.decoded.values,
+    signatures: event.decoded.signatures,
+    calldatas: event.decoded.calldatas,
+    description: event.decoded.description,
     // Start and end blocks for voting
     startBlock: proposal.decoded.startBlock,
     endBlock: proposal.decoded.endBlock

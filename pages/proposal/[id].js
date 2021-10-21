@@ -2,7 +2,7 @@ import {
   collectNameByContract,
   generateActionSignatureHTML,
 } from "@utils/constants"; // Parsing functions
-import eth from "@state/eth"; // Global state: eth
+import vechain from "@state/vechain"; // Global state: vechain
 import gfm from "remark-gfm"; // Markdown: GitHub formatting
 import Head from "next/head"; // SSR Meta
 import Card from "@components/Card"; // Component: Card
@@ -16,20 +16,19 @@ import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
 import { collectProposals } from "pages/api/proposals"; // Server-side collection function
 import styles from "@styles/pages/Proposal.module.scss"; // Component styles
 
-export default function Proposal({ address, defaultProposalData }) {
+export default function Proposal({ id, defaultProposalData }) {
   // Routing
   const router = useRouter();
 
   // Global state
   const {
-    uni,
+    vex,
     delegate,
     proposals,
-    collectProposalByContract,
+    collectProposalById,
     delegateToContract,
-    proposeContract,
   } = governance.useContainer();
-  const { address: authed, unlock } = eth.useContainer();
+  const { address: authed, unlock } = vechain.useContainer();
 
   // Local state
   const [data, setData] = useState(JSON.parse(defaultProposalData));
@@ -41,7 +40,7 @@ export default function Proposal({ address, defaultProposalData }) {
    */
   const fetchProposal = async () => {
     // Collect proposal from global state (or pull if no proposals exist)
-    const proposal = await collectProposalByContract(address);
+    const proposal = await collectProposalById(id);
 
     // If proposal does not exist
     if (!proposal.success) {
@@ -54,6 +53,7 @@ export default function Proposal({ address, defaultProposalData }) {
   };
 
   /**
+   * TODO: Change to vote instead of delegate 
    * Delegate to contract with loading state
    */
   const delegateWithLoading = async () => {
@@ -73,6 +73,7 @@ export default function Proposal({ address, defaultProposalData }) {
   };
 
   /**
+   * might not be relevant anymore 
    * Propose contract to governance with loading state
    */
   const proposeWithLoading = async () => {
@@ -109,7 +110,7 @@ export default function Proposal({ address, defaultProposalData }) {
           actions.loadingText = "Submitting Proposal...";
         } else {
           // If UNI balance
-          if (uni != 0) {
+          if (vex != 0) {
             // If you haven't already delegated
             if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
               // If proposal does not have enough votes to be proposed
@@ -175,7 +176,7 @@ export default function Proposal({ address, defaultProposalData }) {
         <div className={styles.card__delegate_modal}>
           <h3>Confirm delegation</h3>
           <p>
-            You are delegating your <span>{uni} Votes</span> to this proposal.
+            You are delegating your <span>{vex} Votes</span> to this proposal.
             Don't worry, you'll retain all the votes that have been delegated to
             you by other token holders. You can change your mind and delegate
             votes back to yourself at any time on{" "}
@@ -208,7 +209,7 @@ export default function Proposal({ address, defaultProposalData }) {
         }}
         status={data.status}
         created={data.timestamp}
-        proposer={data.args[1]}
+        proposer={data.proposer}
       />
 
       {/* Support progress card */}
@@ -266,23 +267,23 @@ export default function Proposal({ address, defaultProposalData }) {
       {/* Proposal details */}
       <Card
         title="Proposal details"
-        subtext={`${data.args[4].length} action${
+        subtext={`${data.signatures.length} action${
           // Render (s) if > 1 action
-          data.args[4].length === 1 ? "" : "s"
+          data.signatures.length === 1 ? "" : "s"
         }`}
       >
         <div className={styles.card__details}>
           {/* Render governance actions */}
           <div className={styles.card__details_actions}>
-            {data.args[2].map((contract, i) => {
+            {data.targets.map((contract, i) => {
               // For each contract in proposal
 
               // Collect contract name
               const name = collectNameByContract(contract);
               // Collect signature data
               const signatureElements = generateActionSignatureHTML(
-                data.args[4][i],
-                data.args[5][i]
+                data.signatures[i],
+                data.calldatas[i]
               );
 
               return (
@@ -294,7 +295,7 @@ export default function Proposal({ address, defaultProposalData }) {
                   <p>
                     {/* Action contract */}
                     <a
-                      href={`https://etherscan.io/address/${contract}`}
+                      href={`https://explore.vechain.org/accounts/${contract}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -309,10 +310,10 @@ export default function Proposal({ address, defaultProposalData }) {
 
           {/* Proposal description */}
           <div className={styles.card__details_content}>
-            {data.args[6].replace(`# ${data.title}`, "") !== "" ? (
+            {data.description.replace(`# ${data.title}`, "") !== "" ? (
               // Render if markdown exists beyond header (thus, description)
               <ReactMarkdown remarkPlugins={[gfm]} linkTarget="_blank">
-                {data.args[6]
+                {data.description
                   // Remove markdown for header
                   .replace(`# ${data.title}`, "")
                   // Filter out new lines for description seperator
@@ -330,16 +331,16 @@ export default function Proposal({ address, defaultProposalData }) {
 }
 
 // Run on page load
-export async function getServerSideProps({ params: { address } }) {
+export async function getServerSideProps({ params: { id } }) {
   // Collect all proposals
   const allProposals = await collectProposals();
   // Collect contract addresses
-  const allProposalContracts = allProposals.map(
-    (proposal) => proposal.contract
+  const allProposalIds = allProposals.map(
+    (proposal) => proposal.id
   );
 
   // If contract does not exist
-  if (!allProposalContracts.includes(address)) {
+  if (!allProposalIds.includes(id)) {
     // Force redirect to home
     return {
       redirect: {
@@ -353,10 +354,10 @@ export async function getServerSideProps({ params: { address } }) {
   return {
     // As prop
     props: {
-      address,
+      id,
       defaultProposalData: JSON.stringify(
         // Stringify data to bypass prop limitation
-        allProposals.filter((proposal) => proposal.contract === address)[0]
+        allProposals.filter((proposal) => proposal.id === id)[0]
       ),
     },
   };

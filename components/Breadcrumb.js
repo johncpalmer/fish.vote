@@ -38,7 +38,7 @@ export default function Breadcrumb({
             Proposed by {/* Desktop (no truncation) */}
             <a
               className={styles.breadcrumb__address_desktop}
-              href={`https://etherscan.io/address/${proposer}`}
+              href={`https://explore.vechain.org/accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -47,7 +47,7 @@ export default function Breadcrumb({
             {/* Mobile (truncated) */}
             <a
               className={styles.breadcrumb__address_mobile}
-              href={`https://etherscan.io/address/${proposer}`}
+              href={`https://explore.vechain.org/accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >
