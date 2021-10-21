@@ -10,7 +10,7 @@ import GovernorAlphaABI from "@utils/abi/GovernorAlpha"; // Global state provide
 
 function useGovernance() {
   // Global state
-  const { provider, address } = vechain.useContainer();
+  const { address, provider } = vechain.useContainer();
 
   // Contract state
   const [vexContract, setVexContract] = useState(null);
@@ -61,7 +61,7 @@ function useGovernance() {
   }
 
 
-  /**
+  /** TODO: refactor this to delegate to a person
    * Delegates to a contract and refreshes proposals
    * @param {String} contract address for CrowdProposal
    */
@@ -74,31 +74,6 @@ function useGovernance() {
     await collectProposals();
     return;
   };
-
-  /**
-   * Proposes a contract with sufficient votes
-   * @param {String} contract address for CrowdProposal
-   */
-  // const proposeContract = async (contract) => {
-  //   // Collect authenticated signer
-  //   const signer = await provider.getSigner();
-
-  //   // Generate CrowdProposal contract object
-  //   const proposalContract = new ethers.Contract(
-  //     contract,
-  //     CrowdProposalABI,
-  //     signer
-  //   );
-
-  //   // Call vote function and wait for 1 confirmation
-  //   const tx = await proposalContract.propose();
-  //   await tx.wait(1);
-
-  //   // Recollect proposals with updated information
-  //   await collectProposals();
-  //   return;
-  // };
-
 
   /**
    * Generates padded bytes based on type and value
@@ -203,27 +178,39 @@ function useGovernance() {
     const clause = proposeMethod.asClause(contracts, valuesPlaceholder, //values,
                     functions, calldataBytes, postMarkdown);
 
-    console.log(clause);
-
-    const { txid, signer } = await provider.vendor.sign('tx', [clause])
+    const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
                                   .gas(2000000) // This is the maximum
                                   .comment("Sign to submit Proposal to GovernorAlpha")
-                                  .request();
+                                  .request();    
 
-    // Collect proposal address from tx event
-    // const creation_event = confirmed_tx.events.filter(
-    //   (event) =>
-    //     // Check if event key exists and filter by creation events
-    //     event && "event" in event && event.event === "CrowdProposalCreated"
-    // )[0];
-    // const proposal_address = creation_event.args[0];
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    console.log(txVisitor);
+
+    // ticker object to track the creation of blocks on chain
+    const ticker = provider.thor.ticker();
+    let txReceipt = null;
+
+    // Wait for tx to be confirmed and mined     
+    while(!txReceipt) {
+      await ticker.next(); 
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+    
+    // Handle failed tx 
+    if (txReceipt.reverted) {
+      console.error("Submitting proposal failed");
+      return;
+    }
+
+    const proposalId = parseInt(txReceipt.outputs[0].events[0].data.substring(0,66));
 
     // Regenerate proposals
     await collectProposals();
 
-    // Return proposal address
-    return '0x0';
+    // Return proposal id
+    return proposalId;
   };
 
   const collectProposals = async () => {

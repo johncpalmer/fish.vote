@@ -23,18 +23,32 @@ export default function Home() {
   };
 
   /**
-   * Renders status icon color based on status
+   * Renders state icon color based on status
    * @param {String} status of proposal
    * @returns {String} hex string of color
    */
-  const renderStatusColor = (status) => {
-    switch (status) {
-      case "Terminated":
-        return "#ff0033";
-      case "In Progress":
-        return "#EFC223";
-      case "Proposed":
+  const renderStateColor = (state) => {
+    switch (state) {
+      
+      // TODO: to reconsider
+      case "Pending":
+        return "orange";
+      
+      case "Active":
         return "#1DB023";
+
+      case "Canceled":
+        return "#ff0033";
+
+      case "Succeeded":
+        return "#EFC223";
+
+      // TODO: introduce styling for each
+      // of the proposal states
+      case "Queued":
+      case "Expired":
+      case "Executed":
+      default: 
     }
   };
 
@@ -63,14 +77,17 @@ export default function Home() {
    * @returns {Object[]} of proposals with >= 400 votes
    */
   const filterTopProposals = (proposals) => {
+    
+    const voteThreshold = 0;
+
     // Filter array for object
     const voteFilter = proposals.filter(
       // Where votes value >= 400
-      (proposal) => parseFloat(proposal.votes) >= 400
+      (proposal) => parseFloat(proposal.votesFor) >= voteThreshold
     );
     // Return array sorted by votes
     return voteFilter.sort((a, b) =>
-      parseFloat(a.votes) < parseFloat(b.votes) ? 1 : -1
+      parseFloat(a.votesFor) < parseFloat(b.votesFor) ? 1 : -1
     );
   };
 
@@ -126,7 +143,7 @@ export default function Home() {
               <Loader type="Oval" color="#e7347a" height={50} width={50} />
             </center>
           </div>
-        ) : // Check if no proposals with > 400 votes
+        ) : // Check if there are no top proposals 
         filterTopProposals(proposals).length < 1 ? (
           // Else if no proposals exist, show empty state
           <div className="card__padding">
@@ -149,27 +166,28 @@ export default function Home() {
               // Else if proposals exist
               return (
                 // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.contract}`} key={i}>
+                // TODO: not using .contract for sure
+                <Link href={`/proposal/${proposal.id}`} key={i}>
                   <a className={styles.home__proposal}>
                     {/* Proposal title + vote count */}
                     <div>
                       <h4>{proposal.title}</h4>
                       <span>
-                        {proposal.status === "Proposed"
-                          ? "10,000,000+ votes"
-                          : formatVoteCount(parseFloat(proposal.votes))}
+                        {proposal.status === "Active"
+                          ? "10,000,000+ votes"   /* to refactor this */
+                          : formatVoteCount(parseFloat(proposal.votesFor))}
                       </span>
                     </div>
 
-                    {/* Proposal current status */}
+                    {/* Proposal current state */}
                     <div>
                       <div
                         style={{
-                          // Render indicator light based on status
-                          backgroundColor: renderStatusColor(proposal.status),
+                          // Render indicator light based on state
+                          backgroundColor: renderStateColor(proposal.state),
                         }}
                       />
-                      <span>{proposal.status}</span>
+                      <span>{proposal.state}</span>
                     </div>
                   </a>
                 </Link>

@@ -2,7 +2,8 @@ import { find } from 'lodash';
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
 import markdownHeadings from "markdown-headings"; // Markdown headings extraction
 import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
-import { globalProvider, governorAlphaContract } from "@utils/globals.js";
+import { governorAlphaContract } from "@utils/globals.js";
+import toProposalState from "@utils/ProposalState.js";
 
 /**
  * Collects header from Markdown
@@ -23,48 +24,48 @@ const getHeader = (markdown) => {
 
 /**
  * Parses event logs for data to retrieve for landing page
- * @param {ProposalCreated[]} event raw event JSON
+ * @param {ProposalCreated} event raw event JSON
  * @returns {Object[]} containing contract details
  */
 const parseEvents = async (event) => {
   // Collect block and markdown header
-  const block = await globalProvider.thor.block(event.blockNumber).get();
-  const markdownHeader = getHeader(event.args[event.args.length - 1]);
+  const block = event.meta.blockNumber;
+  const markdownHeader = event.decoded.description;
+  const proposalId = event.decoded.id;
+  console.log(block);
+  console.log(markdownHeader);
 
   // Collect proposal vote count
   const proposalsABI = find(GovernorAlphaABI, {name: 'proposals'});
   const proposalsMethod = governorAlphaContract.method(proposalsABI);
-  const proposal = (await proposalsMethod.call(event.id)).data;
+  const proposal = await proposalsMethod.call(proposalId);
 
-  const forVotesRaw = proposal.forVotes;
-  const againstVotesRaw = proposal.againstVotes;
-  // const votesParsed = formatEther(votesRaw.toString());
+  const stateABI = find(GovernorAlphaABI, {name:'state'});
+  const stateMethod = governorAlphaContract.method(stateABI);
+  const proposalStateRaw = (await stateMethod.call(proposalId)).decoded[0];
 
-  // Collect proposal status
-  const canceled = await proposal.canceled;
-  // Setup proposal status
-  const proposalStatus = canceled
-    ? // If terminated return "Terminated"
-      "Canceled"
-    : // Else if proposal Id assigned, return Proposed
-    proposalId.toString() !== "0"
-    ? "Proposed"
-    : // Else, return In Progress
-      "In Progress";
-  //
+  console.log("proposal is", proposal);
+  console.log(proposalStateRaw);
+  const votesForRaw = proposal.decoded.forVotes;
+  const votesAgainstRaw = proposal.decoded.againstVotes;
+
   return {
     // Deployed proposal address
-    contract: event.args[0],
+    id: proposalId,
     // Contract status
-    status: proposalStatus,
-    // Contract vote count
-    votes: votesParsed,
-    // Time of deployment
+    state: toProposalState(proposalStateRaw),
+    // Votes on both sides
+    votesFor: votesForRaw,
+    votesAgainst: votesAgainstRaw, 
+    // Time of proposal
     timestamp: block.timestamp,
     // Proposal title
     title: markdownHeader,
     // Contract arguments
-    args: event.args,
+    args: event.decoded.calldatas,
+    // Start and end blocks for voting
+    startBlock: proposal.decoded.startBlock,
+    endBlock: proposal.decoded.endBlock
   };
 };
 
@@ -76,18 +77,19 @@ export const collectProposals = async () => {
   // Filter for all ProposalCreated events
   const proposalCreatedABI = find(GovernorAlphaABI, {name: 'ProposalCreated' });
   const proposalCreatedEvent = governorAlphaContract.event(proposalCreatedABI);
-  const filter = proposalCreatedEvent.filter([{}])
+  const filter = proposalCreatedEvent.filter([{}]);
 
   // Limit to fetching the top 20 results
   const events = await filter.apply(0, 20);
 
   // For each event
-  // const proposals = // Parse to appropriate return format
-  // (await Promise.all(events.map((event) => parseEvents(event))))
-  //   // Filter out terminated proposals
-  //   .filter((proposal) => proposal.status !== "Terminated");
+  const proposals = // Parse to appropriate return format
+  (await Promise.all(events.map((event) => parseEvents(event))))
+    // Filter out terminated proposals
+    // Might want to filter out other categories of proposals too
+    .filter((proposal) => proposal.status !== "Canceled");
 
-  return [...events];
+  return [...proposals];
 };
 
 export default async (_, res) => {
