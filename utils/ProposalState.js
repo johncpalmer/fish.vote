@@ -1,7 +1,7 @@
 /**
  * Helper function to map given number to a ProposalState
  * @param {string} input value returned by GovernorAlpha::state()
- * @returns {string} string of proposal status
+ * @returns {string} string of proposal state
  */
 function toProposalState (input) {
 	switch(input) {

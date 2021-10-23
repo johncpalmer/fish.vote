@@ -192,7 +192,7 @@ const generateActionSignatureHTML = (signature, bytes) => {
       // Link if type(param) === address
       elements.push(
         <a
-          href={`https://etherscan.io/address/${param}`}
+          href={`https://explore.vechain.org/accounts/${param}`}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -18,6 +18,7 @@ function useGovernance() {
 
   // Governance state
   const [vex, setVex] = useState(null);
+  const [currentVotes, setCurrentVotes] = useState(null);
   const [delegate, setDelegate] = useState(null);
   const [proposals, setProposals] = useState(null);
   const [loadingProposals, setLoadingProposals] = useState(true);
@@ -28,6 +29,7 @@ function useGovernance() {
   const collectUser = async () => {
     await collectVexBalance();
     await collectDelegate();
+    await collectCurrentVotes();
   };
 
   /**
@@ -46,18 +48,42 @@ function useGovernance() {
   };
 
   /**
+   * Collect current effective votes of the user and updates in state
+   */
+  const collectCurrentVotes = async () => {
+    const currentVotesABI = find(VEXABI, { name: "getCurrentVotes"});
+    const method = vexContract.method(currentVotesABI);
+    const currentVotesRaw = (await method.call(address)).data;
+
+    const currentVotes = parseFloat(ethers.utils.formatEther(currentVotesRaw));
+
+    setCurrentVotes(currentVotes);
+  }
+
+  /**
    * Collect delegates of the user updates in state
    */
   const collectDelegate = async () => {
     // Collect delegate
-    const delegatesABI = find(VEXABI, { name: 'delegates' });
+    const delegatesABI = find(VEXABI, { name: "delegate" });
     const method = vexContract.method(delegatesABI);
     const delegate = (await method.call(address)).data;
 
-    console.log(delegate);
-
     // Update delegate in state
     setDelegate(delegate);
+  }
+
+  /**
+   * Generates padded bytes based on type and value
+   * @param {string} proposalId of the proposal of interest
+   * @returns {Receipt} an object as defined in GovernorAlpha
+   */
+  const getReceipt = async (proposalId) => {
+    const getReceiptABI = find(GovernorAlphaABI, { name: "getReceipt" });
+    const method = governanceContract.method(getReceiptABI);
+    const receipt = (await method.call(proposalId, address)).decoded[0];
+
+    return receipt;
   }
 
 
@@ -74,6 +100,45 @@ function useGovernance() {
     await collectProposals();
     return;
   };
+
+  /** 
+   * Votes for or against concerning a contract
+   * @param {String} id proposal id of the contract we're interacting with 
+   * @param {boolean} voteFor true if voting in agreement, false for disagreement
+   */
+  const castVote = async (id, voteFor) => {
+    // Delegate to contract and wait for 1 confirmation
+    const castVoteABI = find(GovernorAlphaABI, { name: 'castVote' })
+    const method = governanceContract.method(castVoteABI);
+    const clause = method.asClause(id, voteFor);
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address) // This modifier really necessary?
+                              .gas(2000000) // This is the maximum
+                              .comment("Sign to cast your vote for Proposal ID " + id)
+                              .request();    
+
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next(); 
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+    
+    // Handle failed tx 
+    if (txReceipt.reverted) {
+      console.error("Submitting proposal failed");
+      return;
+    }
+
+    // Recollect proposals with updated information
+    await collectProposals();
+    return;
+  };
+
 
   /**
    * Generates padded bytes based on type and value
@@ -324,12 +389,15 @@ function useGovernance() {
     vex,
     governanceContract,
     delegate,
+    currentVotes,
     proposals,
+    getReceipt,
     loadingProposals,
     createProposal,
     collectProposalById,
     delegateToContract,
     // proposeContract,
+    castVote,
   };
 }
 

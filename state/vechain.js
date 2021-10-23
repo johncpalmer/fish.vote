@@ -15,7 +15,6 @@ function useVechain() {
     // If already connected to wallet
     if (address && provider) {
       setAddress(null);
-      console.log(provider.vendor);
     }
     else {
       const WALLET_SIGN_MSG = {

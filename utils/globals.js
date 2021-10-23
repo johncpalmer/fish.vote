@@ -14,7 +14,6 @@ const globalProvider = new Framework(driver);
 // Setup GovernorAlpha contract at the global scope
 const governorAlphaContract = globalProvider.thor.account(VEX_NETWORK.governor_alpha.address);
 
-
 // Export providers
 export {
   globalProvider,

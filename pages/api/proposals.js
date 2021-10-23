@@ -1,4 +1,5 @@
 import { find } from 'lodash';
+import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
 import markdownHeadings from "markdown-headings"; // Markdown headings extraction
 import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
@@ -48,11 +49,11 @@ const parseEvents = async (event) => {
   return {
     // Deployed proposal address
     id: proposalId,
-    // Contract status
+    // Contract state
     state: toProposalState(proposalStateRaw),
     // Votes on both sides
-    votesFor: votesForRaw,
-    votesAgainst: votesAgainstRaw, 
+    votesFor: parseFloat(ethers.utils.formatEther(votesForRaw)),
+    votesAgainst: parseFloat(ethers.utils.formatEther(votesAgainstRaw)), 
     // Time of proposal
     timestamp: event.meta.blockTimestamp,
     // Proposal title
@@ -89,7 +90,7 @@ export const collectProposals = async () => {
   (await Promise.all(events.map((event) => parseEvents(event))))
     // Filter out terminated proposals
     // Might want to filter out other categories of proposals too
-    .filter((proposal) => proposal.status !== "Canceled");
+    .filter((proposal) => proposal.state !== "Canceled");
 
   return [...proposals];
 };

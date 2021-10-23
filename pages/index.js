@@ -23,8 +23,8 @@ export default function Home() {
   };
 
   /**
-   * Renders state icon color based on status
-   * @param {String} status of proposal
+   * Renders state icon color based on state
+   * @param {String} state of proposal
    * @returns {String} hex string of color
    */
   const renderStateColor = (state) => {
@@ -173,7 +173,7 @@ export default function Home() {
                     <div>
                       <h4>{proposal.title}</h4>
                       <span>
-                        {proposal.status === "Active"
+                        {proposal.state === "Active"
                           ? "10,000,000+ votes"   /* to refactor this */
                           : formatVoteCount(parseFloat(proposal.votesFor))}
                       </span>

@@ -23,10 +23,13 @@ export default function Proposal({ id, defaultProposalData }) {
   // Global state
   const {
     vex,
+    currentVotes,
     delegate,
     proposals,
+    getReceipt,
     collectProposalById,
     delegateToContract,
+    castVote
   } = governance.useContainer();
   const { address: authed, unlock } = vechain.useContainer();
 
@@ -34,6 +37,8 @@ export default function Proposal({ id, defaultProposalData }) {
   const [data, setData] = useState(JSON.parse(defaultProposalData));
   const [buttonLoading, setButtonLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [voteFor, setVoteFor] = useState(true);
+  const [receipt, setReceipt] = useState(null);
 
   /**
    * Fetch proposal details
@@ -52,23 +57,30 @@ export default function Proposal({ id, defaultProposalData }) {
     setData(proposal.data);
   };
 
+  const fetchReceipt = async () => {
+    if (authed) {
+      const receipt = await getReceipt(data.id);
+      setReceipt(receipt);
+    }
+  }
+
   /**
-   * TODO: Change to vote instead of delegate 
-   * Delegate to contract with loading state
+   * Casts the vote on GovernorAlpha 
+   * on the blockchain
    */
-  const delegateWithLoading = async () => {
+  const castVoteWithLoading = async () => {
     setButtonLoading(true); // Toggle loading
 
     try {
       // Call delegation with contract
-      await delegateToContract(data.args[0]);
+      await castVote(data.id, voteFor);
       // Close modal if open
       setModalOpen(false);
-    } catch {
+    } catch (error) {
       // Log error
-      console.log("Error when delegating to contract");
+      console.error("Error when voting", error);
     }
-
+    await fetchProposal();
     setButtonLoading(false); // Toggle loading
   };
 
@@ -91,6 +103,22 @@ export default function Proposal({ id, defaultProposalData }) {
   };
 
   /**
+   * Queues the contract for later execution
+   * Only applies to contract in the succeeded state
+   */ 
+  const queueWithLoading = async () => {
+
+  };
+  
+  /**
+   * Queues the contract for later execution
+   * Only applies to contract in the succeeded state
+   */ 
+  const executeWithLoading = async () => {
+
+  };
+
+  /**
    * Support action button rendering
    * @returns {Object[]?} containing button name, handler, loading?, loadingText?
    */
@@ -98,48 +126,80 @@ export default function Proposal({ id, defaultProposalData }) {
     // Setup button object
     let actions = {};
 
-    // If terminated or finalized, show nothing
-    if (data.status !== "Terminated" && data.status !== "Proposed") {
+    // If proposal is active
+    if (data.state === "Active") {
       // Check for authentication
-      if (authed && delegate) {
-        if (parseFloat(data.votes) >= 10000000) {
-          // Enable submitting proposal (Finalized state)
-          actions.name = "Submit Proposal";
-          actions.handler = () => proposeWithLoading();
-          actions.loading = buttonLoading;
-          actions.loadingText = "Submitting Proposal...";
-        } else {
-          // If UNI balance
-          if (vex != 0) {
-            // If you haven't already delegated
-            if (delegate.toLowerCase() !== data.args[0].toLowerCase()) {
-              // If proposal does not have enough votes to be proposed
-              if (parseFloat(data.votes) < 10000000) {
-                // Enable delegating votes (open modal)
-                actions.name = "Delegate Votes";
-                actions.handler = () => setModalOpen(true);
-              }
-            } else {
-              actions.name = "Votes Delegated";
+      if (authed) {
+        // If user has effective votes
+        if (currentVotes > 0) {
+          // If user hasn't already voted
+          if (receipt) {
+            if (!receipt.hasVoted) {
+              // Enable votes (open modal)
+              actions.name = "Cast Votes";
+              actions.handler = () => setModalOpen(true);
+            }
+            // Case of already voted
+            else {
+              const supportText = receipt.support ? "For" : "Against";
+              actions.name = "Votes Cast " + supportText;
               actions.handler = () => null;
               actions.disabled = true;
             }
-          } else {
-            // Else, present insufficient balance
-            actions.name = "Insufficient Balance";
-            actions.handler = () => null;
-            actions.disabled = true;
           }
-        }
-      } else {
+          // Receipt still loading
+          else {
+            actions.text = "Loading";
+            actions.loadingText = "Loading";
+            actions.disabled = true;
+            actions.loading = true;
+            actions.handler = () => null;
+          }
+        } 
+        else {
+          // Else, present insufficient balance
+          actions.name = "Insufficient Balance";
+          actions.handler = () => null;
+          actions.disabled = true;
+        }        
+      }
+      else {
         // If not authenticated, prompt for connecting
         actions.name = "Connect wallet";
         actions.handler = () => unlock();
       }
-      // Else if proposal has already been proposed
-    } else if (data.status === "Proposed") {
-      // Update to proposed button
-      actions.name = "Proposal Submitted";
+    }
+    // If proposal is in a succeeded state
+    else if (data.state === "Succeeded") {
+      action.name = "Queue Proposal";
+      action.handler = () => queueWithLoading();
+      action.disabled = false;
+
+      // Need to handle non authed state?
+    }  
+    // If proposal is in a queued state
+    else if (data.state === "Queued") {
+      // Check if eta has arrived
+      action.name = "Execute Proposal";
+      action.handler = () => executeWithLoading();
+      action.disabled = false;
+
+
+      // If not, show that not yet ETA and disable action
+      action.handler = () => null;
+      action.disabled = true;
+
+      // Need to handle non authed state?
+    }
+    // Else if proposal is in a state where 
+    // there is nothing to do
+    else if (data.state === "Pending" || 
+             data.state === "Canceled" ||
+             data.state === "Defeated" || 
+             data.state === "Executed" || 
+             data.state === "Expired") {
+      // Update the button
+      actions.name = "Proposal " + data.state;
       actions.handler = () => null;
       actions.disabled = true;
       actions.customColor = "#4DB858";
@@ -150,15 +210,31 @@ export default function Proposal({ id, defaultProposalData }) {
   };
 
   /**
-   * Returns (pink || green) depending on status of proposal
+   * Returns (pink || green) depending on state of proposal
    * @returns {String} color
    */
-  const getColorByStatus = () => {
-    return data.status === "Proposed" ? "#4DB858" : "var(--color-pink)";
+  const getColorByState = () => {
+    switch(data.state) {
+      case "Pending":
+      case "Active":
+        return "#4DB858";
+      case "Canceled":
+      case "Defeated": 
+      case "Succeeded": 
+      case "Queued": 
+      case "Expired": 
+      case "Executed":
+        return "var(--color-pink)";
+      default:
+        console.error("Unrecognized proposal state");
+    }
   };
 
   // Fetch proposal on page load (and proposals array change)
   useEffect(fetchProposal, [proposals]);
+
+  // Fetch the vote receipt when user is authenticated
+  useEffect(fetchReceipt, [authed]);
 
   return (
     // Pass proposal prop to prevent title/meta overlap
@@ -174,9 +250,13 @@ export default function Proposal({ id, defaultProposalData }) {
       {/* Delegation modal (hidden when !modalOpen) */}
       <Modal open={modalOpen} openHandler={setModalOpen}>
         <div className={styles.card__delegate_modal}>
-          <h3>Confirm delegation</h3>
+          <h3>Confirm Voting</h3>
           <p>
-            You are delegating your <span>{vex} Votes</span> to this proposal.
+            You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
+                                              minimumFractionDigits: 2,
+                                              maximumFractionDigits: 2,
+                                            })} 
+            {" "}Votes</span> to this proposal.
             Don't worry, you'll retain all the votes that have been delegated to
             you by other token holders. You can change your mind and delegate
             votes back to yourself at any time on{" "}
@@ -189,13 +269,16 @@ export default function Proposal({ id, defaultProposalData }) {
             </a>
             .
           </p>
-
-          {/* Delegate votes button */}
+          <div>
+            <input type="radio" value="For" checked={voteFor} onChange={() => setVoteFor(true)}/> For
+            <input type="radio" value="Against" checked={!voteFor} onChange={() => setVoteFor(false)}/> Against
+          </div>
+          {/* Cast votes button */}
           <button
-            onClick={() => delegateWithLoading()}
+            onClick={() => castVoteWithLoading()}
             disabled={buttonLoading}
           >
-            {buttonLoading ? "Delegating votes..." : "Delegate votes"}
+            {buttonLoading ? "Casting votes..." : "Cast votes"}
           </button>
         </div>
       </Modal>
@@ -207,7 +290,7 @@ export default function Proposal({ id, defaultProposalData }) {
           path: "/",
           name: "Home",
         }}
-        status={data.status}
+        state={data.state}
         created={data.timestamp}
         proposer={data.proposer}
       />
@@ -221,7 +304,7 @@ export default function Proposal({ id, defaultProposalData }) {
               style={{
                 width:
                   // If proposal is proposed
-                  data.status === "Proposed"
+                  data.state === "Proposed"
                     ? // Force 100% bar
                       "100"
                     : // If number of votes > 0 && < 100k
@@ -235,32 +318,37 @@ export default function Proposal({ id, defaultProposalData }) {
                         // Maximum fill: 100%
                         100
                       )}%`,
-                backgroundColor: getColorByStatus(),
+                backgroundColor: getColorByState(),
               }}
             />
           </div>
 
-          {/* Vote delegation count */}
+          {/* Vote cast count */}
           <div className={styles.card__delegated}>
-            <h4>Votes Delegated</h4>
+            <h4>Votes Cast</h4>
             <h1>
-              <span style={{ color: getColorByStatus() }}>
-                {data.status === "Proposed"
-                  ? // If proposal proposed, show 10M+
-                    "10,000,000+"
-                  : // Else, show vote count
-                    parseFloat(data.votes).toLocaleString("us-en", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-              </span>{" "}
-              / 10,000,000
+              <span style={{ color: getColorByState() }}>
+                For: {parseFloat(data.votesFor).toLocaleString("us-en", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>{"     "}
+              <span style={{ color: getColorByState() }}>
+                Against: {parseFloat(data.votesAgainst).toLocaleString("us-en", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
             </h1>
           </div>
-          <p>
-            This proposal needs 10M votes to progress and can be terminated by
-            the author at any time.
-          </p>
+          <h2>
+            <span style={{ color: getColorByState() }}>
+                Total: {parseFloat(data.votesAgainst + data.votesFor).toLocaleString("us-en", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+          </h2>
         </div>
       </Card>
 
@@ -277,7 +365,6 @@ export default function Proposal({ id, defaultProposalData }) {
           <div className={styles.card__details_actions}>
             {data.targets.map((contract, i) => {
               // For each contract in proposal
-
               // Collect contract name
               const name = collectNameByContract(contract);
               // Collect signature data

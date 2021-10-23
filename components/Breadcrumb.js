@@ -8,7 +8,7 @@ export default function Breadcrumb({
   // Last navigation
   lastRoute: { path, name } = {},
   // Propsal details
-  status,
+  state,
   created,
   proposer,
 }) {
@@ -21,9 +21,9 @@ export default function Breadcrumb({
         </Link>
       ) : null}
 
-      {/* Render status if one is provided */}
-      {status ? (
-        <span className={styles.breadcrumb__status}>{status}</span>
+      {/* Render proposal state if one is provided */}
+      {state ? (
+        <span className={styles.breadcrumb__state}>{state}</span>
       ) : null}
 
       {/* Render title */}
