@@ -5,8 +5,8 @@ import VEXABI from "@utils/abi/vex"; // ABI: VEX Governance Token
 import { find } from 'lodash';
 import { useState, useEffect } from "react"; // Local state management
 import { VEX_NETWORK } from "@utils/constants"; // Constants
-import { createContainer } from "unstated-next";
-import GovernorAlphaABI from "@utils/abi/GovernorAlpha"; // Global state provider
+import { createContainer } from "unstated-next"; // Global state provider
+import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
 
 function useGovernance() {
   // Global state
