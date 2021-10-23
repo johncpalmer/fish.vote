@@ -171,25 +171,33 @@ export default function Proposal({ id, defaultProposalData }) {
     }
     // If proposal is in a succeeded state
     else if (data.state === "Succeeded") {
-      action.name = "Queue Proposal";
-      action.handler = () => queueWithLoading();
-      action.disabled = false;
-
-      // Need to handle non authed state?
+      if (authed) {
+        action.name = "Queue Proposal";
+        action.handler = () => queueWithLoading();
+        action.disabled = false;
+      }
+      else {
+        actions.name = "Connect wallet";
+        actions.handler = () => unlock();
+      }
     }  
     // If proposal is in a queued state
     else if (data.state === "Queued") {
-      // Check if eta has arrived
-      action.name = "Execute Proposal";
-      action.handler = () => executeWithLoading();
-      action.disabled = false;
-
-
-      // If not, show that not yet ETA and disable action
-      action.handler = () => null;
-      action.disabled = true;
-
-      // Need to handle non authed state?
+      if (authed) {
+        // TODO: Check if eta has arrived
+        // action.name = "Execute Proposal";
+        // action.handler = () => executeWithLoading();
+        // action.disabled = false;
+        
+        // If not, show that not yet ETA and disable action
+        // action.name = "Not yet ETA";
+        // action.handler = () => null;
+        // action.disabled = true;
+      }
+      else {
+        actions.name = "Connect wallet";
+        actions.handler = () => unlock();
+      }
     }
     // Else if proposal is in a state where 
     // there is nothing to do
@@ -206,7 +214,7 @@ export default function Proposal({ id, defaultProposalData }) {
     }
 
     // Return buttons object
-    return actions;
+    return actions;  
   };
 
   /**
