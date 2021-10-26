@@ -1,9 +1,13 @@
+import { InputWithTopLabel } from "@components/Inputs";
+import { ethers } from "ethers";
 import Link from "next/link"; // Routing: Links
 import Card from "@components/Card"; // Component: Card
 import { useRouter } from "next/router"; // Routing: Router
 import Layout from "@components/Layout"; // Component: Layout
 import Switch from "@components/Switch"; // Component: Switch
 import Loader from "react-loader-spinner"; // Loaders
+import { useState } from "react";
+import vechain from "@state/vechain";
 import governance from "@state/governance"; // Global state: governance
 import styles from "@styles/pages/Home.module.scss"; // Component styles
 
@@ -11,7 +15,11 @@ export default function Home() {
   const router = useRouter(); // Setup router
 
   // Global state
-  const { proposals, loadingProposals } = governance.useContainer();
+  const { address } = vechain.useContainer();
+  const { proposals, loadingProposals, delegate, currentVotes } = governance.useContainer();
+
+  // Local state 
+  const [delegateInput, setDelegateInput] = useState("");
 
   /**
    * Routes clicker to /create
@@ -49,6 +57,7 @@ export default function Home() {
       case "Expired":
       case "Executed":
       default: 
+        return "black";
     }
   };
 
@@ -102,29 +111,58 @@ export default function Home() {
         />
       </center>
 
-      {/* About card */}
-      <Card shortMargin>
+      {/* Delegation card */}
+      <Card shortMargin
+            title="Votes Delegation"
+            action={{
+              name: "Delegate",
+              handler: null
+            }}>
         <div className={`card__padding ${styles.home__description}`}>
-          <h5>What is fish.vote?</h5>
+          <h4>
+            Welcome to the governance portal of Vexchange! 
+          </h4>
           <p>
-            Fish.vote is an app where anyone can create{" "}
-            <a
-              href="https://medium.com/compound-finance/compound-autonomous-proposals-354e7a2ad6b7"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crowd Proposals
-            </a>{" "}
-            on UNI governance. When a proposal gains 10 million delegate votes,
-            it is converted to a formal UNI governance proposal that is voted on
-            by the UNI community. In order to highlight thoughtful proposals,
-            the fish.vote home page only displays proposals with 400 delegate
-            votes or more.
+            To participate in the governance process of Vexchange, you first need
+            to decide if you want to delegate your votes to another address or 
+            your own (also known as self-delegating)
           </p>
-          <p>
-            Until today, only whales with 10 million votes could submit
-            proposals. Now, <span>even fish can make waves</span>.
-          </p>
+          {/* If authenticated */}
+          {address 
+            ?  
+            {/* Show delegation details*/}
+            [(delegate === ethers.constants.AddressZero 
+            
+              ? 
+                <>
+                  <h5>You have not delegated yet</h5>
+                  <button>Self-Delegate</button>
+                  <button>Delegate to address</button>  
+                </>
+              : 
+                <>
+                  <h5>Current delegate: {delegate}</h5>
+                  <button>Change Delegate</button>
+                </>
+              ), 
+
+              <h3>You currently have {currentVotes} votes delegated to you</h3>
+             ]
+            
+            : 
+            <p>Connect wallet</p>
+          }
+
+
+          
+        {/* 
+          <InputWithTopLabel 
+            labelTitle="Address to delegate to"
+            type="text"
+            value={delegateInput}
+            onChangeHandler={setDelegateInput}
+            placeholder="0x9b8ed0a9......"
+          /> */}  
         </div>
       </Card>
 
@@ -166,7 +204,6 @@ export default function Home() {
               // Else if proposals exist
               return (
                 // Loop over each proposal and render a proposal link
-                // TODO: not using .contract for sure
                 <Link href={`/proposal/${proposal.id}`} key={i}>
                   <a className={styles.home__proposal}>
                     {/* Proposal title + vote count */}

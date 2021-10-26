@@ -28,7 +28,7 @@ function useGovernance() {
    */
   const collectUser = async () => {
     await collectVexBalance();
-    await collectDelegate();
+    await collectDelegates();
     await collectCurrentVotes();
   };
 
@@ -63,11 +63,11 @@ function useGovernance() {
   /**
    * Collect delegates of the user updates in state
    */
-  const collectDelegate = async () => {
+  const collectDelegates = async () => {
     // Collect delegate
-    const delegatesABI = find(VEXABI, { name: "delegate" });
+    const delegatesABI = find(VEXABI, { name: "delegates" });
     const method = vexContract.method(delegatesABI);
-    const delegate = (await method.call(address)).data;
+    const delegate = (await method.call(address)).decoded[0];
 
     // Update delegate in state
     setDelegate(delegate);
@@ -87,17 +87,39 @@ function useGovernance() {
   }
 
 
-  /** TODO: refactor this to delegate to a person
-   * Delegates to a contract and refreshes proposals
+  /** 
+   * Delegates to an address 
    * @param {String} contract address for CrowdProposal
    */
-  const delegateToContract = async (contract) => {
-    // Delegate to contract and wait for 1 confirmation
-    const tx = await vexContract.delegate(contract);
-    await tx.wait(1);
+  const delegateToAddress = async (newDelegate) => {
+    if(!ethers.utils.isAddress(newDelegate)) {
+      console.error("newDelegate address is not a valid address", newDelegate);
+      return;
+    }
 
-    // Recollect proposals with updated information
-    await collectProposals();
+    // Delegate to specified newDelegate
+    const delegateABI = find(VEXABI, { name: 'delegate' });
+    const method = vexContract.method(delegateABI);
+    const clause = method.asClause(newDelegate);
+
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address)
+                              .gas(2000000) // This is the maximum
+                              .comment("Sign to delegate your votes to " + newDelegate)
+                              .request();  
+
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next(); 
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+
+    // Update delegates with new information
+    await collectDelegates();
     return;
   };
 
@@ -395,8 +417,7 @@ function useGovernance() {
     loadingProposals,
     createProposal,
     collectProposalById,
-    delegateToContract,
-    // proposeContract,
+    delegateToAddress,
     castVote,
   };
 }
