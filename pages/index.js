@@ -15,11 +15,14 @@ export default function Home() {
   const router = useRouter(); // Setup router
 
   // Global state
-  const { address } = vechain.useContainer();
-  const { proposals, loadingProposals, delegate, currentVotes } = governance.useContainer();
+  const { address, unlock } = vechain.useContainer();
+  const { proposals, loadingProposals,
+          delegate, delegateToAddress,
+          currentVotes } = governance.useContainer();
 
   // Local state 
   const [delegateInput, setDelegateInput] = useState("");
+  const [inputVisible, setInputVisible] = useState(false);
 
   /**
    * Routes clicker to /create
@@ -100,6 +103,40 @@ export default function Home() {
     );
   };
 
+  /**
+   * Calls the delegate function with the delegate
+   * being the given input address
+   * @param {event} event context from which this is fired
+   */
+  const handleDelegate = async (event) => {
+    let delegateAddress = null;
+
+    // Get the delegate's address
+    if (event.target.innerText === 'Delegate') {
+      delegateAddress = delegateInput;
+    }
+    else if (event.target.innerText === 'Self-Delegate') {
+      delegateAddress = address;
+    }
+    else {
+      console.error("handleDelegate called with unrecognized event", event);
+    }
+
+    try {
+      await delegateToAddress(delegateAddress);
+
+      // Close the delegate input
+      setInputVisible(false);
+    }
+    catch (error) {
+      console.error("Error during delegation", error);
+    }
+  };
+
+  const openDelegateInput = async () => {
+    setInputVisible(!inputVisible);
+  };
+
   return (
     <Layout short>
       {/* Page switch */}
@@ -124,45 +161,41 @@ export default function Home() {
           </h4>
           <p>
             To participate in the governance process of Vexchange, you first need
-            to decide if you want to delegate your votes to another address or 
-            your own (also known as self-delegating)
+            to decide if you want to delegate your votes to another address who will vote
+            in the long term interest of Vexchange or if you want to vote on your own (also known as self-delegating).
           </p>
           {/* If authenticated */}
           {address 
             ?  
-            {/* Show delegation details*/}
-            [(delegate === ethers.constants.AddressZero 
-            
+            // Show delegation details
+            [
+              (delegate === ethers.constants.AddressZero
               ? 
                 <>
                   <h5>You have not delegated yet</h5>
-                  <button>Self-Delegate</button>
-                  <button>Delegate to address</button>  
+                  <button onClick={handleDelegate}>Self-Delegate</button>
+                  <button onClick={openDelegateInput}>Delegate to address</button>
                 </>
               : 
                 <>
                   <h5>Current delegate: {delegate}</h5>
-                  <button>Change Delegate</button>
+                  <button onClick={openDelegateInput}>Change Delegate</button>
                 </>
-              ), 
-
+              ),
               <h3>You currently have {currentVotes} votes delegated to you</h3>
-             ]
-            
+            ]
             : 
-            <p>Connect wallet</p>
+            <button onClick={unlock}>Connect wallet</button>
           }
-
-
-          
-        {/* 
-          <InputWithTopLabel 
-            labelTitle="Address to delegate to"
-            type="text"
-            value={delegateInput}
-            onChangeHandler={setDelegateInput}
-            placeholder="0x9b8ed0a9......"
-          /> */}  
+          <div hidden={!inputVisible}>
+            <InputWithTopLabel
+              labelTitle="Address to delegate to"
+              type="text"
+              value={delegateInput}
+              onChangeHandler={setDelegateInput}
+              placeholder="0x9b8ed0a9......" />
+            <button onClick={handleDelegate}>Delegate</button>
+          </div>
         </div>
       </Card>
 

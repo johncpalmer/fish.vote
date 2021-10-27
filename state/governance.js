@@ -74,7 +74,7 @@ function useGovernance() {
   }
 
   /**
-   * Generates padded bytes based on type and value
+   * Obtains the vote receipt of the user for the proposalId
    * @param {string} proposalId of the proposal of interest
    * @returns {Receipt} an object as defined in GovernorAlpha
    */
@@ -89,7 +89,7 @@ function useGovernance() {
 
   /** 
    * Delegates to an address 
-   * @param {String} contract address for CrowdProposal
+   * @param {String} newDelegate address for CrowdProposal
    */
   const delegateToAddress = async (newDelegate) => {
     if(!ethers.utils.isAddress(newDelegate)) {
@@ -106,8 +106,9 @@ function useGovernance() {
                               .signer(address)
                               .gas(2000000) // This is the maximum
                               .comment("Sign to delegate your votes to " + newDelegate)
-                              .request();  
+                              .request();
 
+    const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     const ticker = provider.thor.ticker();
 
@@ -120,7 +121,6 @@ function useGovernance() {
 
     // Update delegates with new information
     await collectDelegates();
-    return;
   };
 
   /** 
@@ -158,7 +158,6 @@ function useGovernance() {
 
     // Recollect proposals with updated information
     await collectProposals();
-    return;
   };
 
 
@@ -300,6 +299,43 @@ function useGovernance() {
     return proposalId;
   };
 
+  /**
+   * Queues proposals in the Successful state for execution
+   * after timelock delay (currently 2 days)
+   * @param proposalId
+   */
+  const queueProposal = async (proposalId) => {
+    console.assert(proposalId, "proposalId should not be null");
+    const queueABI = find(GovernorAlphaABI, { name: "queue" });
+    const method = governanceContract.method(queueABI);
+    const clause = method.asClause(proposalId);
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address) // This modifier really necessary?
+                              .gas(2000000) // This is the maximum
+                              .comment("Sign to queue proposal " + proposalId)
+                              .request();
+
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next();
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+
+    // Handle failed tx
+    if (txReceipt.reverted) {
+      console.error("Queuing proposal failed");
+      return;
+    }
+
+    // Regenerate proposals
+    await collectProposals();
+  }
+
   const collectProposals = async () => {
     // Toggle loading
     setLoadingProposals(true);
@@ -377,7 +413,7 @@ function useGovernance() {
   };
 
   /**
-   * Collections to run on load
+   * Collections of user data to run on load
    */
   const setupUser = async () => {
     // If authenticated
@@ -416,6 +452,7 @@ function useGovernance() {
     getReceipt,
     loadingProposals,
     createProposal,
+    queueProposal,
     collectProposalById,
     delegateToAddress,
     castVote,

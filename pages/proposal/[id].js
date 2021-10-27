@@ -22,14 +22,12 @@ export default function Proposal({ id, defaultProposalData }) {
 
   // Global state
   const {
-    vex,
     currentVotes,
-    delegate,
     proposals,
     getReceipt,
     collectProposalById,
-    delegateToContract,
-    castVote
+    castVote,
+    queueProposal
   } = governance.useContainer();
   const { address: authed, unlock } = vechain.useContainer();
 
@@ -77,28 +75,9 @@ export default function Proposal({ id, defaultProposalData }) {
       // Close modal if open
       setModalOpen(false);
     } catch (error) {
-      // Log error
       console.error("Error when voting", error);
     }
     await fetchProposal();
-    setButtonLoading(false); // Toggle loading
-  };
-
-  /**
-   * might not be relevant anymore 
-   * Propose contract to governance with loading state
-   */
-  const proposeWithLoading = async () => {
-    setButtonLoading(true); // Toggle loading
-
-    try {
-      // Call propose with contract
-      await proposeContract(data.args[0]);
-    } catch {
-      // Log error
-      console.log("Error when proposing contract");
-    }
-
     setButtonLoading(false); // Toggle loading
   };
 
@@ -107,7 +86,13 @@ export default function Proposal({ id, defaultProposalData }) {
    * Only applies to contract in the succeeded state
    */ 
   const queueWithLoading = async () => {
-
+    setButtonLoading(true);
+    try {
+      await queueProposal(id);
+    } catch (error) {
+      console.error("Error when queuing", error);
+    }
+    setButtonLoading(false);
   };
   
   /**
