@@ -21,15 +21,15 @@ const VEX_CONSTANTS = {
   testnet: {
     governor_alpha: {
       name: "Governor",
-      address: "0xc32e9418c019B87B691115Cc1acDf0c5318F5ea8",
+      address: "0x6408519031Ab11780920A5b58660cbA9F94dDeeD",
     },
     vex_governance_token: {
       name: "VEX",
-      address: "0x94338d10D0f71d3E6c177F7bA8483119fD320506",
+      address: "0x696B30691c767df0Cf6d49a049849FFad54a7EBE",
     },
     timelock: {
       name: "Timelock",
-      address: "0x383716B0b9bE14d326F83903864963Ea7833E813",
+      address: "0x8000a11c4bE92638212fC4Aa5fC90ab8e880C7a0",
     },
   }
 }
@@ -192,7 +192,7 @@ const generateActionSignatureHTML = (signature, bytes) => {
       // Link if type(param) === address
       elements.push(
         <a
-          href={`https://etherscan.io/address/${param}`}
+          href={`https://explore.vechain.org/accounts/${param}`}
           target="_blank"
           rel="noopener noreferrer"
         >

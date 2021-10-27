@@ -8,7 +8,7 @@ export default function Breadcrumb({
   // Last navigation
   lastRoute: { path, name } = {},
   // Propsal details
-  status,
+  state,
   created,
   proposer,
 }) {
@@ -21,9 +21,9 @@ export default function Breadcrumb({
         </Link>
       ) : null}
 
-      {/* Render status if one is provided */}
-      {status ? (
-        <span className={styles.breadcrumb__status}>{status}</span>
+      {/* Render proposal state if one is provided */}
+      {state ? (
+        <span className={styles.breadcrumb__state}>{state}</span>
       ) : null}
 
       {/* Render title */}
@@ -38,7 +38,7 @@ export default function Breadcrumb({
             Proposed by {/* Desktop (no truncation) */}
             <a
               className={styles.breadcrumb__address_desktop}
-              href={`https://etherscan.io/address/${proposer}`}
+              href={`https://explore.vechain.org/accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -47,7 +47,7 @@ export default function Breadcrumb({
             {/* Mobile (truncated) */}
             <a
               className={styles.breadcrumb__address_mobile}
-              href={`https://etherscan.io/address/${proposer}`}
+              href={`https://explore.vechain.org/accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >

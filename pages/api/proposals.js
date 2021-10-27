@@ -1,6 +1,10 @@
-import vechain from "@state/vechain";
+import { find } from 'lodash';
+import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
 import markdownHeadings from "markdown-headings"; // Markdown headings extraction
+import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
+import { governorAlphaContract } from "@utils/globals.js";
+import toProposalState from "@utils/ProposalState.js";
 
 /**
  * Collects header from Markdown
@@ -21,79 +25,74 @@ const getHeader = (markdown) => {
 
 /**
  * Parses event logs for data to retrieve for landing page
- * @param {CrowdProposalCreated[]} event raw event JSON
+ * @param {ProposalCreated} event raw event JSON
  * @returns {Object[]} containing contract details
  */
 const parseEvents = async (event) => {
   // Collect block and markdown header
-  // const block = await provider.getBlock(event.blockNumber);
-  // const markdownHeader = getHeader(event.args[event.args.length - 1]);
+  const block = event.meta.blockNumber;
+  const markdownHeader = event.decoded.description;
+  const proposalId = event.decoded.id;
 
-  // // Collect proposal vote count
-  // const votesRaw = await contractUNI.getCurrentVotes(event.args[0]);
-  // const votesParsed = formatEther(votesRaw.toString());
+  // Collect proposal vote count
+  const proposalsABI = find(GovernorAlphaABI, {name: 'proposals'});
+  const proposalsMethod = governorAlphaContract.method(proposalsABI);
+  const proposal = await proposalsMethod.call(proposalId);
 
-  // // Collect proposal status
-  // const proposalContract = getProposalContract(event.args[0]);
-  // const proposalId = await proposalContract.govProposalId();
-  // const terminated = await proposalContract.terminated();
-  // // Setup proposal status
-  // const proposalStatus = terminated
-  //   ? // If terminated return "Terminated"
-  //     "Terminated"
-  //   : // Else if proposal Id assigned, return Proposed
-  //   proposalId.toString() !== "0"
-  //   ? "Proposed"
-  //   : // Else, return In Progress
-  //     "In Progress";
+  const stateABI = find(GovernorAlphaABI, {name:'state'});
+  const stateMethod = governorAlphaContract.method(stateABI);
+  const proposalStateRaw = (await stateMethod.call(proposalId)).decoded[0];
 
-  // return {
-  //   // Deployed proposal address
-  //   contract: event.args[0],
-  //   // Contract status
-  //   status: proposalStatus,
-  //   // Contract vote count
-  //   votes: votesParsed,
-  //   // Time of deployment
-  //   timestamp: block.timestamp,
-  //   // Proposal title
-  //   title: markdownHeader,
-  //   // Contract arguments
-  //   args: event.args,
-  // };
+  const votesForRaw = proposal.decoded.forVotes;
+  const votesAgainstRaw = proposal.decoded.againstVotes;
+
+  return {
+    // Deployed proposal address
+    id: proposalId,
+    // Contract state
+    state: toProposalState(proposalStateRaw),
+    // Votes on both sides
+    votesFor: parseFloat(ethers.utils.formatEther(votesForRaw)),
+    votesAgainst: parseFloat(ethers.utils.formatEther(votesAgainstRaw)), 
+    // Time of proposal
+    timestamp: event.meta.blockTimestamp,
+    // Proposal title
+    title: markdownHeader,
+    // Proposer
+    proposer: event.decoded.proposer,
+    // Action parameters
+    targets: event.decoded.targets,
+    values: event.decoded.values,
+    signatures: event.decoded.signatures,
+    calldatas: event.decoded.calldatas,
+    description: event.decoded.description,
+    // Start and end blocks for voting
+    startBlock: proposal.decoded.startBlock,
+    endBlock: proposal.decoded.endBlock
+  };
 };
 
 /**
- * Retrieves crowd proposal creations and returns active proposals
- * @returns {Object[]} array of contracts
+ * Retrieves proposal creations and returns active proposals
+ * @returns {Object[]} array of proposals
  */
 export const collectProposals = async () => {
-  // Filter for all CrowdProposalCreated events
-  // const filter = proposalFactory.filters.CrowdProposalCreated();
-  // const events = (await proposalFactory.queryFilter(filter)).reverse();
+  // Filter for all ProposalCreated events
+  const proposalCreatedABI = find(GovernorAlphaABI, {name: 'ProposalCreated' });
+  const proposalCreatedEvent = governorAlphaContract.event(proposalCreatedABI);
+  const filter = proposalCreatedEvent.filter([{}]);
 
-  // // For each event
-  // const proposals = // Parse to appropriate return format
-  // (await Promise.all(events.map((event) => parseEvents(event))))
-  //   // Filter out terminated proposals
-  //   .filter((proposal) => proposal.status !== "Terminated");
+  // Limit to fetching the top 20 results
+  const events = await filter.apply(0, 20);
 
-  // // Filter for all remnant events
-  // const remnantFilter = oldProposalFactory.filters.CrowdProposalCreated();
-  // const remnantEvents = (
-  //   await oldProposalFactory.queryFilter(remnantFilter)
-  // ).reverse();
+  // For each event
+  const proposals = // Parse to appropriate return format
+  (await Promise.all(events.map((event) => parseEvents(event))))
+    // Filter out terminated proposals
+    // Might want to filter out other categories of proposals too
+    .filter((proposal) => proposal.state !== "Canceled");
 
-  // // For each event
-  // const oldProposals = // Parse to appropriate return format
-  // (await Promise.all(remnantEvents.map((event) => parseEvents(event))))
-  //   // Filter out terminated proposals
-  //   .filter((proposal) => proposal.status !== "Terminated");
-
-  const proposals = []
-  const oldProposals = []
-
-  return [...proposals, ...oldProposals];
+  return [...proposals];
 };
 
 export default async (_, res) => {

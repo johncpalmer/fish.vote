@@ -14,8 +14,8 @@
     opacity: 0.8;
   }
 
-  // Current proposal status
-  .breadcrumb__status {
+  // Current proposal state
+  .breadcrumb__state {
     font-weight: 600;
     font-size: 15px;
     line-height: 20px;
@@ -77,7 +77,7 @@
 // Responsiveness
 @media screen and (max-width: 500px) {
   .breadcrumb {
-    .breadcrumb__status {
+    .breadcrumb__state {
       font-size: 13px;
       line-height: 17px;
       margin-top: 24px;

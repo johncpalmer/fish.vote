@@ -3,7 +3,7 @@ import {
   TextAreaInputWithTopLabel,
 } from "@components/Inputs"; // Components: Inputs
 import Link from "next/link"; // Routing
-import eth from "@state/eth"; // Global state: eth
+import vechain from "@state/vechain"; // Global state: vechain
 import { useState } from "react"; // State management
 import Card from "@components/Card"; // Component: Card
 import { useRouter } from "next/router"; // Routing
@@ -32,7 +32,7 @@ export default function Create() {
   const router = useRouter();
 
   // Global state
-  const { address, unlock } = eth.useContainer();
+  const { address, unlock } = vechain.useContainer();
   const { createProposal, inifiniteApproveFactory } = governance.useContainer();
 
   // Local state
@@ -145,6 +145,9 @@ export default function Create() {
           {/* Add Actions */}
           <div className={styles.card__add_action}>
             <button
+              // Do not allow more than 10 actions
+              // As governorAlpha only allows max 10 actions
+              disabled={actions.length >= 10}
               // On click:
               onClick={() =>
                 // Update actions with [...actions, defaultAction]
