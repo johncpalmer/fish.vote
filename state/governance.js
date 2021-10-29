@@ -104,7 +104,6 @@ function useGovernance() {
 
     const txResponse = await provider.vendor.sign('tx', [clause])
                               .signer(address)
-                              .gas(2000000) // This is the maximum
                               .comment("Sign to delegate your votes to " + newDelegate)
                               .request();
 
@@ -135,7 +134,6 @@ function useGovernance() {
     const clause = method.asClause(id, voteFor);
     const txResponse = await provider.vendor.sign('tx', [clause])
                               .signer(address) // This modifier really necessary?
-                              .gas(2000000) // This is the maximum
                               .comment("Sign to cast your vote for Proposal ID " + id)
                               .request();    
 
@@ -266,7 +264,6 @@ function useGovernance() {
 
     const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
-                                  .gas(2000000) // This is the maximum
                                   .comment("Sign to submit Proposal to GovernorAlpha")
                                   .request();    
 
@@ -311,7 +308,6 @@ function useGovernance() {
     const clause = method.asClause(proposalId);
     const txResponse = await provider.vendor.sign('tx', [clause])
                               .signer(address) // This modifier really necessary?
-                              .gas(2000000) // This is the maximum
                               .comment("Sign to queue proposal " + proposalId)
                               .request();
 
