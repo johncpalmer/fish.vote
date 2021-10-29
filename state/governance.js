@@ -27,9 +27,9 @@ function useGovernance() {
    * Collect user details
    */
   const collectUser = async () => {
-    await collectVexBalance();
-    await collectDelegates();
-    await collectCurrentVotes();
+    collectVexBalance();
+    collectDelegates();
+    collectCurrentVotes();
   };
 
   /**

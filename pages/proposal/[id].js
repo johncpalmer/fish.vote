@@ -157,9 +157,9 @@ export default function Proposal({ id, defaultProposalData }) {
     // If proposal is in a succeeded state
     else if (data.state === "Succeeded") {
       if (authed) {
-        action.name = "Queue Proposal";
-        action.handler = () => queueWithLoading();
-        action.disabled = false;
+        actions.name = "Queue Proposal";
+        actions.handler = () => queueWithLoading();
+        actions.disabled = false;
       }
       else {
         actions.name = "Connect wallet";
@@ -170,14 +170,14 @@ export default function Proposal({ id, defaultProposalData }) {
     else if (data.state === "Queued") {
       if (authed) {
         // TODO: Check if eta has arrived
-        // action.name = "Execute Proposal";
-        // action.handler = () => executeWithLoading();
-        // action.disabled = false;
+        // actions.name = "Execute Proposal";
+        // actions.handler = () => executeWithLoading();
+        // actions.disabled = false;
         
         // If not, show that not yet ETA and disable action
-        // action.name = "Not yet ETA";
-        // action.handler = () => null;
-        // action.disabled = true;
+        // actions.name = "Not yet ETA";
+        // actions.handler = () => null;
+        // actions.disabled = true;
       }
       else {
         actions.name = "Connect wallet";
