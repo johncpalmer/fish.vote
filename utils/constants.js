@@ -16,8 +16,6 @@ const VEX_CONSTANTS = {
       address: "0x41D293Ee2924FF67Bd934fC092Be408162448f86",
     },
   },
-
-  // Effective contract addresses on the Vechain testnet
   testnet: {
     governor_alpha: {
       name: "Governor",

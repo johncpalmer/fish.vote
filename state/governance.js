@@ -119,7 +119,8 @@ function useGovernance() {
     }
 
     // Update delegates with new information
-    await collectDelegates();
+    collectDelegates();
+    collectCurrentVotes()
   };
 
   /** 
