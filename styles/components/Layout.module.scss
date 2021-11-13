@@ -97,7 +97,7 @@
     .layout__header_auth_connect {
       background-color: rgb(253, 234, 241);
       border: 1px solid rgb(253, 234, 241);
-      color: var(--color-pink);
+      color: var(--color-orange);
       font-weight: 500;
       transition: transform 450ms ease 0s;
       font-size: 16px;
@@ -201,7 +201,7 @@
 
   // TODO: can refactor button to a component itself
   button {
-    background-color: var(--color-pink);
+    background-color: var(--color-orange);
     color: white;
     font-weight: 500;
     font-size: 16px;

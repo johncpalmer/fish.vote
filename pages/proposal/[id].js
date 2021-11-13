@@ -217,7 +217,7 @@ export default function Proposal({ id, defaultProposalData }) {
       case "Queued": 
       case "Expired": 
       case "Executed":
-        return "var(--color-pink)";
+        return "var(--color-orange)";
       default:
         console.error("Unrecognized proposal state");
     }
