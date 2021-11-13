@@ -1,5 +1,8 @@
 import Head from "next/head"; // HTML head
 import Link from "next/link"; // Routing
+import Image from "next/image"; // Routing
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+
 import Modal from "@components/Modal"; // Component: Modal
 import vechain from "@state/vechain"; // Vechain state container
 import governance from "@state/governance"; // Governance state container
@@ -13,7 +16,7 @@ export default function Layout({ children, short, proposal }) {
     <div>
       {/* Navigation progress bar */}
       <NextNProgress
-        color="#E7347A"
+        color="#f5a788"
         startPosition={0.3}
         stopDelayMs={200}
         height="3"
@@ -60,15 +63,15 @@ function Meta({ proposal }) {
       <meta name="title" content="Fish.vote" />
       <meta
         name="description"
-        content="Crowd Proposals for Uniswap governance"
+        content="Crowd Proposals for Vexchange governance"
       />
 
       {/* Open Graph + Facebook */}
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://fish.vote" />
+      <meta property="og:url" content="https://vote.vexchange.io" />
       <meta
         property="og:description"
-        content="Crowd proposals for Uniswap governance"
+        content="Crowd proposals for Vexchange governance"
       />
       <meta property="og:image" content="https://fish.vote/twitter-card.png" />
 
@@ -77,7 +80,7 @@ function Meta({ proposal }) {
       <meta property="twitter:url" content="https://fish.vote" />
       <meta
         property="twitter:description"
-        content="Crowd proposals for Uniswap governance"
+        content="Crowd proposals for Vexchange governance"
       />
       <meta
         property="twitter:image"
@@ -163,20 +166,28 @@ function Header() {
       {/* Logo */}
       <div className={styles.layout__header_logo}>
         <Link href="/">
-          <a>
-            {/* Logo: Desktop */}
-            <img
-              className={styles.layout__header_logo_desktop}
-              src="/vectors/logo-mobile.svg"
-              alt="Fish logo"
-            />
-
-            {/* Logo: Mobile */}
-            <img
-              className={styles.layout__header_logo_mobile}
-              src="/vectors/logo-mobile.svg"
-              alt="Fish logo"
-            />
+          <a
+            style={{
+              display: 'block' 
+            }}
+          >
+            { isMobile ? (
+              <Image
+                className={styles.layout__header_logo_desktop}
+                src="/vectors/logo-mobile.svg"
+                alt="Vexchange logo"
+                width={40}
+                height={40}
+              />
+            ) : (
+              <Image
+                className={styles.layout__header_logo_desktop}
+                src="/vectors/logo-mobile.svg"
+                alt="Vexchange logo"
+                width={40}
+                height={40}
+              />
+            )}
           </a>
         </Link>
       </div>
@@ -233,17 +244,7 @@ function Footer() {
         <ul>
           <li>
             {/* Copyright */}
-            <span>&copy; Fish 2021</span>
-          </li>
-          <li>
-            {/* UGP quicklink */}
-            <a
-              href="https://twitter.com/uniswapgrants"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Uniswap Grants Wave 3
-            </a>
+            <span>&copy; Vexchange 2021</span>
           </li>
         </ul>
       </div>
@@ -253,17 +254,13 @@ function Footer() {
         <ul>
           <li>
             {/* Twitter quicklink */}
-            <a
-              href="https://twitter.com/fishvote_"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://twitter.com/VexchangeIO" target="_blank" rel="noopener noreferrer">
               Twitter
             </a>
           </li>
           <li>
             {/* Contact link */}
-            <a href="mailto:contact@fish.vote?subject=Mail from Fish.Vote">
+            <a href="https://discord.gg/krPDhtcumr" target="_blank" rel="noopener noreferrer">
               Contact
             </a>
           </li>

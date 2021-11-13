@@ -1,6 +1,5 @@
 .layout__header {
   height: 70px;
-  padding: 0px 28px;
   border-bottom: 1px solid #dddade;
   position: fixed;
   top: 0px;
@@ -8,16 +7,15 @@
   z-index: 999;
   width: 100%;
   background-color: var(--color-bg);
-
-  > div {
-    vertical-align: top;
-    display: inline-block;
-    height: 100%;
-  }
+  display: flex;
+  justify-content: space-between;
 
   // Right: logo
   .layout__header_logo {
-    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 40px;
 
     .layout__header_logo_desktop {
       margin-top: 19px;
@@ -43,7 +41,8 @@
 
   // Left: Authentication
   .layout__header_auth {
-    width: calc(100% - 100px);
+    // width: calc(100% - 100px);
+    padding-right: 40px;
 
     // Connected state
     .layout__header_auth_connected {
@@ -207,7 +206,7 @@
     font-size: 16px;
     padding: 10px 24px;
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     display: inline-block;
     cursor: pointer;
     width: 100%;

@@ -36,11 +36,11 @@ export default function Selector({
     control: (provided, state) => ({
       ...provided,
       border: state.isFocused
-        ? `1px solid #e7347a`
+        ? `1px solid #f5a788`
         : state.isHovered
         ? "1px solid #e3e4e6"
         : "1px solid #e3e4e6",
-      borderRadius: 20,
+      borderRadius: 8,
       padding: "10px 12px 10px 20px",
       transition: "none",
       cursor: "pointer",
@@ -57,7 +57,7 @@ export default function Selector({
     // Popup menu styles
     menu: (provided) => ({
       ...provided,
-      borderRadius: 20,
+      borderRadius: 8,
       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.12)",
       border: "1px solid #E3E4E5",
       marginTop: 16,
