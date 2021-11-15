@@ -54,13 +54,13 @@ function Meta({ proposal }) {
       {proposal ? null : (
         // If not a proposal page, inject title
         <>
-          <title>Fish.vote</title>
-          <meta property="og:title" content="Fish.vote" />
-          <meta property="twitter:title" content="Fish.vote" />
+          <title>Vote | Vexchange</title>
+          <meta property="og:title" content="Vote.vexchange" />
+          <meta property="twitter:title" content="Vote.vexchange" />
         </>
       )}
 
-      <meta name="title" content="Fish.vote" />
+      <meta name="title" content="Vote.vexchange" />
       <meta
         name="description"
         content="Crowd Proposals for Vexchange governance"
@@ -73,18 +73,18 @@ function Meta({ proposal }) {
         property="og:description"
         content="Crowd proposals for Vexchange governance"
       />
-      <meta property="og:image" content="https://fish.vote/twitter-card.png" />
+      <meta property="og:image" content="https://vote.vexchange.io/twitter-card.png" />
 
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content="https://fish.vote" />
+      <meta property="twitter:url" content="https://vote.vexchange.io" />
       <meta
         property="twitter:description"
         content="Crowd proposals for Vexchange governance"
       />
       <meta
         property="twitter:image"
-        content="https://fish.vote/twitter-card.png"
+        content="https://vote.vexchange.io/twitter-card.png"
       />
 
       {/* Favicon */}

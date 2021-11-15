@@ -90,7 +90,7 @@ export default function New() {
         <div className={`card__padding ${styles.home__description}`}>
           <h5>Creating a proposal</h5>
           <p>
-            On Fish.vote, anyone can publish a{" "}
+            On Vote.Vexchange, anyone can publish a{" "}
             <a
               href="https://medium.com/compound-finance/compound-autonomous-proposals-354e7a2ad6b7"
               target="_blank"
@@ -99,14 +99,14 @@ export default function New() {
               Crowd Proposal
             </a>
             . Then comes the most important work: gathering support from the
-            broader UNI community. We recommend sharing the link to your
+            broader VEX community. We recommend sharing the link to your
             proposal publicly and finding others who support you. Once your
             proposal reaches 400 delegate votes, it will be displayed on the
-            Fish.vote home page.
+            Vote.Vexchange home page.
           </p>
           <p>
             Until today, only whales with 10 million votes could submit
-            proposals. Now, <span>even fish can make waves</span>.
+            proposals. Now, <span>even vex can make waves</span>.
           </p>
         </div>
       </Card>
@@ -133,13 +133,13 @@ export default function New() {
             <div className={styles.home__empty}>
               <h3>Nothing here yet</h3>
               <p>
-                No one has created a crowd proposal on fish.vote yet. Check back
+                No one has created a crowd proposal on Vote.Vexchange yet. Check back
                 soon.
               </p>
 
               {/* Link to new twitter */}
               <a
-                href="https://twitter.com/fishvote_"
+                href="https://twitter.com/vexchangeio"
                 target="_blank"
                 rel="noopener noreferrer"
               >

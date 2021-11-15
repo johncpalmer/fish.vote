@@ -235,9 +235,9 @@ export default function Proposal({ id, defaultProposalData }) {
       {/* Page custom meta */}
       <Head>
         {/* Update page title for proposals */}
-        <title>Fish.vote | {data.title}</title>
-        <meta property="og:title" content={`Fish.vote | ${data.title}`} />
-        <meta property="twitter:title" content={`Fish.vote | ${data.title}`} />
+        <title>Voteg.vexchange | {data.title}</title>
+        <meta property="og:title" content={`Vote.vexchange | ${data.title}`} />
+        <meta property="twitter:title" content={`Vote.vexchange | ${data.title}`} />
       </Head>
 
       {/* Delegation modal (hidden when !modalOpen) */}

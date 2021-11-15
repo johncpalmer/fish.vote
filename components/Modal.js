@@ -1,4 +1,4 @@
-import { Modal as FishModal } from "react-responsive-modal"; // React-responsive-modal
+import { Modal as VoteModal } from "react-responsive-modal"; // React-responsive-modal
 
 export default function Modal({
   // True == modal open
@@ -9,7 +9,7 @@ export default function Modal({
   children,
 }) {
   return (
-    <FishModal
+    <VoteModal
       open={open}
       onClose={() => openHandler(false)}
       // Prevent close icon X
@@ -17,6 +17,6 @@ export default function Modal({
       center
     >
       {children}
-    </FishModal>
+    </VoteModal>
   );
 }
