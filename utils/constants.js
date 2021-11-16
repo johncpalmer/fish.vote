@@ -5,31 +5,29 @@ const VEX_CONSTANTS = {
   mainnet: {
     governor_alpha: {
       name: "Governor",
-      address: "",
+      address: "0xAE6d4be61A36984dfbE7399A73B59c92b994E9F7",
     },
     vex_governance_token: {
       name: "VEX",
-      address: "",
+      address: "0x0BD802635eb9cEB3fCBe60470D2857B86841aab6",
     },
     timelock: {
       name: "Timelock",
-      address: "",
+      address: "0x41D293Ee2924FF67Bd934fC092Be408162448f86",
     },
   },
-
-  // Effective contract addresses on the Vechain testnet
   testnet: {
     governor_alpha: {
       name: "Governor",
-      address: "0x6408519031Ab11780920A5b58660cbA9F94dDeeD",
+      address: "0x40b4F819bB35D07159AADDd415670328ecf301b5",
     },
     vex_governance_token: {
       name: "VEX",
-      address: "0x696B30691c767df0Cf6d49a049849FFad54a7EBE",
+      address: "0x10bf15c804AB02cEBb9E82CB61B200bba46C7CDE",
     },
     timelock: {
       name: "Timelock",
-      address: "0x8000a11c4bE92638212fC4Aa5fC90ab8e880C7a0",
+      address: "0xFd883d0947848eeA79bA1425fcE38b6f00dF3ea0",
     },
   }
 }

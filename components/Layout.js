@@ -156,7 +156,8 @@ function Header() {
 
       // Close modal after wallet connection, successful or not
       setModalOpen(false);
-  }
+  };
+
   return (
     <div className={styles.layout__header}>
       {/* Logo */}

@@ -26,10 +26,10 @@ function useGovernance() {
   /**
    * Collect user details
    */
-  const collectUser = async () => {
-    await collectVexBalance();
-    await collectDelegate();
-    await collectCurrentVotes();
+  const collectUser = () => {
+    collectVexBalance();
+    collectDelegates();
+    collectCurrentVotes();
   };
 
   /**
@@ -63,18 +63,18 @@ function useGovernance() {
   /**
    * Collect delegates of the user updates in state
    */
-  const collectDelegate = async () => {
+  const collectDelegates = async () => {
     // Collect delegate
-    const delegatesABI = find(VEXABI, { name: "delegate" });
+    const delegatesABI = find(VEXABI, { name: "delegates" });
     const method = vexContract.method(delegatesABI);
-    const delegate = (await method.call(address)).data;
+    const delegate = (await method.call(address)).decoded[0];
 
     // Update delegate in state
     setDelegate(delegate);
   }
 
   /**
-   * Generates padded bytes based on type and value
+   * Obtains the vote receipt of the user for the proposalId
    * @param {string} proposalId of the proposal of interest
    * @returns {Receipt} an object as defined in GovernorAlpha
    */
@@ -87,18 +87,40 @@ function useGovernance() {
   }
 
 
-  /** TODO: refactor this to delegate to a person
-   * Delegates to a contract and refreshes proposals
-   * @param {String} contract address for CrowdProposal
+  /** 
+   * Delegates to an address 
+   * @param {String} newDelegate address for CrowdProposal
    */
-  const delegateToContract = async (contract) => {
-    // Delegate to contract and wait for 1 confirmation
-    const tx = await vexContract.delegate(contract);
-    await tx.wait(1);
+  const delegateToAddress = async (newDelegate) => {
+    if(!ethers.utils.isAddress(newDelegate)) {
+      console.error("newDelegate address is not a valid address", newDelegate);
+      return;
+    }
 
-    // Recollect proposals with updated information
-    await collectProposals();
-    return;
+    // Delegate to specified newDelegate
+    const delegateABI = find(VEXABI, { name: 'delegate' });
+    const method = vexContract.method(delegateABI);
+    const clause = method.asClause(newDelegate);
+
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address)
+                              .comment("Sign to delegate your votes to " + newDelegate)
+                              .request();
+
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next(); 
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+
+    // Update delegates with new information
+    collectDelegates();
+    collectCurrentVotes()
   };
 
   /** 
@@ -113,7 +135,6 @@ function useGovernance() {
     const clause = method.asClause(id, voteFor);
     const txResponse = await provider.vendor.sign('tx', [clause])
                               .signer(address) // This modifier really necessary?
-                              .gas(2000000) // This is the maximum
                               .comment("Sign to cast your vote for Proposal ID " + id)
                               .request();    
 
@@ -136,7 +157,6 @@ function useGovernance() {
 
     // Recollect proposals with updated information
     await collectProposals();
-    return;
   };
 
 
@@ -245,7 +265,6 @@ function useGovernance() {
 
     const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
-                                  .gas(2000000) // This is the maximum
                                   .comment("Sign to submit Proposal to GovernorAlpha")
                                   .request();    
 
@@ -277,6 +296,42 @@ function useGovernance() {
     // Return proposal id
     return proposalId;
   };
+
+  /**
+   * Queues proposals in the Successful state for execution
+   * after timelock delay (currently 2 days)
+   * @param proposalId
+   */
+  const queueProposal = async (proposalId) => {
+    console.assert(proposalId, "proposalId should not be null");
+    const queueABI = find(GovernorAlphaABI, { name: "queue" });
+    const method = governanceContract.method(queueABI);
+    const clause = method.asClause(proposalId);
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address) // This modifier really necessary?
+                              .comment("Sign to queue proposal " + proposalId)
+                              .request();
+
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next();
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+
+    // Handle failed tx
+    if (txReceipt.reverted) {
+      console.error("Queuing proposal failed");
+      return;
+    }
+
+    // Regenerate proposals
+    await collectProposals();
+  }
 
   const collectProposals = async () => {
     // Toggle loading
@@ -355,7 +410,7 @@ function useGovernance() {
   };
 
   /**
-   * Collections to run on load
+   * Collections of user data to run on load
    */
   const setupUser = async () => {
     // If authenticated
@@ -394,9 +449,9 @@ function useGovernance() {
     getReceipt,
     loadingProposals,
     createProposal,
+    queueProposal,
     collectProposalById,
-    delegateToContract,
-    // proposeContract,
+    delegateToAddress,
     castVote,
   };
 }
