@@ -94,17 +94,16 @@
 
 // Description cards
 .home__description {
+  padding: 24px 28px;
+
   h5 {
     font-size: 16px;
-    // line-height: 19px;
-    // font-weight: 500;
-    // margin: 0px;
-
     color: #FFFFFF;
     font-family: VCR,sans-serif;
     font-style: normal;
     font-weight: normal;
     text-transform: uppercase;
+    margin-top: 0;
   }
 
   p {

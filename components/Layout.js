@@ -231,12 +231,19 @@ function Header() {
 function Footer() {
   return (
     <div className={styles.layout__footer}>
+
       {/* Footer: Left */}
       <div>
         <ul>
           <li>
-            {/* Copyright */}
-            <span>&copy; Vexchange 2021</span>
+            <a href="https://docs.vexchange.io/docs/v2" rel="noopener noreferrer" target="_blank">
+              Docs
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/vexchange" rel="noopener noreferrer" target="_blank">
+              Blog
+            </a>
           </li>
         </ul>
       </div>
@@ -245,19 +252,24 @@ function Footer() {
       <div>
         <ul>
           <li>
-            {/* Twitter quicklink */}
-            <a href="https://twitter.com/VexchangeIO" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://discord.gg/krPDhtcumr" target="_blank" rel="noopener noreferrer">
+              Discord
+            </a>
+          </li>
+          <li>
+            <a href="https://twitter.com/VexchangeIO" rel="noopener noreferrer" target="_blank">
               Twitter
             </a>
           </li>
           <li>
-            {/* Contact link */}
-            <a href="https://discord.gg/krPDhtcumr" target="_blank" rel="noopener noreferrer">
-              Contact
+            <a href="https://github.com/vexchange" target="_blank" rel="noopener noreferrer">
+              Github
             </a>
           </li>
         </ul>
       </div>
+
     </div>
   );
 }

@@ -87,7 +87,7 @@ export default function New() {
 
       {/* About card */}
       <Card shortMargin>
-        <div className={`card__padding ${styles.home__description}`}>
+        <div className={`${styles.home__description}`}>
           <h5>Creating a proposal</h5>
           <p>
             On Vote.Vexchange, anyone can publish a{" "}
