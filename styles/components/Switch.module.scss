@@ -2,12 +2,12 @@
   border-radius: 8px;
   display: inline-block;
   padding: 12px 4px;
+  background-color: #121218;
 
   a {
     font-weight: 600;
     font-size: 16px;
     line-height: 19px;
-    color: #24262d;
     padding: 8px 12px;
     border-radius: 4px;
   }
@@ -19,15 +19,12 @@
 
 // Active route background color
 .switch__active {
-  background-color: white;
+  background-color: #f5a78814;
+  color: var(--color-orange);
 }
 
 // Switch left state bg color
-.switch__left {
-  background-color: var(--color-orange);
-}
-
-// Switch right state bg color
+.switch__left,
 .switch__right {
-  background-color: #5DAACD;
+  color: #ACACAB;
 }

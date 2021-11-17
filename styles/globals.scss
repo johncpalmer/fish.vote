@@ -1,6 +1,11 @@
+@font-face {
+  font-family: "VCR";
+  src: local("VCR"), url(/fonts/VCR_OSD_MONO.ttf) format("truetype");
+}
+
 // Global config
 * {
-  --color-bg: #f7f5f8;
+  --color-bg: #030309;
   --color-orange: #f5a788;
 }
 
@@ -10,6 +15,7 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   font-family: "Inter", sans-serif;
+  font-size: 14px;
 }
 
 a {
@@ -19,6 +25,11 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+p {
+  color: #ACACAB;
+  line-height: 1.5;
 }
 
 button {
@@ -42,10 +53,12 @@ button:focus {
 
 // React-responsive-modal overrides
 .react-responsive-modal-overlay {
-  background: rgba(0, 0, 0, 0.3) !important;
+  // background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(80px);
 }
 
 .react-responsive-modal-modal {
+  background: rgba(255, 255, 255, 0.04) !important;
   border-radius: 12px;
   max-width: 500px !important;
   width: calc(100% - 40px);

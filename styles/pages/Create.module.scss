@@ -9,7 +9,6 @@
   align-items: center;
 
   button {
-    font-size: 16px;
     font-weight: 500;
     color: var(--color-orange);
     border: none;
@@ -26,32 +25,22 @@
 .card__submit {
   padding: 24px 28px 28px 28px;
 
-  p {
-    margin: 0px;
-    font-weight: 400;
-    color: rgba(95, 100, 118, 0.8);
-    font-size: 16px;
-    line-height: 24px;
-  }
-
   button {
-    background-color: var(--color-orange);
-    color: white;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 12px 24px;
+    font-family: VCR, sans-serif;
+    background-color: #f5a78814;
     border: none;
-    border-radius: 12px;
-    display: inline-block;
+    color: var(--color-orange);
+    line-height: 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 12px 16px;
     cursor: pointer;
-    will-change: transform;
-    transition: transform 450ms ease 0s;
+    text-transform: uppercase;
     margin-top: 24px;
   }
 
   button:hover {
-    background-color: rgb(230, 0, 110);
-    transform: scale(0.99);
+    opacity: 0.64;
   }
 
   button:disabled {

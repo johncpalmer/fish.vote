@@ -1,7 +1,7 @@
 .layout__header {
-  height: 70px;
-  border-bottom: 1px solid #dddade;
-  position: fixed;
+  position: sticky;
+  top: 0;
+  height: 72px;
   top: 0px;
   left: 0px;
   z-index: 999;
@@ -9,6 +9,10 @@
   background-color: var(--color-bg);
   display: flex;
   justify-content: space-between;
+  background: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid #1C1C22;
+  backdrop-filter: blur(40px);
+
 
   // Right: logo
   .layout__header_logo {
@@ -41,8 +45,10 @@
 
   // Left: Authentication
   .layout__header_auth {
-    // width: calc(100% - 100px);
     padding-right: 40px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
 
     // Connected state
     .layout__header_auth_connected {
@@ -94,33 +100,28 @@
 
     // Authentication button
     .layout__header_auth_connect {
-      background-color: rgb(253, 234, 241);
-      border: 1px solid rgb(253, 234, 241);
+      font-family: VCR, sans-serif;
+      background-color: #f5a78814;
+      border: none;
       color: var(--color-orange);
-      font-weight: 500;
-      transition: transform 450ms ease 0s;
-      font-size: 16px;
-      border-radius: 12px;
-      padding: 0.5rem;
+      line-height: 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 12px 16px;
       cursor: pointer;
-      float: right;
-      margin-top: calc((56px - 1.5rem) / 2);
-      will-change: transform;
+      text-transform: uppercase;
     }
 
     // Authentication button hover/focus states
     .layout__header_auth_connect:focus,
     .layout__header_auth_connect:hover {
-      border: 1px solid rgb(241, 201, 218);
-      color: rgb(230, 0, 110);
-      transform: scale(0.99);
+      opacity: 0.64;
     }
   }
 }
 
 .layout__content {
   padding: 70px 28px 0px 28px;
-  min-height: calc(100vh - 120px);
 
   .layout__content_sizer {
     max-width: 800px;

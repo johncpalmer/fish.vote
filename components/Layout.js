@@ -217,21 +217,15 @@ function Header() {
             </button>
           </div>
         ) : (
-          // Unauthenticated state
-          <button
-            className={styles.layout__header_auth_connect}
-            onClick={onOpenModal}>
-            Connect wallet
-          </button>
+          <div>
+            <button
+              className={styles.layout__header_auth_connect}
+              onClick={connectWalletWithLoading}>
+              Connect wallet
+            </button>
+          </div>
         )}
       </div>
-      <Modal open={modalOpen}
-             openHandler={setModalOpen}>
-        <div className={styles.card__modal}>
-            <h3>Sync 2</h3>
-            <button onClick={connectWalletWithLoading}>Sync 2</button>
-        </div>
-      </Modal>
     </div>
   );
 }

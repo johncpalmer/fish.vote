@@ -1,13 +1,15 @@
 // Custom select module indicator
 .selector__indicator {
-  background-color: var(--color-orange);
-  color: white;
-  padding: 7px 8px;
+  background-color: #f5a78814;
+  color: var(--color-orange);
+  padding: 12px 16px;
+  line-height: 20px;
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
   border-radius: 8px;
 
   span {
     vertical-align: middle;
-    font-size: 16px;
     line-height: 19px;
   }
 

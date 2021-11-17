@@ -36,11 +36,12 @@ export default function Selector({
     control: (provided, state) => ({
       ...provided,
       border: state.isFocused
-        ? `1px solid #f5a788`
+        ? `1px solid white`
         : state.isHovered
         ? "1px solid #e3e4e6"
-        : "1px solid #e3e4e6",
-      borderRadius: 8,
+        : "none",
+      borderRadius: 4,
+      backgroundColor: 'rgba(255, 255, 255, 0.04)',
       padding: "10px 12px 10px 20px",
       transition: "none",
       cursor: "pointer",
@@ -49,27 +50,34 @@ export default function Selector({
     valueContainer: (provided) => ({
       ...provided,
       padding: 0,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 400,
       fontFamily: "Inter, sans-serif",
-      color: "#24262d",
+      color: "#ACACAB",
     }),
     // Popup menu styles
     menu: (provided) => ({
       ...provided,
-      borderRadius: 8,
-      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.12)",
-      border: "1px solid #E3E4E5",
+      backgroundColor: '#1F1D23',
+      borderRadius: 4,
+      border: "1px solid white",
       marginTop: 16,
-      paddingTop: 16,
-      paddingBottom: 16,
     }),
     // Menu option styles
-    option: (provided) => ({
+    option: (provided, state) => ({
       ...provided,
       padding: "12px 16px",
+      color: '#ACACAB',
       cursor: "pointer",
+      backgroundColor: "#1F1D23",
+      "&:hover": {
+        backgroundColor: "#ffffff0a"
+      }
     }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: 'white'
+    })
   };
 
   return (

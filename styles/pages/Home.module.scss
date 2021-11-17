@@ -12,14 +12,6 @@
     margin: 0px;
   }
 
-  p {
-    margin: 12px 0px;
-    color: #5f6476;
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 150%;
-  }
-
   a {
     color: var(--color-orange);
     font-size: 15px;
@@ -99,17 +91,22 @@
 .home__description {
   h5 {
     font-size: 16px;
-    line-height: 19px;
-    color: #222;
-    font-weight: 500;
-    margin: 0px;
+    // line-height: 19px;
+    // font-weight: 500;
+    // margin: 0px;
+
+    color: #FFFFFF;
+    font-family: VCR,sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-transform: uppercase;
   }
 
   p {
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 500;
     line-height: 150%;
-    color: #5f6476;
-    font-weight: 400;
+    color: #ACACAB;
 
     a {
       text-decoration: underline;
