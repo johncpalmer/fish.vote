@@ -6,9 +6,8 @@
 
   h3 {
     font-weight: 500;
-    font-size: 18px;
     line-height: 30px;
-    color: rgba(17, 17, 17, 0.8);
+    color: #ACACAB;
     margin: 0px;
   }
 
@@ -22,12 +21,18 @@
 
 // Individual proposal items
 .home__proposal {
-  border-bottom: 1px solid #dddade;
+  border-top: 1px solid #1C1C22;
+  background-color: #121218;
   padding: 16px 28px;
   display: flex;
   justify-content: space-between;
   -webkit-box-pack: justify;
   align-items: center;
+
+
+  span {
+    color: #ACACAB;
+  }
 
   > div {
     width: auto;
@@ -48,7 +53,7 @@
       font-weight: 500;
       font-size: 16px;
       line-height: 150%;
-      color: #24262d;
+      color: #ACACAB;
       opacity: 0.8;
       margin: 0px;
     }
@@ -57,7 +62,7 @@
       font-weight: 500;
       font-size: 13px;
       line-height: 150%;
-      color: #24262d;
+      color: #ACACAB;
       opacity: 0.5;
       margin: 4px 0px 0px 0px;
     }
@@ -69,22 +74,22 @@
     justify-content: flex-end;
 
     div {
-      width: 16px;
-      height: 16px;
-      margin-right: 12px;
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
       border-radius: 50%;
     }
   }
 }
 
 .home__proposal:last-of-type {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   border-bottom: none;
 }
 
 .home__proposal:hover {
-  background-color: #f4f4f4;
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 // Description cards

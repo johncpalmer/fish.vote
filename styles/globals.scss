@@ -16,6 +16,7 @@ body {
   background-color: var(--color-bg);
   font-family: "Inter", sans-serif;
   font-size: 14px;
+  height: 100%;
 }
 
 a {
@@ -63,6 +64,15 @@ button:focus {
   max-width: 500px !important;
   width: calc(100% - 40px);
   padding: 24px !important;
+}
+
+#__next {
+  height: 100%;
+}
+
+#__next > div {
+  display: flex;
+  flex-direction: column;
 }
 
 // Responsive

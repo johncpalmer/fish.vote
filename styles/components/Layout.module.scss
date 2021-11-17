@@ -54,9 +54,11 @@
     .layout__header_auth_connected {
       float: right;
       margin-top: 16.5px;
-      background-color: rgb(237, 238, 242);
+
+      // background-color: rgb(237, 238, 242);
       cursor: pointer;
-      border-radius: 12px;
+      border-radius: 8px;
+      border: none;
 
       span {
         font-weight: 500;
@@ -66,23 +68,24 @@
         padding-left: 0.75rem;
         padding-right: 0.5rem;
         display: inline-block;
+        color: white;
       }
 
       button {
         outline: none;
-        background-color: rgb(247, 248, 250);
-        border: 1px solid rgb(237, 238, 242);
+        background-color: #f5a78814;
+        border: none;
         user-select: none;
         cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 12px;
-        font-size: 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
         will-change: transform;
-        transition: transform 450ms ease 0s;
 
         span {
           margin: 0px 0.5rem 0px 0.25rem;
           vertical-align: middle;
+          color: white;
+          font-family: "VCR", sans-serif;
         }
 
         div {
@@ -92,9 +95,7 @@
 
       button:focus,
       button:hover {
-        background-color: rgb(255, 255, 255);
-        border: 1px solid rgb(255, 153, 201);
-        transform: scale(0.99);
+        opacity: 0.64px;
       }
     }
 
