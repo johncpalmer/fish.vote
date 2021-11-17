@@ -165,7 +165,7 @@ export default function Create() {
             {buttonLoading ? (
               // Render loading status if tx submitting
               <center>
-                <Loader type="Oval" color="#e7347a" height={50} width={50} />
+                <Loader type="Oval" color="#f5a788" height={50} width={50} />
               </center>
             ) : (
               // Else, render paragraph

@@ -211,7 +211,7 @@ export default function Home() {
           // If proposals are still loading, show spinner
           <div className="card__padding">
             <center>
-              <Loader type="Oval" color="#e7347a" height={50} width={50} />
+              <Loader type="Oval" color="#f5a788" height={50} width={50} />
             </center>
           </div>
         ) : // Check if there are no top proposals 
