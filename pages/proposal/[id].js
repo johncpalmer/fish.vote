@@ -235,7 +235,7 @@ export default function Proposal({ id, defaultProposalData }) {
       {/* Page custom meta */}
       <Head>
         {/* Update page title for proposals */}
-        <title>Voteg.vexchange | {data.title}</title>
+        <title>Vote.vexchange | {data.title}</title>
         <meta property="og:title" content={`Vote.vexchange | ${data.title}`} />
         <meta property="twitter:title" content={`Vote.vexchange | ${data.title}`} />
       </Head>
@@ -369,8 +369,7 @@ export default function Proposal({ id, defaultProposalData }) {
               return (
                 <div key={i}>
                   {/* Action number */}
-                  <span>{i + 1}</span>
-
+                  <span>{i + 1}:</span>
                   {/* Action details */}
                   <p>
                     {/* Action contract */}

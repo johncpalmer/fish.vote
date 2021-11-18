@@ -2,14 +2,14 @@
   padding: 24px 28px 32px 28px;
 
   .card__progress_bar {
-    height: 13px;
-    border-radius: 18px;
+    height: 8px;
+    border-radius: 2px;
     background-color: rgba(231, 52, 122, 0.2);
     overflow: hidden;
 
     > div {
-      height: 13px;
-      border-radius: 18px;
+      height: 8px;
+      border-radius: 2px;
     }
   }
 
@@ -17,10 +17,10 @@
     margin: 20px 0px;
 
     h4 {
+      color: #ACACAB;
       font-weight: 700;
       line-height: 19px;
       margin: 0px;
-      color: rgb(17, 17, 17, 0.3);
       text-transform: uppercase;
     }
 
@@ -41,27 +41,21 @@
   .card__details_actions {
     div {
       padding: 16px 28px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      border-top: 1px solid #1C1C22;
+      border-bottom: 1px solid #1C1C22;
+      background-color: #121218;
+      display: flex;
+      align-items: center;
 
       > span {
         display: inline-block;
-        vertical-align: top;
-        width: 5%;
-        color: rgba(20, 21, 24, 0.5);
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 28px;
+        color: #ACACAB;
+        margin-right: 8px;
       }
 
       p {
-        font-size: 18px;
-        line-height: 28px;
-        color: #24262d;
-        display: inline-block;
-        vertical-align: top;
+        color: #ACACAB;
         word-break: break-all;
-        width: 95%;
-        margin: 0px;
 
         a {
           color: var(--color-orange);
@@ -72,6 +66,10 @@
 
   .card__details_content {
     padding: 24px 28px 36px 28px;
+
+    h1 {
+      color: #ACACAB;
+    }
 
     p,
     span,
@@ -169,7 +167,8 @@
   }
 
   button:disabled {
-    background-color: #f076a5;
+    background-color: #FA1617;
+    color: #121218;
     cursor: not-allowed;
   }
 

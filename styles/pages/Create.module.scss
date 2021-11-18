@@ -45,13 +45,10 @@
   }
 
   button:disabled {
-    background-color: #f076a5;
+    background-color: #f5a788;
+    opacity: 0.64;
+    color: #121218;
     cursor: not-allowed;
-  }
-
-  button:disabled:hover {
-    background-color: #f076a5;
-    transform: none;
   }
 }
 
