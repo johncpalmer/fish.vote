@@ -95,7 +95,7 @@ export default function Create() {
               label="Title"
               type="text"
               value={title}
-              onChangeHandler={setTitle}
+              onChange={setTitle}
               placeholder="Enter the title of your proposal..."
             />
 
