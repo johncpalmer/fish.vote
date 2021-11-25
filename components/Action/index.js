@@ -1,11 +1,14 @@
-import Spacer from "@components/Spacer"; // Component: Spacer
-import Selector from "@components/Selector"; // Component: Selector
-import { useEffect, useState } from "react"; // Local state management
-import { VEX_ACTIONS } from "@utils/constants"; // Constants
-import styles from "@styles/components/Action.module.scss"; // Component styles
-import { ActionInputWithSideLabel } from "@components/Inputs"; // Components: Inputs
+import { useEffect, useState } from "react";
 
-export default function Action({ onChangeHandler, index }) {
+import { VEX_ACTIONS } from "@utils/constants";
+
+import Spacer from "@components/Spacer";
+import Selector from "@components/Selector";
+import { ActionInputWithSideLabel } from "@components/Inputs";
+
+import { Wrapper } from './styled'
+
+const Action = ({ onChangeHandler, index }) => {
   // Local state containers
   const [func, setFunc] = useState(null);
   const [values, setValues] = useState([]);
@@ -100,7 +103,7 @@ export default function Action({ onChangeHandler, index }) {
   useEffect(updateParentState, [contract, func, targets, values]);
 
   return (
-    <div className={styles.action}>
+    <Wrapper>
       {/* Action label */}
       <label>Action #{index + 1}</label>
 
@@ -182,6 +185,8 @@ export default function Action({ onChangeHandler, index }) {
           )}
         </>
       ) : null}
-    </div>
+    </Wrapper>
   );
 }
+
+export default Action;

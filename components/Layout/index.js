@@ -1,108 +1,31 @@
-import Head from "next/head"; // HTML head
-import Link from "next/link"; // Routing
-import Image from "next/image"; // Routing
-import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
-
-import Modal from "@components/Modal"; // Component: Modal
-import vechain from "@state/vechain"; // Vechain state container
-import governance from "@state/governance"; // Governance state container
-import styles from "@styles/components/Layout.module.scss"; // Component styles
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { isMobile } from 'react-device-detect';
+
+import vechain from "@state/vechain";
+import governance from "@state/governance";
+
+import Meta from '@components/Meta';
+import Modal from "@components/Modal";
+
+import styles from "@styles/components/Layout.module.scss";
+
+import { Content } from './styled'
 
 export default function Layout({ children, short, proposal }) {
   return (
     <div>
-      {/* Html head content */}
       <Meta proposal={proposal} />
 
-      {/* Header */}
       <Header />
 
-      {/* Page content */}
-      <div
-        className={`${styles.layout__content} ${
-          // Fix padding on forced short top margin pages
-          short ? styles.layout__content_short : ""
-        }`}
-      >
-        <div className={styles.layout__content_sizer}>{children}</div>
-      </div>
+      <Content short={short}>
+        <Sizer>{children}</Sizer>
+      </Content>
 
-      {/* Footer */}
       <Footer />
     </div>
-  );
-}
-
-function Meta({ proposal }) {
-  return (
-    <Head>
-      {/* Primary Meta Tags */}
-      {proposal ? null : (
-        // If not a proposal page, inject title
-        <>
-          <title>Vote | Vexchange</title>
-          <meta property="og:title" content="Vote.vexchange" />
-          <meta property="twitter:title" content="Vote.vexchange" />
-        </>
-      )}
-
-      <meta name="title" content="Vote.vexchange" />
-      <meta
-        name="description"
-        content="Crowd Proposals for Vexchange governance"
-      />
-
-      {/* Open Graph + Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://vote.vexchange.io" />
-      <meta
-        property="og:description"
-        content="Crowd proposals for Vexchange governance"
-      />
-      <meta property="og:image" content="https://vote.vexchange.io/twitter-card.png" />
-
-      {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content="https://vote.vexchange.io" />
-      <meta
-        property="twitter:description"
-        content="Crowd proposals for Vexchange governance"
-      />
-      <meta
-        property="twitter:image"
-        content="https://vote.vexchange.io/twitter-card.png"
-      />
-
-      {/* Favicon */}
-      <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"></link>
-
-      {/* Fortmatic verification */}
-      <meta name="fortmatic-site-verification" content="YB1r9idOuJBbDdbk" />
-
-      {/* Fonts (Inter) */}
-      <link rel="preconnect" href="https://fonts.gstatic.com" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-
-      {/* Google Analytics */}
-      <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-SRPJSZBHN9"
-      />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-SRPJSZBHN9');
-          `,
-        }}
-      />
-    </Head>
   );
 }
 

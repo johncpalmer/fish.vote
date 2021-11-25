@@ -192,10 +192,13 @@ export default function Proposal({ id, defaultProposalData }) {
              data.state === "Executed" || 
              data.state === "Expired") {
       // Update the button
-      actions.name = "Proposal " + data.state;
-      actions.handler = () => null;
-      actions.disabled = true;
-      actions.customColor = "#4DB858";
+      actions = {
+        name: `Proposal ${data.state}`,
+        handler: () => null,
+        disabled: true,
+        color: '#fc0a54',
+        background: "#fc0a54",
+      }
     }
 
     // Return buttons object
@@ -348,7 +351,7 @@ export default function Proposal({ id, defaultProposalData }) {
       {/* Proposal details */}
       <Card
         title="Proposal details"
-        subtext={`${data.signatures.length} action${
+        subtitle={`${data.signatures.length} action${
           // Render (s) if > 1 action
           data.signatures.length === 1 ? "" : "s"
         }`}

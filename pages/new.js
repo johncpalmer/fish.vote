@@ -1,10 +1,12 @@
-import Link from "next/link"; // Routing: Links
-import Card from "@components/Card"; // Component: Card
-import { useRouter } from "next/router"; // Routing: Router
-import Layout from "@components/Layout"; // Component: Layout
-import Switch from "@components/Switch"; // Component: Switch
-import Loader from "react-loader-spinner"; // Loaders
-import governance from "@state/governance"; // Global state: governance
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Loader from "react-loader-spinner";
+
+import Empty from "@components/Empty";
+import Card from "@components/Card";
+import Layout from "@components/Layout";
+import Switch from "@components/Switch";
+import governance from "@state/governance";
 import styles from "@styles/pages/Home.module.scss"; // Component styles
 
 export default function New() {
@@ -128,16 +130,9 @@ export default function New() {
           </div>
         ) : // Check if no proposals with < 400 votes
         filterNewProposals(proposals).length < 1 ? (
-          // Else if no proposals exist, show empty state
-          <div className="card__padding">
-            <div className={styles.home__empty}>
-              <h3>Nothing here yet</h3>
-              <p>
-                No one has created a crowd proposal on Vote.Vexchange yet. Check back
-                soon.
-              </p>
-
-              {/* Link to new twitter */}
+          <Empty
+            content="No one has created a crowd proposal on Vote.Vexchange yet. Check back soon."
+            link={(
               <a
                 href="https://twitter.com/vexchangeio"
                 target="_blank"
@@ -145,8 +140,9 @@ export default function New() {
               >
                 {"Follow on Twitter ->"}
               </a>
-            </div>
-          </div>
+            )}
+          />
+          
         ) : (
           <div className={styles.home__loading}>
             {filterNewProposals(proposals).map((proposal, i) => {

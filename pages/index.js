@@ -1,10 +1,14 @@
-import { InputWithTopLabel } from "@components/Inputs";
 import { ethers } from "ethers";
 import Link from "next/link"; // Routing: Links
-import Card from "@components/Card"; // Component: Card
-import { useRouter } from "next/router"; // Routing: Router
-import Layout from "@components/Layout"; // Component: Layout
-import Switch from "@components/Switch"; // Component: Switch
+
+import Empty from "@components/Empty";
+import Button from "@components/Button";
+import Card from "@components/Card";
+import { useRouter } from "next/router";
+import Layout from "@components/Layout";
+import Switch from "@components/Switch";
+import Input from "@components/Input";
+
 import Loader from "react-loader-spinner"; // Loaders
 import { useState } from "react";
 import vechain from "@state/vechain";
@@ -139,7 +143,6 @@ export default function Home() {
 
   return (
     <Layout short>
-      {/* Page switch */}
       <center>
         <Switch
           activePath={0}
@@ -148,64 +151,54 @@ export default function Home() {
         />
       </center>
 
-      {/* Delegation card */}
-      <Card shortMargin
-            title="Votes Delegation"
-            action={{
-              name: "Delegate",
-              handler: null
-            }}>
-        <div className={`card__padding ${styles.home__description}`}>
-          <h4>
-            Welcome to the governance portal of Vexchange! 
-          </h4>
-          <p>
-            To participate in the governance process of Vexchange, you first need
-            to decide if you want to delegate your votes to another address who will vote
-            in the long term interest of Vexchange or if you want to vote on your own (also known as self-delegating).
-          </p>
-          {/* If authenticated */}
-          {address 
-            ?  
-            // Show delegation details
-            [
-              (delegate === ethers.constants.AddressZero
-              ? 
-                <>
-                  <h5>You have not delegated yet</h5>
-                  <button onClick={handleDelegate}>Self-Delegate</button>
-                  <button onClick={openDelegateInput}>Delegate to address</button>
-                </>
-              : 
-                <>
-                  <h5>Current delegate: {delegate}</h5>
-                  <button onClick={openDelegateInput}>Change Delegate</button>
-                </>
-              ),
-              <h3>You currently have {currentVotes} votes delegated to you</h3>
-            ]
-            : 
-            <button onClick={unlock}>Connect wallet</button>
-          }
-          <div hidden={!inputVisible}>
-            <InputWithTopLabel
-              labelTitle="Address to delegate to"
+      <Card
+        shortMargin
+        title="Vexchange Governance"
+        action={{ name: "Delegate", handler: null }}
+      >
+        <p>Delegate your votes</p>
+        <p>
+          To participate in the governance process of Vexchange, you first need
+          to decide if you want to delegate your votes to another address who will vote
+          in the long term interest of Vexchange or if you want to vote on your own (also known as self-delegating).
+        </p>
+        { address ? (
+          <>
+            { delegate === ethers.constants.AddressZero ? (
+              <>
+                <p>You have not delegated yet</p>
+                <Button onClick={handleDelegate}>Self-Delegate</Button>
+                <Button onClick={openDelegateInput}>Delegate to address</Button>
+              </>
+            ) : (
+              <>
+                <p>Current delegate: {delegate}</p>
+                <Button onClick={openDelegateInput}>Change Delegate</Button>
+              </>
+            )}
+          </>
+        ) : (
+          <Button onClick={unlock}>Connect wallet</Button>
+        )}
+
+        { inputVisible ? (
+          <>
+            <Input
+              label="Address to delegate to"
               type="text"
               value={delegateInput}
-              onChangeHandler={setDelegateInput}
+              onChange={setDelegateInput}
               placeholder="0x9b8ed0a9......" />
-            <button onClick={handleDelegate}>Delegate</button>
-          </div>
-        </div>
+            <Button onClick={handleDelegate}>Delegate</Button>
+          </>
+        ) : null}
       </Card>
 
       {/* Show all automated proposals */}
       <Card
+        noPadding
         title="Top proposals"
-        action={{
-          name: "Create Proposal",
-          handler: routeToCreate,
-        }}
+        action={{ name: "Create Proposal", handler: routeToCreate, }}
       >
         {loadingProposals ? (
           // If proposals are still loading, show spinner
@@ -216,21 +209,15 @@ export default function Home() {
           </div>
         ) : // Check if there are no top proposals 
         filterTopProposals(proposals).length < 1 ? (
-          // Else if no proposals exist, show empty state
-          <div className="card__padding">
-            <div className={styles.home__empty}>
-              <h3>Nothing here yet</h3>
-              <p>
-                The home page only shows proposals with 400 votes or more. Once
-                there are proposals with more support, they’ll appear here.
-              </p>
-
-              {/* Link to new prpoosals page */}
+          <Empty
+            content="The home page only shows proposals with 400 votes or more. Once there are proposals with more support, they’ll appear here."
+            link={(
               <Link href="/new">
                 <a>{"Read new proposals ->"}</a>
               </Link>
-            </div>
-          </div>
+            )}
+          />
+          
         ) : (
           <div className={styles.home__loading}>
             {filterTopProposals(proposals).map((proposal, i) => {
