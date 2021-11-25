@@ -3,10 +3,12 @@ import Loader from "react-loader-spinner";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { truncate } from "lodash";
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
 
+import AddressLink from "@components/AddressLink";
 import Empty from "@components/Empty";
 import Button from "@components/Button";
 import Card from "@components/Card";
@@ -170,7 +172,11 @@ export default function Home() {
               </>
             ) : (
               <>
-                <p>Current delegate: {delegate}</p>
+                <p>
+                  Current delegate: 
+                  {" "}
+                  <AddressLink address={delegate} />
+                </p>
                 <Button onClick={openDelegateInput}>Change Delegate</Button>
               </>
             )}
@@ -226,7 +232,7 @@ export default function Home() {
                   <a className={styles.home__proposal}>
                     {/* Proposal title + vote count */}
                     <div>
-                      <h4>{proposal.title}</h4>
+                      <h4>{truncate(proposal.title, { length: 70 })}</h4>
                       <span>
                         {proposal.state === "Active"
                           ? "10,000,000+ votes"   /* to refactor this */
