@@ -1,22 +1,25 @@
-import {
-  collectNameByContract,
-  generateActionSignatureHTML,
-} from "@utils/constants"; // Parsing functions
-import vechain from "@state/vechain"; // Global state: vechain
-import gfm from "remark-gfm"; // Markdown: GitHub formatting
-import Head from "next/head"; // SSR Meta
-import Card from "@components/Card"; // Component: Card
-import Modal from "@components/Modal"; // Component: Modal
-import Layout from "@components/Layout"; // Component: Layout
-import { useRouter } from "next/router"; // Routing
-import ReactMarkdown from "react-markdown"; // React Markdown
-import governance from "@state/governance"; // Global governance state
-import { useState, useEffect } from "react"; // React state management
-import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
-import { collectProposals } from "pages/api/proposals"; // Server-side collection function
-import styles from "@styles/pages/Proposal.module.scss"; // Component styles
+import { useState, useEffect } from "react";
+import gfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import Head from "next/head";
+import { useRouter } from "next/router";
 
-export default function Proposal({ id, defaultProposalData }) {
+import vechain from "@state/vechain";
+import governance from "@state/governance";
+
+import { collectNameByContract, generateActionSignatureHTML } from "@utils/constants";
+
+import { collectProposals } from "pages/api/proposals";
+
+import Card from "@components/Card";
+import { Content } from "@components/Card/styled";
+import Modal from "@components/Modal";
+import Layout from "@components/Layout";
+import Breadcrumb from "@components/Breadcrumb";
+
+import styles from "@styles/pages/Proposal.module.scss";
+
+const Proposal = ({ id, defaultProposalData }) => {
   // Routing
   const router = useRouter();
 
@@ -350,6 +353,7 @@ export default function Proposal({ id, defaultProposalData }) {
 
       {/* Proposal details */}
       <Card
+        noPadding
         title="Proposal details"
         subtitle={`${data.signatures.length} action${
           // Render (s) if > 1 action
@@ -391,7 +395,7 @@ export default function Proposal({ id, defaultProposalData }) {
           </div>
 
           {/* Proposal description */}
-          <div className={styles.card__details_content}>
+          <Content>
             {data.description.replace(`# ${data.title}`, "") !== "" ? (
               // Render if markdown exists beyond header (thus, description)
               <ReactMarkdown remarkPlugins={[gfm]} linkTarget="_blank">
@@ -405,7 +409,7 @@ export default function Proposal({ id, defaultProposalData }) {
               // If no description:
               <p>No description provided.</p>
             )}
-          </div>
+          </Content>
         </div>
       </Card>
     </Layout>
@@ -444,3 +448,5 @@ export async function getServerSideProps({ params: { id } }) {
     },
   };
 }
+
+export default Proposal;

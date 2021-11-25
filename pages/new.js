@@ -2,11 +2,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Loader from "react-loader-spinner";
 
+import governance from "@state/governance";
+
 import Empty from "@components/Empty";
 import Card from "@components/Card";
 import Layout from "@components/Layout";
 import Switch from "@components/Switch";
-import governance from "@state/governance";
+
 import styles from "@styles/pages/Home.module.scss"; // Component styles
 
 export default function New() {

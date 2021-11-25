@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import Link from "next/link";
+import { isMobile } from 'react-device-detect';
 
 import {
   Details,
@@ -35,6 +36,7 @@ const Breadcrumb = ({
         <div />
         <span>
           Proposed by
+          {" "}
           { !isMobile ? (
             <a
               href={`https://explore.vechain.org/accounts/${proposer}`}

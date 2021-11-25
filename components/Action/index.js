@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { uniqueId } from 'lodash'
 
 import { VEX_ACTIONS } from "@utils/constants";
 
@@ -111,7 +112,7 @@ const Action = ({ onChangeHandler, index }) => {
       <Spacer height="12" />
       <Selector
         value={contract}
-        onChangeHandler={setContract}
+        onChange={setContract}
         placeholder="Select contract..."
         // Filter all actions for contracts
         options={VEX_ACTIONS.map((action, i) => ({
@@ -127,9 +128,8 @@ const Action = ({ onChangeHandler, index }) => {
           <Spacer height="20" />
           <Selector
             value={func}
-            onChangeHandler={setFunc}
+            onChange={setFunc}
             placeholder={`Select ${contract.label} function...`}
-            // Filter all actions, by selected contract, for functions
             options={VEX_ACTIONS[contract.value.key].functions.map(
               (func, i) => ({
                 value: { signature: func.signature, key: i },
@@ -152,7 +152,7 @@ const Action = ({ onChangeHandler, index }) => {
               <>
                 <Spacer height="20" />
                 <ActionInputWithSideLabel
-                  key={i}
+                  key={uniqueId('select_')}
                   labelTitle={target.name}
                   value={targets[i]}
                   type={target.type}

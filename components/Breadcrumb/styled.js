@@ -34,6 +34,8 @@ export const Title = styled.h1`
 `
 
 export const Details = styled.div`
+  margin-bottom: 24px;
+
   span {
     font-size: 15px;
     line-height: 20px;

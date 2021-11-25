@@ -13,6 +13,7 @@
     "bnc-onboard": "^1.25.0",
     "dayjs": "^1.10.4",
     "ethers": "^5.1.4",
+    "lodash": "^4.17.21",
     "markdown-headings": "^2.0.0",
     "next": "10.2.0",
     "nextjs-progressbar": "^0.0.9",

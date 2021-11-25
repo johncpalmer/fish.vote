@@ -2,11 +2,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isMobile } from 'react-device-detect';
+import Loader from "react-loader-spinner";
 
-import {
-  TextAreaInputWithTopLabel,
-} from "@components/Inputs";
 import vechain from "@state/vechain";
+import governance from "@state/governance";
+
+import { TextAreaInputWithTopLabel } from "@components/Inputs";
 import Button from "@components/Button";
 import Card from "@components/Card";
 import { Submit, Add } from "@components/Card/styled";
@@ -14,8 +15,6 @@ import Input from '@components/Input';
 import Action from "@components/Action";
 import Spacer from "@components/Spacer";
 import Layout from "@components/Layout";
-import Loader from "react-loader-spinner";
-import governance from "@state/governance";
 import Breadcrumb from "@components/Breadcrumb";
 
 const defaultActionState = [null, null, [], []];

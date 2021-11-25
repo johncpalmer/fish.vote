@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
     color: white;
     padding-bottom: 8px;
     display: block;
+    margin-top: 1.5em;
   }
 
   textarea {
@@ -25,6 +26,7 @@ export const Wrapper = styled.div`
     padding: 16px 20px;
     display: block;
     width: 100%;
+    margin-bottom: 1em;
   }
 
   input[type="text"]:focus,

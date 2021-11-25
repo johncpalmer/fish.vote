@@ -1,22 +1,23 @@
+import { useState } from "react";
+import Loader from "react-loader-spinner";
 import { ethers } from "ethers";
-import Link from "next/link"; // Routing: Links
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import vechain from "@state/vechain";
+import governance from "@state/governance";
 
 import Empty from "@components/Empty";
 import Button from "@components/Button";
 import Card from "@components/Card";
-import { useRouter } from "next/router";
 import Layout from "@components/Layout";
 import Switch from "@components/Switch";
 import Input from "@components/Input";
 
-import Loader from "react-loader-spinner"; // Loaders
-import { useState } from "react";
-import vechain from "@state/vechain";
-import governance from "@state/governance"; // Global state: governance
-import styles from "@styles/pages/Home.module.scss"; // Component styles
+import styles from "@styles/pages/Home.module.scss";
 
 export default function Home() {
-  const router = useRouter(); // Setup router
+  const router = useRouter();
 
   // Global state
   const { address, unlock } = vechain.useContainer();
@@ -64,7 +65,7 @@ export default function Home() {
       case "Expired":
       case "Executed":
       default: 
-        return "black";
+        return "#FC0B54";
     }
   };
 
@@ -112,17 +113,14 @@ export default function Home() {
    * being the given input address
    * @param {event} event context from which this is fired
    */
-  const handleDelegate = async (event) => {
+  const handleDelegate = async (type, event) => {
     let delegateAddress = null;
 
-    // Get the delegate's address
-    if (event.target.innerText === 'Delegate') {
+    if (type === 'delegate') {
       delegateAddress = delegateInput;
-    }
-    else if (event.target.innerText === 'Self-Delegate') {
+    } else if (type === 'self') {
       delegateAddress = address;
-    }
-    else {
+    } else {
       console.error("handleDelegate called with unrecognized event", event);
     }
 
@@ -167,7 +165,7 @@ export default function Home() {
             { delegate === ethers.constants.AddressZero ? (
               <>
                 <p>You have not delegated yet</p>
-                <Button onClick={handleDelegate}>Self-Delegate</Button>
+                <Button onClick={e => handleDelegate('self', e)}>Self-Delegate</Button>
                 <Button onClick={openDelegateInput}>Delegate to address</Button>
               </>
             ) : (
@@ -189,7 +187,7 @@ export default function Home() {
               value={delegateInput}
               onChange={setDelegateInput}
               placeholder="0x9b8ed0a9......" />
-            <Button onClick={handleDelegate}>Delegate</Button>
+            <Button onClick={e => handleDelegate('delegate', e)}>Delegate</Button>
           </>
         ) : null}
       </Card>

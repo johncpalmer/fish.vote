@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const Header = styled.header`
+export const Wrapper = styled.header`
   position: sticky;
   top: 0;
   height: 72px;
@@ -74,7 +74,7 @@ export const AuthConnected = styled.div`
   }
 `
 
-export const AuthoConnect = styled.div`
+export const AuthConnect = styled.button`
   font-family: VCR, sans-serif;
   background-color: #f5a78814;
   border: none;
@@ -85,4 +85,8 @@ export const AuthoConnect = styled.div`
   padding: 12px 16px;
   cursor: pointer;
   text-transform: uppercase;
+
+  &:hover {
+    opacity: 0.64;
+  }
 `

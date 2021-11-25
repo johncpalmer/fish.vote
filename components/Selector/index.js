@@ -1,33 +1,29 @@
 import Select from "react-select"; // React select
-import styles from "@styles/components/Selector.module.scss"; // Component styles
+
+import { Indicator } from './styled'
 
 // Custom select indicator
 const IndicatorsContainer = () => {
   return (
-    <div className={styles.selector__indicator}>
+    <Indicator>
       <span>Select</span>
       <img src="/vectors/chevron.svg" alt="Select chevron" />
-    </div>
+    </Indicator>
   );
 };
 
 // Select dropdown
-export default function Selector({
-  // Currently selected value
+const Selector = ({
   value,
-  // onChange update
-  onChangeHandler,
-  // Options to select from
+  onChange,
   options,
-  // Field placeholder
   placeholder,
-  // Indent level
   depth,
-}) {
+}) => {
   // Custom select styles for react-select
   const customSelectStyles = {
     // Depth adjustments at container level
-    container: (provided) => ({
+    container: provided => ({
       ...provided,
       width: `calc(100% - ${depth * 68}px)`,
       marginLeft: depth * 68,
@@ -47,7 +43,7 @@ export default function Selector({
       cursor: "pointer",
     }),
     // Individual value container font changes
-    valueContainer: (provided) => ({
+    valueContainer: provided => ({
       ...provided,
       padding: 0,
       fontSize: 14,
@@ -56,7 +52,7 @@ export default function Selector({
       color: "#ACACAB",
     }),
     // Popup menu styles
-    menu: (provided) => ({
+    menu: provided => ({
       ...provided,
       backgroundColor: '#1F1D23',
       borderRadius: 4,
@@ -64,7 +60,7 @@ export default function Selector({
       marginTop: 16,
     }),
     // Menu option styles
-    option: (provided, state) => ({
+    option: provided => ({
       ...provided,
       padding: "12px 16px",
       color: '#ACACAB',
@@ -74,21 +70,21 @@ export default function Selector({
         backgroundColor: "#ffffff0a"
       }
     }),
-    singleValue: (provided) => ({
+    singleValue: provided => ({
       ...provided,
       color: 'white'
     })
   };
 
   return (
-    <div className={styles.select}>
+    <div>
       <Select
         // Override Indicator container with custom component
         components={{ IndicatorsContainer }}
         // Inject custom styles
         styles={customSelectStyles}
         value={value}
-        onChange={onChangeHandler}
+        onChange={onChange}
         options={options}
         placeholder={placeholder}
         // Custom theme overrides for color scheme
@@ -105,3 +101,5 @@ export default function Selector({
     </div>
   );
 }
+
+export default Selector;

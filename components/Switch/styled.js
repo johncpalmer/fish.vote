@@ -1,8 +1,11 @@
-.switch {
+import styled from 'styled-components'
+
+export const Wrapper = styled.div`
   background-color: #121218;
   border-radius: 8px;
   display: inline-block;
   padding: 12px 4px;
+  color: #ACACAB;
 
   a {
     border-radius: 4px;
@@ -16,16 +19,9 @@
   a:hover {
     opacity: 0.8;
   }
-}
 
-// Active route background color
-.switch__active {
-  background-color: #f5a78814;
-  color: var(--color-orange);
-}
-
-// Switch left state bg color
-.switch__left,
-.switch__right {
-  color: #ACACAB;
-}
+  .active {
+    background-color: #f5a78814;
+    color: var(--color-orange);
+  }
+`

@@ -1,4 +1,20 @@
-import { Header, Logo, Auth, AuthConnected, AuthConnect } from './styled'
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
+import vechain from "@state/vechain";
+import governance from "@state/governance";
+
+import Button from '../Button'
+
+import {
+  Wrapper,
+  Logo,
+  Auth,
+  AuthConnected,
+  AuthConnect,
+} from './styled'
 
 const Header = () => {
   // Collect user balance
@@ -43,7 +59,7 @@ const Header = () => {
   };
 
   return (
-    <Header>
+    <Wrapper>
       <Logo>
         <Link href="/">
           <a
@@ -51,23 +67,12 @@ const Header = () => {
               display: 'block' 
             }}
           >
-            { isMobile ? (
-              <Image
-                className={styles.layout__header_logo_desktop}
-                src="/vectors/logo-mobile.svg"
-                alt="Vexchange logo"
-                width={40}
-                height={40}
-              />
-            ) : (
-              <Image
-                className={styles.layout__header_logo_desktop}
-                src="/vectors/logo-mobile.svg"
-                alt="Vexchange logo"
-                width={40}
-                height={40}
-              />
-            )}
+            <Image
+              src="/vectors/logo-mobile.svg"
+              alt="Vexchange logo"
+              width={40}
+              height={40}
+            />
           </a>
         </Link>
       </Logo>
@@ -82,7 +87,7 @@ const Header = () => {
             </div>
 
             {/* Address + lock button */}
-            <button onClick={unlock}>
+            <Button onClick={unlock}>
               <span>
                 {address.startsWith("0x")
                   ? // If ETH address, render truncated address
@@ -92,7 +97,7 @@ const Header = () => {
                   : // Else, render ENS name
                     address}
               </span>
-            </button>
+            </Button>
           </AuthConnected>
         ) : (
           <div>
@@ -103,7 +108,7 @@ const Header = () => {
           </div>
         )}
       </Auth>
-    </Header>
+    </Wrapper>
   );
 }
 

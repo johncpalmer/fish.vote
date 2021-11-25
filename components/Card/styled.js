@@ -10,7 +10,6 @@ export const Wrapper = styled.div`
   );
   margin-bottom: 24px;
   border-radius: 8px;
-  overflow: hidden;
   padding: ${({ noPadding }) => noPadding ? 0 : '24px'};
   ${({ shortMargin }) => shortMargin && css`
     margin-top: 24px;
@@ -31,6 +30,14 @@ export const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   text-transform: uppercase;
+`
+
+export const Subtitle = styled.div`
+  font-family: VCR, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #ACACAB;
 `
 
 export const Add = styled.div`
@@ -82,5 +89,36 @@ export const Submit = styled.div`
     opacity: 0.64;
     color: #121218;
     cursor: not-allowed;
+  }
+`
+
+export const Actions = styled.div`
+  div {
+    padding: 12px 16px;
+
+    > span {
+      font-size: 15px;
+      line-height: 150%;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 150%;
+    }
+  }
+`
+
+export const Content = styled.div`
+  padding: 24px;
+
+  p,
+  span,
+  li,
+  code {
+    font-size: 15px !important;
+  }
+
+  ul {
+    padding-left: 25px;
   }
 `

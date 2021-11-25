@@ -1,13 +1,10 @@
 import { Modal as VoteModal } from "react-responsive-modal"; // React-responsive-modal
 
-export default function Modal({
-  // True == modal open
+const Modal = ({
   open,
-  // Function handler to update open
   openHandler,
-  // Inject modal content
   children,
-}) {
+}) => {
   return (
     <VoteModal
       open={open}
@@ -20,3 +17,5 @@ export default function Modal({
     </VoteModal>
   );
 }
+
+export default Modal;

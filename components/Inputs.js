@@ -1,32 +1,6 @@
 import TextareaAutosize from "react-textarea-autosize"; // Auto-resizing textarea
 import styles from "@styles/components/Inputs.module.scss"; // Component styles
 
-// Single text input with label
-function InputWithTopLabel({
-  // Label title
-  labelTitle,
-  // Value handlers
-  value,
-  onChangeHandler,
-  // Placeholder text
-  placeholder,
-  // Value type
-  type,
-}) {
-  return (
-    <div className={`${styles.input__general} ${styles.input__text}`}>
-      <label htmlFor={labelTitle}>{labelTitle}</label>
-      <input
-        id={labelTitle}
-        type={type}
-        value={value}
-        onChange={(e) => onChangeHandler(e.target.value)}
-        placeholder={placeholder}
-      />
-    </div>
-  );
-}
-
 // Auto-resizing text input with label
 function TextAreaInputWithTopLabel({
   // Label title
@@ -86,7 +60,6 @@ function ActionInputWithSideLabel({
 
 // Export input fields
 export {
-  InputWithTopLabel,
   ActionInputWithSideLabel,
   TextAreaInputWithTopLabel,
 };

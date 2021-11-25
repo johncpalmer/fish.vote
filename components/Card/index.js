@@ -1,6 +1,7 @@
 import {
   Header,
   Title,
+  Subtitle,
   Wrapper,
 } from './styled';
 
@@ -28,9 +29,10 @@ const Card = ({
         <Header noPadding={noPadding}>
           <Title>
             {title}
-            { subtitle ? <p>{ subtitle }</p> : null}
           </Title>
           <div>
+            
+            { subtitle ? <Subtitle>{ subtitle }</Subtitle> : null}
             { name && handler ? (
               <Button
                 onClick={handler}
