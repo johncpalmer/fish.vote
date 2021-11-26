@@ -20,7 +20,7 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--color-orange);
   text-decoration: none;
   cursor: pointer;
 }
@@ -48,13 +48,12 @@ p {
 
 // React-responsive-modal overrides
 .react-responsive-modal-overlay {
-  // background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(80px);
 }
 
 .react-responsive-modal-modal {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border-radius: 12px;
+  background: #121218 !important;
+  border-radius: 8px;
   max-width: 500px !important;
   width: calc(100% - 40px);
   padding: 24px !important;

@@ -1,4 +1,6 @@
 .card__progress {
+  margin-top: 24px;
+
   .card__progress_bar {
     height: 8px;
     border-radius: 2px;
@@ -115,62 +117,19 @@
 
 .card__delegate_modal {
   h3 {
-    margin: 0px;
-    font-weight: 500;
-    color: #222;
-  }
-
-  p {
-    font-size: 15px;
-    line-height: 150%;
-    color: #5f6476;
-    font-weight: 400;
-
-    span {
-      color: #e1006d;
-      font-weight: 500;
-    }
-
-    a {
-      color: #3f4aab;
-    }
-
-    a:hover {
-      opacity: 0.8;
-    }
-  }
-
-  // TODO: can refactor button to a component itself
-  button {
-    background-color: var(--color-orange);
     color: white;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    display: inline-block;
-    cursor: pointer;
+    font-family: VCR, san-serif;
+    margin: 0px;
+    text-transform: uppercase;
+  }
+
+  span {
+    color: #f5a788;
+    font-family: VCR, san-serif;
+  }
+
+  button {
     width: 100%;
-    margin-top: 10px;
-    will-change: transform;
-    transition: transform 450ms ease 0s;
-  }
-
-  button:hover {
-    background-color: rgb(230, 0, 110);
-    transform: scale(0.99);
-  }
-
-  button:disabled {
-    background-color: #FA1617;
-    color: #121218;
-    cursor: not-allowed;
-  }
-
-  button:disabled:hover {
-    background-color: #f076a5;
-    transform: none;
   }
 }
 

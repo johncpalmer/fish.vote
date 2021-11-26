@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.button`
-  background-color: #f5a78814;
+  background-color: ${({ background }) => background ? background : '#f5a78814'};
   border-radius: 8px;
-  color: var(--color-orange);
+  color: ${({ color }) => color ? color : 'var(--color-orange)'};
   font-family: VCR, sans-serif;
   padding: 12px 16px;
   text-transform: uppercase;

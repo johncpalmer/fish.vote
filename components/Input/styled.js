@@ -2,11 +2,15 @@ import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   label {
-    font-weight: 500;
-    color: white;
-    padding-bottom: 8px;
+    color: rgb(172, 172, 171);
     display: block;
+    font-family: VCR, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    line-height: 16px;
     margin-top: 1.5em;
+    padding-bottom: 8px;
+    text-transform: uppercase;
   }
 
   textarea {

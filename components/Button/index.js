@@ -1,8 +1,17 @@
 import { Wrapper } from './styled'
 
-const Button = ({ children, onClick }) => {
+const Button = ({
+  children,
+  onClick,
+  color,
+  background,
+}) => {
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper
+      background={background}
+      color={color}
+      onClick={onClick}
+    >
       {children}
     </Wrapper>
   )

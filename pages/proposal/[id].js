@@ -11,6 +11,9 @@ import { collectNameByContract, generateActionSignatureHTML } from "@utils/const
 
 import { collectProposals } from "pages/api/proposals";
 
+import Button from "@components/Button";
+import VoteInput from "@components/VoteInput";
+import VoteCast from "@components/VoteCast";
 import Card from "@components/Card";
 import { Content } from "@components/Card/styled";
 import Modal from "@components/Modal";
@@ -45,16 +48,12 @@ const Proposal = ({ id, defaultProposalData }) => {
    * Fetch proposal details
    */
   const fetchProposal = async () => {
-    // Collect proposal from global state (or pull if no proposals exist)
     const proposal = await collectProposalById(id);
 
-    // If proposal does not exist
     if (!proposal.success) {
-      // Return to "/"
       await router.push("/");
     }
 
-    // Else, toggle loading and update data
     setData(proposal.data);
   };
 
@@ -187,11 +186,20 @@ const Proposal = ({ id, defaultProposalData }) => {
         actions.handler = () => unlock();
       }
     }
+
+    else if (data.state === 'Defeated') {
+      actions = {
+        name: `Proposal Defeated`,
+        handler: () => null,
+        disabled: true,
+        color: '#ff385c',
+        background: "#2D0D16",
+      }
+    }
     // Else if proposal is in a state where 
     // there is nothing to do
     else if (data.state === "Pending" || 
              data.state === "Canceled" ||
-             data.state === "Defeated" || 
              data.state === "Executed" || 
              data.state === "Expired") {
       // Update the button
@@ -216,9 +224,10 @@ const Proposal = ({ id, defaultProposalData }) => {
     switch(data.state) {
       case "Pending":
       case "Active":
-        return "#4DB858";
+        return "#16ceb9";
       case "Canceled":
       case "Defeated": 
+        return "rgb(255, 56, 92)";
       case "Succeeded": 
       case "Queued": 
       case "Expired": 
@@ -229,10 +238,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
   };
 
-  // Fetch proposal on page load (and proposals array change)
   useEffect(fetchProposal, [proposals]);
-
-  // Fetch the vote receipt when user is authenticated
   useEffect(fetchReceipt, [authed]);
 
   return (
@@ -268,21 +274,16 @@ const Proposal = ({ id, defaultProposalData }) => {
             </a>
             .
           </p>
-          <div>
-            <input type="radio" value="For" checked={voteFor} onChange={() => setVoteFor(true)}/> For
-            <input type="radio" value="Against" checked={!voteFor} onChange={() => setVoteFor(false)}/> Against
-          </div>
+
+          <VoteInput onChange={setVoteFor} voteFor={voteFor} />
+          
           {/* Cast votes button */}
-          <button
-            onClick={() => castVoteWithLoading()}
-            disabled={buttonLoading}
-          >
+          <Button onClick={() => castVoteWithLoading()} disabled={buttonLoading}>
             {buttonLoading ? "Casting votes..." : "Cast votes"}
-          </button>
+          </Button>
         </div>
       </Modal>
 
-      {/* Page title breadcrumb */}
       <Breadcrumb
         title={data.title}
         lastRoute={{
@@ -294,7 +295,6 @@ const Proposal = ({ id, defaultProposalData }) => {
         proposer={data.proposer}
       />
 
-      {/* Support progress card */}
       <Card title="Support progress" action={supportActions()}>
         <div className={styles.card__progress}>
           {/* Render status bar based on vote count */}
@@ -323,8 +323,15 @@ const Proposal = ({ id, defaultProposalData }) => {
           </div>
 
           {/* Vote cast count */}
+          <VoteCast
+            color={getColorByState()}
+            votesAgainst={data.votesAgainst}
+            votesFor={data.votesFor}
+          />
+
           <div className={styles.card__delegated}>
             <h4>Votes Cast</h4>
+
             <h1>
               <span style={{ color: getColorByState() }}>
                 For: {parseFloat(data.votesFor).toLocaleString("us-en", {
@@ -340,6 +347,7 @@ const Proposal = ({ id, defaultProposalData }) => {
               </span>
             </h1>
           </div>
+
           <h2>
             <span style={{ color: getColorByState() }}>
                 Total: {parseFloat(data.votesAgainst + data.votesFor).toLocaleString("us-en", {
