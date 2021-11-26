@@ -115,20 +115,23 @@ export default function Create() {
               );
             })}
 
-            <Add>
-              <Button
-                // Do not allow more than 10 actions
-                // As governorAlpha only allows max 10 actions
-                disabled={actions.length >= 10}
-                // On click:
-                onClick={() =>
-                  // Update actions with [...actions, defaultAction]
-                  setActions((previous) => [...previous, defaultActionState])
-                }
-              >
-                + Add Action
-              </Button>
-            </Add>
+            { actions.length < 10 ? (
+              <Add>
+                <Button
+                  // Do not allow more than 10 actions
+                  // As governorAlpha only allows max 10 actions
+                  disabled={actions.length >= 10}
+                  // On click:
+                  onClick={() =>
+                    // Update actions with [...actions, defaultAction]
+                    setActions((previous) => [...previous, defaultActionState])
+                  }
+                >
+                  + Add Action
+                </Button>
+              </Add>
+            ) : null}
+            
           </Card>
 
           <Card title="Submit your proposal">
