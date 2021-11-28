@@ -224,7 +224,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     switch(data.state) {
       case "Pending":
       case "Active":
-        return "#16ceb9";
+        return "#37C9AC";
       case "Canceled":
       case "Defeated": 
         return "rgb(255, 56, 92)";
@@ -329,33 +329,6 @@ const Proposal = ({ id, defaultProposalData }) => {
             votesFor={data.votesFor}
           />
 
-          <div className={styles.card__delegated}>
-            <h4>Votes Cast</h4>
-
-            <h1>
-              <span style={{ color: getColorByState() }}>
-                For: {parseFloat(data.votesFor).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>{"     "}
-              <span style={{ color: getColorByState() }}>
-                Against: {parseFloat(data.votesAgainst).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-            </h1>
-          </div>
-
-          <h2>
-            <span style={{ color: getColorByState() }}>
-                Total: {parseFloat(data.votesAgainst + data.votesFor).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-          </h2>
         </div>
       </Card>
 
