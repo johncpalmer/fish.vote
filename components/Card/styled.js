@@ -109,16 +109,12 @@ export const Actions = styled.div`
 `
 
 export const Content = styled.div`
+  font-family: "Inter", sans-serif;
+  color: white;
   padding: 24px;
 
-  p,
-  span,
-  li,
-  code {
-    font-size: 15px !important;
+  p {
+    color: white;
   }
 
-  ul {
-    padding-left: 25px;
-  }
 `

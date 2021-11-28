@@ -4,6 +4,11 @@ export const Wrapper = styled.div`
   margin-top: 40px;
 `
 
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 export const Last = styled.a`
   font-size: 15px;
   line-height: 20px;
@@ -25,7 +30,6 @@ export const State = styled.div`
   padding: 6px 8px;
   border-radius: 8px;
   background-color: #f5a78814;
-  margin-top: 12px;
   display: inline-block;
 `
 

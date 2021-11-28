@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
+
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -11,6 +12,7 @@ import { collectNameByContract, generateActionSignatureHTML } from "@utils/const
 
 import { collectProposals } from "pages/api/proposals";
 
+import ProgressBar from "@components/ProgressBar";
 import Button from "@components/Button";
 import VoteInput from "@components/VoteInput";
 import VoteCast from "@components/VoteCast";
@@ -296,33 +298,13 @@ const Proposal = ({ id, defaultProposalData }) => {
       />
 
       <Card title="Support progress" action={supportActions()}>
-        <div className={styles.card__progress}>
-          {/* Render status bar based on vote count */}
-          <div className={styles.card__progress_bar}>
-            <div
-              style={{
-                width:
-                  // If proposal is proposed
-                  data.state === "Proposed"
-                    ? // Force 100% bar
-                      "100"
-                    : // If number of votes > 0 && < 100k
-                    parseFloat(data.votes) >= 0 &&
-                      parseFloat(data.votes) < 100000
-                    ? // Show 1%
-                      "1%"
-                    : // Else, show accurate value
-                      `${Math.min(
-                        (parseFloat(data.votes) / 10000000) * 100,
-                        // Maximum fill: 100%
-                        100
-                      )}%`,
-                backgroundColor: getColorByState(),
-              }}
-            />
-          </div>
+        <ProgressBar
+          color={getColorByState()}
+          votes={currentVotes}
+          state={data.state}
+        />
 
-          {/* Vote cast count */}
+        <div className={styles.card__progress}>
           <VoteCast
             color={getColorByState()}
             votesAgainst={data.votesAgainst}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { isMobile } from 'react-device-detect';
 
 import {
+  Header,
   Details,
   Last,
   State,
@@ -18,16 +19,16 @@ const Breadcrumb = ({
   proposer,
 }) => (
   <Wrapper>
-    {path && name ? (
-      <Link href={path}>
-        <Last>{`<- ${name}`}</Last>
-      </Link>
-    ) : null}
-
-    {state ? (
-      <State>{state}</State>
-    ) : null}
-
+    <Header>
+      {path && name ? (
+        <Link href={path}>
+          <Last>{`<- ${name}`}</Last>
+        </Link>
+      ) : null}
+      {state ? (
+        <State>{state}</State>
+      ) : null}
+    </Header>
     <Title>{title}</Title>
 
     {created && proposer ? (
