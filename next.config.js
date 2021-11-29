@@ -3,8 +3,6 @@ module.exports = {
     config.experiments = { topLevelAwait: true };
     return config;
   },
-  future: {
-    webpack5: true,
-  },
-  reactStrictMode: true,
+  webpack5: true,
+  styledComponents: true,
 }

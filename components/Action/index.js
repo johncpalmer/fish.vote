@@ -5,7 +5,7 @@ import { VEX_ACTIONS } from "@utils/constants";
 
 import Spacer from "@components/Spacer";
 import Selector from "@components/Selector";
-import { ActionInputWithSideLabel } from "@components/Inputs";
+import ActionInput from "@components/ActionInput";
 
 import { Wrapper } from './styled'
 
@@ -151,7 +151,7 @@ const Action = ({ onChangeHandler, index }) => {
             return (
               <>
                 <Spacer height="20" />
-                <ActionInputWithSideLabel
+                <ActionInput
                   key={uniqueId('select_')}
                   labelTitle={target.name}
                   value={targets[i]}
@@ -170,7 +170,7 @@ const Action = ({ onChangeHandler, index }) => {
               return (
                 <>
                   <Spacer height="20" />
-                  <ActionInputWithSideLabel
+                  <ActionInput
                     key={i}
                     labelTitle={value.name}
                     value={values[i]}

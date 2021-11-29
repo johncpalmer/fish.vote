@@ -2,18 +2,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isMobile } from 'react-device-detect';
-import Loader from "react-loader-spinner";
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
 
-import { TextAreaInputWithTopLabel } from "@components/Inputs";
+import Loader from "@components/Loader";
+import Textarea from "@components/Textarea";
 import Button from "@components/Button";
 import Card from "@components/Card";
 import { Submit, Add } from "@components/Card/styled";
 import Input from '@components/Input';
 import Action from "@components/Action";
-import Spacer from "@components/Spacer";
 import Layout from "@components/Layout";
 import Breadcrumb from "@components/Breadcrumb";
 
@@ -99,8 +98,8 @@ export default function Create() {
               placeholder="Enter the title of your proposal..."
             />
 
-            <TextAreaInputWithTopLabel
-              labelTitle="Overview"
+            <Textarea
+              label="Overview"
               minRows={10}
               value={description}
               onChangeHandler={setDescription}
@@ -109,11 +108,13 @@ export default function Create() {
           </Card>
 
           <Card title="Actions" noPadding>
-            {actions.map((_, i) => {
-              return (
-                <Action key={i} index={i} onChangeHandler={updateActionsAtIndex} />
-              );
-            })}
+            {actions.map((_, i) => (
+              <Action
+                index={i}
+                key={i}
+                onChangeHandler={updateActionsAtIndex}
+              />
+            ))}
 
             { actions.length < 10 ? (
               <Add>
@@ -137,9 +138,7 @@ export default function Create() {
           <Card title="Submit your proposal">
             <Submit>
               {buttonLoading ? (
-                <center>
-                  <Loader type="Oval" color="#f5a788" height={50} width={50} />
-                </center>
+                <Loader />
               ) : (
                 <p>
                   After your proposal is created, it will appear at the bottom of

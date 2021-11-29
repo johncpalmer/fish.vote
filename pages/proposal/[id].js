@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
-
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { uniqueId } from "lodash";
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
@@ -12,17 +12,17 @@ import { collectNameByContract, generateActionSignatureHTML } from "@utils/const
 
 import { collectProposals } from "pages/api/proposals";
 
-import ProgressBar from "@components/ProgressBar";
-import Button from "@components/Button";
-import VoteInput from "@components/VoteInput";
-import VoteCast from "@components/VoteCast";
-import Card from "@components/Card";
-import { Content } from "@components/Card/styled";
-import Modal from "@components/Modal";
-import Layout from "@components/Layout";
+import Actions from "@components/Actions";
+import AddressLink from "@components/AddressLink";
 import Breadcrumb from "@components/Breadcrumb";
-
-import styles from "@styles/pages/Proposal.module.scss";
+import Button from "@components/Button";
+import Card from "@components/Card";
+import Layout from "@components/Layout";
+import Modal from "@components/Modal";
+import ProgressBar from "@components/ProgressBar";
+import VoteCast from "@components/VoteCast";
+import VoteInput from "@components/VoteInput";
+import { Content } from "@components/Card/styled";
 
 const Proposal = ({ id, defaultProposalData }) => {
   // Routing
@@ -256,7 +256,7 @@ const Proposal = ({ id, defaultProposalData }) => {
 
       {/* Delegation modal (hidden when !modalOpen) */}
       <Modal open={modalOpen} openHandler={setModalOpen}>
-        <div className={styles.card__delegate_modal}>
+        <div>
           <h3>Confirm Voting</h3>
           <p>
             You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
@@ -304,14 +304,11 @@ const Proposal = ({ id, defaultProposalData }) => {
           state={data.state}
         />
 
-        <div className={styles.card__progress}>
-          <VoteCast
-            color={getColorByState()}
-            votesAgainst={data.votesAgainst}
-            votesFor={data.votesFor}
-          />
-
-        </div>
+        <VoteCast
+          color={getColorByState()}
+          votesAgainst={data.votesAgainst}
+          votesFor={data.votesFor}
+        />
       </Card>
 
       {/* Proposal details */}
@@ -323,9 +320,9 @@ const Proposal = ({ id, defaultProposalData }) => {
           data.signatures.length === 1 ? "" : "s"
         }`}
       >
-        <div className={styles.card__details}>
+        <div>
           {/* Render governance actions */}
-          <div className={styles.card__details_actions}>
+          <Actions>
             {data.targets.map((contract, i) => {
               // For each contract in proposal
               // Collect contract name
@@ -337,25 +334,20 @@ const Proposal = ({ id, defaultProposalData }) => {
               );
 
               return (
-                <div key={i}>
-                  {/* Action number */}
+                <div key={uniqueId('proposal_')}>
                   <span>{i + 1}:</span>
-                  {/* Action details */}
                   <p>
-                    {/* Action contract */}
-                    <a
-                      href={`https://explore.vechain.org/accounts/${contract}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {name}
-                    </a>
-                    .{signatureElements.map((element) => element)}
+                    <AddressLink address={contract} text={name} />
+                    .{signatureElements.map((element) => (
+                      <React.Fragment key={uniqueId('element_')}>
+                        { element }
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
               );
             })}
-          </div>
+          </Actions>
 
           {/* Proposal description */}
           <Content>

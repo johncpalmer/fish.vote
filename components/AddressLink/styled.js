@@ -1,10 +1,5 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
-export const Link = styled.a`
-  color: var(--color-orange);
-  font-family: VCR, san-serif;
-
-  &:hover {
-    opacity: 0.64;
-  }
+export const Wrapper = styled.a`
+  font-family: VCR, sans-serif;
 `

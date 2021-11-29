@@ -1,9 +1,13 @@
-import { Link } from './styled'
+import { Wrapper } from './styled'
 
-const AddressLink = ({ address }) => (
-  <Link href={`https://explore.vechain.org/accounts/${address}`} target="_blank">
-    { address }
-  </Link>
+const AddressLink = ({ address, text }) => (
+  <Wrapper
+    href={`https://explore.vechain.org/accounts/${address}`}
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    { text ? text : address }
+  </Wrapper>
 );
 
 export default AddressLink;

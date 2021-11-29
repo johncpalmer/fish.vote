@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const Wrapper = styled.div`
   background-color: #121218;
@@ -6,22 +6,22 @@ export const Wrapper = styled.div`
   display: inline-block;
   padding: 12px 4px;
   color: #ACACAB;
+`
 
-  a {
-    border-radius: 4px;
-    font-family: VCR, sans-serif;
-    font-size: 16px;
-    line-height: 19px;
-    padding: 8px 12px;
-    text-transform: uppercase;
-  }
+export const StyledLink = styled.a`
+  border-radius: 4px;
+  font-family: VCR, sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  padding: 8px 12px;
+  text-transform: uppercase;
 
-  a:hover {
+  &:hover {
     opacity: 0.8;
   }
 
-  .active {
+  ${({ active }) => active && css`
     background-color: #f5a78814;
     color: var(--color-orange);
-  }
+  `};
 `

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Loader from "react-loader-spinner";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,14 +8,14 @@ import vechain from "@state/vechain";
 import governance from "@state/governance";
 
 import AddressLink from "@components/AddressLink";
-import Empty from "@components/Empty";
 import Button from "@components/Button";
 import Card from "@components/Card";
-import Layout from "@components/Layout";
-import Switch from "@components/Switch";
+import Empty from "@components/Empty";
+import HomeProposalLink from "@components/HomeProposalLink";
 import Input from "@components/Input";
-
-import styles from "@styles/pages/Home.module.scss";
+import Layout from "@components/Layout";
+import Loader from "@components/Loader";
+import Switch from "@components/Switch";
 
 export default function Home() {
   const router = useRouter();
@@ -205,12 +204,7 @@ export default function Home() {
         action={{ name: "Create Proposal", handler: routeToCreate, }}
       >
         {loadingProposals ? (
-          // If proposals are still loading, show spinner
-          <div className="card__padding">
-            <center>
-              <Loader type="Oval" color="#f5a788" height={50} width={50} />
-            </center>
-          </div>
+          <Loader />
         ) : // Check if there are no top proposals 
         filterTopProposals(proposals).length < 1 ? (
           <Empty
@@ -223,14 +217,13 @@ export default function Home() {
           />
           
         ) : (
-          <div className={styles.home__loading}>
+          <div>
             {filterTopProposals(proposals).map((proposal, i) => {
               // Else if proposals exist
               return (
                 // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.id}`} key={i}>
-                  <a className={styles.home__proposal}>
-                    {/* Proposal title + vote count */}
+                <Link href={`/proposal/${proposal.id}`} key={i} passHref>
+                  <HomeProposalLink>
                     <div>
                       <h4>{truncate(proposal.title, { length: 70 })}</h4>
                       <span>
@@ -240,7 +233,6 @@ export default function Home() {
                       </span>
                     </div>
 
-                    {/* Proposal current state */}
                     <div>
                       <div
                         style={{
@@ -250,7 +242,7 @@ export default function Home() {
                       />
                       <span>{proposal.state}</span>
                     </div>
-                  </a>
+                  </HomeProposalLink>
                 </Link>
               );
             })}

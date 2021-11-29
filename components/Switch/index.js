@@ -1,6 +1,6 @@
 import Link from "next/link"; // Routing
 
-import { Wrapper } from './styled'
+import { Wrapper, StyledLink } from './styled'
 
 // Switch slider
 const Switch = ({
@@ -14,16 +14,16 @@ const Switch = ({
   <Wrapper active={activePath === 0}>
     {/* First path (render white if selected) */}
     <Link href={fPath}>
-      <a className={activePath === 0 ? 'active' : ""}>
+      <StyledLink active={activePath === 0}>
         {fLabel}
-      </a>
+      </StyledLink>
     </Link>
 
     {/* Second path (render white if selected) */}
     <Link href={sPath}>
-      <a className={activePath === 1 ? 'active' : ""}>
+      <StyledLink active={activePath === 1}>
         {sLabel}
-      </a>
+      </StyledLink>
     </Link>
   </Wrapper>
 )

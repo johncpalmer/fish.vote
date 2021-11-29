@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Loader from "react-loader-spinner";
 
 import governance from "@state/governance";
 
-import Empty from "@components/Empty";
 import Card from "@components/Card";
+import Description from "@components/Description";
+import Empty from "@components/Empty";
+import HomeProposalLink from "@components/HomeProposalLink";
 import Layout from "@components/Layout";
+import Loader from "@components/Loader";
 import Switch from "@components/Switch";
-
-import styles from "@styles/pages/Home.module.scss"; // Component styles
 
 export default function New() {
   const router = useRouter(); // Setup router
@@ -91,7 +91,7 @@ export default function New() {
 
       {/* About card */}
       <Card shortMargin>
-        <div className={`${styles.home__description}`}>
+        <Description>
           <h5>Creating a proposal</h5>
           <p>
             On Vote.Vexchange, anyone can publish a{" "}
@@ -112,7 +112,7 @@ export default function New() {
             Until today, only whales with 10 million votes could submit
             proposals. Now, <span>even vex can make waves</span>.
           </p>
-        </div>
+        </Description>
       </Card>
 
       {/* Show all automated proposals */}
@@ -125,11 +125,7 @@ export default function New() {
       >
         {loadingProposals ? (
           // If proposals are still loading, show spinner
-          <div className="card__padding">
-            <center>
-              <Loader type="Oval" color="#f5a788" height={50} width={50} />
-            </center>
-          </div>
+          <Loader />
         ) : // Check if no proposals with < 400 votes
         filterNewProposals(proposals).length < 1 ? (
           <Empty
@@ -146,20 +142,18 @@ export default function New() {
           />
           
         ) : (
-          <div className={styles.home__loading}>
+          <div>
             {filterNewProposals(proposals).map((proposal, i) => {
               // Else if proposals exist
               return (
                 // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.contract}`} key={i}>
-                  <a className={styles.home__proposal}>
-                    {/* Proposal title + vote count */}
+                <Link href={`/proposal/${proposal.contract}`} key={i} passHref>
+                  <HomeProposalLink>
                     <div>
                       <h4>{proposal.title}</h4>
                       <span>{formatVoteCount(parseFloat(proposal.votes))}</span>
                     </div>
 
-                    {/* Proposal current status */}
                     <div>
                       <div
                         style={{
@@ -169,7 +163,7 @@ export default function New() {
                       />
                       <span>{proposal.status}</span>
                     </div>
-                  </a>
+                  </HomeProposalLink>
                 </Link>
               );
             })}

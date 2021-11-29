@@ -15,17 +15,20 @@ export const Wrapper = styled.header`
   border-bottom: 1px solid #1C1C22;
   backdrop-filter: blur(40px);
   flex-shrink: 0;
+  padding: 0 40px;
+
+  @media screen and (max-width: 600px) {
+    padding: 0 20px;
+  }
 `
 
 export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 40px;
 `
 
 export const Auth = styled.div`
-  padding-right: 40px;
   display: flex;
   align-items: center;
   justify-items: center;

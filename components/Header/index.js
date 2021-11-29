@@ -100,12 +100,9 @@ const Header = () => {
             </Button>
           </AuthConnected>
         ) : (
-          <div>
-            <AuthConnect
-              onClick={connectWalletWithLoading}>
-              Connect wallet
-            </AuthConnect>
-          </div>
+          <Button onClick={connectWalletWithLoading}>
+            Connect wallet
+          </Button>
         )}
       </Auth>
     </Wrapper>
