@@ -23,6 +23,7 @@ import ProgressBar from "@components/ProgressBar";
 import VoteCast from "@components/VoteCast";
 import VoteInput from "@components/VoteInput";
 import { Content } from "@components/Card/styled";
+import Loader from "@components/Loader";
 
 const Proposal = ({ id, defaultProposalData }) => {
   // Routing
@@ -45,6 +46,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
+  console.log(voteFor);
 
   /**
    * Fetch proposal details
@@ -103,9 +105,7 @@ const Proposal = ({ id, defaultProposalData }) => {
    * Queues the contract for later execution
    * Only applies to contract in the succeeded state
    */ 
-  const executeWithLoading = async () => {
-
-  };
+  const executeWithLoading = async () => {};
 
   /**
    * Support action button rendering
@@ -131,7 +131,7 @@ const Proposal = ({ id, defaultProposalData }) => {
             // Case of already voted
             else {
               const supportText = receipt.support ? "For" : "Against";
-              actions.name = "Votes Cast " + supportText;
+              actions.name = "You Voted " + supportText;
               actions.handler = () => null;
               actions.disabled = true;
             }
@@ -198,10 +198,19 @@ const Proposal = ({ id, defaultProposalData }) => {
         background: "#2D0D16",
       }
     }
+
+    else if (data.state === 'Pending') {
+      actions = {
+        name: `Proposal Pending`,
+        handler: () => null,
+        disabled: true,
+        color: '#ff385c',
+        background: "#2D0D16",
+      }
+    }
     // Else if proposal is in a state where 
     // there is nothing to do
-    else if (data.state === "Pending" || 
-             data.state === "Canceled" ||
+    else if (data.state === "Canceled" ||
              data.state === "Executed" || 
              data.state === "Expired") {
       // Update the button
@@ -243,6 +252,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   useEffect(fetchProposal, [proposals]);
   useEffect(fetchReceipt, [authed]);
 
+  console.log(data)
   return (
     // Pass proposal prop to prevent title/meta overlap
     <Layout proposal={true}>
@@ -254,36 +264,34 @@ const Proposal = ({ id, defaultProposalData }) => {
         <meta property="twitter:title" content={`Vote.vexchange | ${data.title}`} />
       </Head>
 
-      {/* Delegation modal (hidden when !modalOpen) */}
       <Modal open={modalOpen} openHandler={setModalOpen}>
-        <div>
-          <h3>Confirm Voting</h3>
-          <p>
-            You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                            })} 
-            {" "}Votes</span> to this proposal.
-            Don't worry, you'll retain all the votes that have been delegated to
-            you by other token holders. You can change your mind and delegate
-            votes back to yourself at any time on{" "}
-            <a
-              href="https://sybil.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              sybil.org
-            </a>
-            .
-          </p>
+        <>
+          {buttonLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <h3>Confirm Voting</h3>
+              <p>
+                You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                                })} 
+                {" "}votes</span> to this proposal.
+                Don't worry, you'll retain all the votes that have been delegated to
+                you by other token holders.
+              </p>
 
-          <VoteInput onChange={setVoteFor} voteFor={voteFor} />
+              <VoteInput onChange={setVoteFor} voteFor={voteFor} />
           
-          {/* Cast votes button */}
-          <Button onClick={() => castVoteWithLoading()} disabled={buttonLoading}>
-            {buttonLoading ? "Casting votes..." : "Cast votes"}
-          </Button>
-        </div>
+              <Button
+                onClick={() => castVoteWithLoading()}
+                disabled={buttonLoading}
+              >
+                {buttonLoading ? "Casting votes..." : "Cast votes"}
+              </Button>
+            </>
+          )}
+        </>
       </Modal>
 
       <Breadcrumb

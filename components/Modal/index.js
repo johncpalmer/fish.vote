@@ -1,20 +1,29 @@
-import { Modal as VoteModal } from "react-responsive-modal"; // React-responsive-modal
+import { useRef } from 'react';
+import { Modal as ReactModal } from "react-responsive-modal";
+
+import { Wrapper } from './styled';
 
 const Modal = ({
   open,
   openHandler,
   children,
 }) => {
+  const ref = useRef(null);
+
   return (
-    <VoteModal
-      open={open}
-      onClose={() => openHandler(false)}
-      // Prevent close icon X
-      showCloseIcon={false}
-      center
-    >
-      {children}
-    </VoteModal>
+    <>
+      {/* Used to set modal wrapper */}
+      <Wrapper ref={ref} />
+      <ReactModal
+        center
+        open={open}
+        onClose={() => openHandler(false)}
+        container={ref.current}
+        showCloseIcon={false}
+      >
+        {children}
+      </ReactModal>
+    </>
   );
 }
 

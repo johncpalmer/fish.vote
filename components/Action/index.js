@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { uniqueId } from 'lodash'
 
 import { VEX_ACTIONS } from "@utils/constants";
@@ -149,7 +149,7 @@ const Action = ({ onChangeHandler, index }) => {
             // Filter for all targets under contract + function
           ].targets.map((target, i) => {
             return (
-              <>
+              <React.Fragment key={uniqueId('actions_')}>
                 <Spacer height="20" />
                 <ActionInput
                   key={uniqueId('select_')}
@@ -160,7 +160,7 @@ const Action = ({ onChangeHandler, index }) => {
                   onChangeHandler={updateTargetsAtIndex}
                   onChangeIndex={i}
                 />
-              </>
+              </React.Fragment>
             );
           })}
 
@@ -168,7 +168,7 @@ const Action = ({ onChangeHandler, index }) => {
             // Filter for all values under contract + function
             (value, i) => {
               return (
-                <>
+              <React.Fragment key={uniqueId('actions_interior_')}>
                   <Spacer height="20" />
                   <ActionInput
                     key={i}
@@ -179,7 +179,7 @@ const Action = ({ onChangeHandler, index }) => {
                     onChangeHandler={updateValuesAtIndex}
                     onChangeIndex={i}
                   />
-                </>
+                </React.Fragment>
               );
             }
           )}

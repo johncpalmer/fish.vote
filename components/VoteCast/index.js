@@ -5,7 +5,7 @@ import {
   Total,
 } from './styled'
 
-const VoteCast = ({ color, votesFor, votesAgainst }) => (
+const VoteCast = ({ votesFor, votesAgainst }) => (
   <Wrapper>
     <BlockWrapper>
       <Block>

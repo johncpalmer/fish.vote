@@ -10,6 +10,10 @@ const GlobalStyle = createGlobalStyle`
   * {
     --color-bg: #030309;
     --color-orange: #f5a788;
+    
+    --toastify-color-dark: #121218;
+    --toastify-color-progress-dark: #f5a788;
+    --toastify-color-success: #37C9AC;
   }
 
   html,
@@ -61,7 +65,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #__next > div {
-    height: 100%;
     display: flex;
     flex-direction: column;
   }

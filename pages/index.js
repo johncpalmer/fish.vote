@@ -22,9 +22,7 @@ export default function Home() {
 
   // Global state
   const { address, unlock } = vechain.useContainer();
-  const { proposals, loadingProposals,
-          delegate, delegateToAddress,
-          currentVotes } = governance.useContainer();
+  const { proposals, loadingProposals, delegate, delegateToAddress } = governance.useContainer();
 
   // Local state 
   const [delegateInput, setDelegateInput] = useState("");
@@ -49,10 +47,10 @@ export default function Home() {
       
       // TODO: to reconsider
       case "Pending":
-        return "orange";
+        return "#f5a788";
       
       case "Active":
-        return "#1DB023";
+        return "#37C9AC";
 
       case "Canceled":
         return "#ff0033";
@@ -128,9 +126,9 @@ export default function Home() {
     try {
       await delegateToAddress(delegateAddress);
 
-      // Close the delegate input
       setInputVisible(false);
     }
+
     catch (error) {
       console.error("Error during delegation", error);
     }
@@ -191,7 +189,7 @@ export default function Home() {
               type="text"
               value={delegateInput}
               onChange={setDelegateInput}
-              placeholder="0x000000......" />
+              placeholder="0x0000000000000000000000000000000000000000" />
             <Button onClick={e => handleDelegate('delegate', e)}>Delegate</Button>
           </>
         ) : null}

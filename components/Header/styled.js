@@ -35,17 +35,13 @@ export const Auth = styled.div`
 `
 
 export const AuthConnected = styled.div`
-  cursor: pointer;
-  border-radius: 8px;
-  border: none;
+  display: flex;
+  align-items: center;
+  color: white;
 
   span {
-    font-weight: 500;
-  }
-
-  div {
-    display: inline-block;
-    color: white;
+    font-family: "VCR", sans-serif;
+    color: var(--color-orange);
   }
 
   button {
@@ -74,22 +70,5 @@ export const AuthConnected = styled.div`
   button:focus,
   button:hover {
     opacity: 0.64px;
-  }
-`
-
-export const AuthConnect = styled.button`
-  font-family: VCR, sans-serif;
-  background-color: #f5a78814;
-  border: none;
-  color: var(--color-orange);
-  line-height: 20px;
-  font-size: 14px;
-  border-radius: 8px;
-  padding: 12px 16px;
-  cursor: pointer;
-  text-transform: uppercase;
-
-  &:hover {
-    opacity: 0.64;
   }
 `

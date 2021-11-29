@@ -52,9 +52,7 @@ const Breadcrumb = ({
               target="_blank"
               rel="noopener noreferrer"
             >
-              {proposer.substr(0, 4) +
-                "..." +
-                proposer.slice(proposer.length - 4)}
+              <Address shorten address={proposer} />
             </a>
           )}
         </span>

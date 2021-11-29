@@ -2,24 +2,23 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import numeral from 'numeral';
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
 
-import Button from '../Button'
+import Address from "@components/Address";
+import Button from '@components/Button'
 
 import {
   Wrapper,
   Logo,
   Auth,
   AuthConnected,
-  AuthConnect,
 } from './styled'
 
 const Header = () => {
-  // Collect user balance
-  const { vex } = governance.useContainer();
-  // Collect auth status and functions
+  const { vex, currentVotes } = governance.useContainer();
   const { address, unlock } = vechain.useContainer();
 
   // Connect wallet modal
@@ -32,23 +31,11 @@ const Header = () => {
    * @returns {String}
    */
   const returnVoteCount = () => {
-    // Locale decimals setting (max 2 decimal places)
-    const localeDecimals = {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    };
-
-    // When nil balance immediately show
     if (vex === 0) {
-      return "0 VEX";
+      return "0";
     }
 
-    // If votes loaded
-    return vex
-      ? // Return formatted vote count
-        `${vex.toLocaleString("us-en", localeDecimals)} VEX`
-      : // Else, show loading status
-        "Loading...";
+    return vex ? `${numeral(vex).format('0,0')} VEX` : 'LOADING...';
   };
 
   const connectWalletWithLoading = async () => {
@@ -81,22 +68,18 @@ const Header = () => {
         {address ? (
           // Authenticated state
           <AuthConnected>
-            {/* Vote count */}
             <div>
+              You have
+              {" "}
+              <span>{numeral(currentVotes).format('0,0')} votes</span>
+              {" "}
+              and
+              {" "}
               <span>{returnVoteCount()}</span>
             </div>
 
-            {/* Address + lock button */}
             <Button onClick={unlock}>
-              <span>
-                {address.startsWith("0x")
-                  ? // If ETH address, render truncated address
-                    address.substr(0, 6) +
-                    "..." +
-                    address.slice(address.length - 4)
-                  : // Else, render ENS name
-                    address}
-              </span>
+              <Address shorten address={address} />
             </Button>
           </AuthConnected>
         ) : (

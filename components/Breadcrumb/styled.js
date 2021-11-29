@@ -35,6 +35,7 @@ export const State = styled.div`
 
 export const Title = styled.h1`
   color: white;
+  margin-bottom: 10px;
 `
 
 export const Details = styled.div`

@@ -10,7 +10,7 @@ const VoteInput = ({ onChange, voteFor }) => (
         checked={voteFor}
         onChange={() => onChange(true)}
       />
-      <label for="for">For</label>
+      <label htmlFor="for">For</label>
     </InputWrapper>
     <InputWrapper>
       <input
@@ -20,7 +20,7 @@ const VoteInput = ({ onChange, voteFor }) => (
         checked={!voteFor}
         onChange={() => onChange(false)}
       />
-      <label for="against">Against</label>
+      <label htmlFor="against">Against</label>
     </InputWrapper>
   </Wrapper>
 )

@@ -1,12 +1,17 @@
-import axios from "axios"; // Requests
-import vechain from "@state/vechain"; // Vechain state container
-import { ethers } from "ethers"; // Ethers
-import VEXABI from "@utils/abi/vex"; // ABI: VEX Governance Token
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from 'react-toastify';
 import { find } from 'lodash';
-import { useState, useEffect } from "react"; // Local state management
-import { VEX_NETWORK } from "@utils/constants"; // Constants
-import { createContainer } from "unstated-next"; // Global state provider
+import { ethers } from "ethers";
+import { createContainer } from "unstated-next";
+
+import vechain from "@state/vechain";
+import VEXABI from "@utils/abi/vex";
+import { VEX_NETWORK } from "@utils/constants";
 import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
+
+import SuccessToast from "@components/SuccessToast";
+import PendingToast from "@components/PendingToast";
 
 function useGovernance() {
   // Global state
@@ -107,6 +112,8 @@ function useGovernance() {
                               .comment("Sign to delegate your votes to " + newDelegate)
                               .request();
 
+
+    const id = toast.loading(<PendingToast tx={txResponse} />);
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     const ticker = provider.thor.ticker();
@@ -115,12 +122,28 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next(); 
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
+    }
+
+    if (!txReceipt.reverted) {
+      toast.update(id, {
+        render: <SuccessToast tx={txReceipt} />,
+        type: "success",
+        isLoading: false,
+        autoClose: 5000
+      });
+    } else {
+      toast.update(id, {
+        render: "Something went wrong",
+        type: "error",
+        isLoading: false,
+      });
     }
 
     // Update delegates with new information
     collectDelegates();
     collectCurrentVotes()
+
+    return txReceipt;
   };
 
   /** 
@@ -146,7 +169,6 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next(); 
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
     
     // Handle failed tx 
@@ -260,8 +282,14 @@ function useGovernance() {
     // TODO: need to convert values[] into number/Bignumber types
     // Connex complains that values are not of the correct type
     // Using a placeholder for now
-    const clause = proposeMethod.asClause(contracts, valuesPlaceholder, //values,
-                    functions, calldataBytes, postMarkdown);
+    const clause = proposeMethod.asClause(
+      contracts,
+      valuesPlaceholder,
+      //values,
+      functions,
+      calldataBytes,
+      postMarkdown
+    );
 
     const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
@@ -269,7 +297,6 @@ function useGovernance() {
                                   .request();    
 
     const txVisitor = provider.thor.transaction(txResponse.txid);
-    console.log(txVisitor);
 
     // ticker object to track the creation of blocks on chain
     const ticker = provider.thor.ticker();
