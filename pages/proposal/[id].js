@@ -189,9 +189,12 @@ const Proposal = ({ id, defaultProposalData }) => {
       }
     }
 
-    else if (data.state === 'Defeated') {
+    else if (
+      data.state === 'Defeated' ||
+      data.state === 'Pending'
+    ) {
       actions = {
-        name: `Proposal Defeated`,
+        name: `Proposal ${date.state}`,
         handler: () => null,
         disabled: true,
         color: '#ff385c',
@@ -199,15 +202,6 @@ const Proposal = ({ id, defaultProposalData }) => {
       }
     }
 
-    else if (data.state === 'Pending') {
-      actions = {
-        name: `Proposal Pending`,
-        handler: () => null,
-        disabled: true,
-        color: '#ff385c',
-        background: "#2D0D16",
-      }
-    }
     // Else if proposal is in a state where 
     // there is nothing to do
     else if (data.state === "Canceled" ||
@@ -252,7 +246,6 @@ const Proposal = ({ id, defaultProposalData }) => {
   useEffect(fetchProposal, [proposals]);
   useEffect(fetchReceipt, [authed]);
 
-  console.log(data)
   return (
     // Pass proposal prop to prevent title/meta overlap
     <Layout proposal={true}>
