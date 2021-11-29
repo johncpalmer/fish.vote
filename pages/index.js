@@ -191,7 +191,7 @@ export default function Home() {
               type="text"
               value={delegateInput}
               onChange={setDelegateInput}
-              placeholder="0x9b8ed0a9......" />
+              placeholder="0x000000......" />
             <Button onClick={e => handleDelegate('delegate', e)}>Delegate</Button>
           </>
         ) : null}

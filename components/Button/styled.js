@@ -18,4 +18,11 @@ export const Wrapper = styled.button`
   &:hover {
     opacity: 0.64;
   }
+
+  &:disabled {
+    &:hover {
+      opacity: 1;
+      cursor: not-allowed;
+    }
+  }
 `;
