@@ -203,8 +203,7 @@ export default function Home() {
       >
         {loadingProposals ? (
           <Loader />
-        ) : // Check if there are no top proposals 
-        filterTopProposals(proposals).length < 1 ? (
+        ) : filterTopProposals(proposals).length < 1 ? (
           <Empty
             content="The home page only shows proposals with 400 votes or more. Once there are proposals with more support, they’ll appear here."
             link={(
@@ -216,34 +215,9 @@ export default function Home() {
           
         ) : (
           <div>
-            {filterTopProposals(proposals).map((proposal, i) => {
-              // Else if proposals exist
-              return (
-                // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.id}`} key={i} passHref>
-                  <HomeProposalLink>
-                    <div>
-                      <h4>{truncate(proposal.title, { length: 70 })}</h4>
-                      <span>
-                        {proposal.state === "Active"
-                          ? "10,000,000+ votes"   /* to refactor this */
-                          : formatVoteCount(parseFloat(proposal.votesFor))}
-                      </span>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          // Render indicator light based on state
-                          backgroundColor: renderStateColor(proposal.state),
-                        }}
-                      />
-                      <span>{proposal.state}</span>
-                    </div>
-                  </HomeProposalLink>
-                </Link>
-              );
-            })}
+            {filterTopProposals(proposals).map((proposal, i) => (
+              <HomeProposalLink proposal={proposal} key={i} />
+            ))}
           </div>
         )}
       </Card>

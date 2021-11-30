@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import governance from "@state/governance";
@@ -27,41 +26,6 @@ export default function New() {
   };
 
   /**
-   * Renders status icon color based on status
-   * @param {String} status of proposal
-   * @returns {String} hex string of color
-   */
-  const renderStatusColor = (status) => {
-    switch (status) {
-      case "Terminated":
-        return "#ff0033";
-      case "In Progress":
-        return "#EFC223";
-      case "Proposed":
-        return "#1DB023";
-    }
-  };
-
-  /**
-   * Format vote count as locale-parsed string
-   * @param {Number} votes count
-   * @returns {String} vote count
-   */
-  const formatVoteCount = (votes) => {
-    // Formatter settings
-    const formatSettings = {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    };
-
-    // Return vote count string
-    return `${votes.toLocaleString("us-en", formatSettings)} vote${
-      // Adding a (s) if vote !== 1
-      votes === 1 ? "" : "s"
-    }`;
-  };
-
-  /**
    * Filter proposals with less than 400 votes
    * @param {Object[]} proposals list
    * @returns {Object[]} of proposals with < 400 votes
@@ -78,6 +42,7 @@ export default function New() {
     );
   };
 
+  console.log(loadingProposals)
   return (
     <Layout short>
       {/* Path switch */}
@@ -115,7 +80,6 @@ export default function New() {
         </Description>
       </Card>
 
-      {/* Show all automated proposals */}
       <Card
         title="New proposals"
         action={{
@@ -124,10 +88,8 @@ export default function New() {
         }}
       >
         {loadingProposals ? (
-          // If proposals are still loading, show spinner
           <Loader />
-        ) : // Check if no proposals with < 400 votes
-        filterNewProposals(proposals).length < 1 ? (
+        ) : filterNewProposals(proposals).length < 1 ? (
           <Empty
             content="No one has created a crowd proposal on Vote.Vexchange yet. Check back soon."
             link={(
@@ -140,33 +102,11 @@ export default function New() {
               </a>
             )}
           />
-          
         ) : (
           <div>
-            {filterNewProposals(proposals).map((proposal, i) => {
-              // Else if proposals exist
-              return (
-                // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.contract}`} key={i} passHref>
-                  <HomeProposalLink>
-                    <div>
-                      <h4>{proposal.title}</h4>
-                      <span>{formatVoteCount(parseFloat(proposal.votes))}</span>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          // Render indicator light based on status
-                          backgroundColor: renderStatusColor(proposal.status),
-                        }}
-                      />
-                      <span>{proposal.status}</span>
-                    </div>
-                  </HomeProposalLink>
-                </Link>
-              );
-            })}
+            {filterNewProposals(proposals).map((proposal, i) => (
+              <HomeProposalLink proposal={proposal} key={i} />
+            ))}
           </div>
         )}
       </Card>
