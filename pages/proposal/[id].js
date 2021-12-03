@@ -194,7 +194,7 @@ const Proposal = ({ id, defaultProposalData }) => {
       data.state === 'Pending'
     ) {
       actions = {
-        name: `Proposal ${date.state}`,
+        name: `Proposal ${data.state}`,
         handler: () => null,
         disabled: true,
         color: '#ff385c',
