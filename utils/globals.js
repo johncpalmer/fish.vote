@@ -1,7 +1,5 @@
 import { Framework } from '@vechain/connex-framework';
 import { Driver, SimpleNet } from '@vechain/connex-driver';
-import VEXABI from "@utils/abi/vex"; // VEX Governnace Token ABI
-import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
 import { VEX_NETWORK } from "@utils/constants"; // Constants
 
 // Setup provider at global scope

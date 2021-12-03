@@ -1,22 +1,31 @@
-import {
-  collectNameByContract,
-  generateActionSignatureHTML,
-} from "@utils/constants"; // Parsing functions
-import vechain from "@state/vechain"; // Global state: vechain
-import gfm from "remark-gfm"; // Markdown: GitHub formatting
-import Head from "next/head"; // SSR Meta
-import Card from "@components/Card"; // Component: Card
-import Modal from "@components/Modal"; // Component: Modal
-import Layout from "@components/Layout"; // Component: Layout
-import { useRouter } from "next/router"; // Routing
-import ReactMarkdown from "react-markdown"; // React Markdown
-import governance from "@state/governance"; // Global governance state
-import { useState, useEffect } from "react"; // React state management
-import Breadcrumb from "@components/Breadcrumb"; // Component: Breadcrumb
-import { collectProposals } from "pages/api/proposals"; // Server-side collection function
-import styles from "@styles/pages/Proposal.module.scss"; // Component styles
+import React, { useState, useEffect } from "react";
+import gfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { uniqueId } from "lodash";
 
-export default function Proposal({ id, defaultProposalData }) {
+import vechain from "@state/vechain";
+import governance from "@state/governance";
+
+import { collectNameByContract, generateActionSignatureHTML } from "@utils/constants";
+
+import { collectProposals } from "pages/api/proposals";
+
+import Actions from "@components/Actions";
+import AddressLink from "@components/AddressLink";
+import Breadcrumb from "@components/Breadcrumb";
+import Button from "@components/Button";
+import Card from "@components/Card";
+import Layout from "@components/Layout";
+import Modal from "@components/Modal";
+import ProgressBar from "@components/ProgressBar";
+import VoteCast from "@components/VoteCast";
+import VoteInput from "@components/VoteInput";
+import { Content } from "@components/Card/styled";
+import Loader from "@components/Loader";
+
+const Proposal = ({ id, defaultProposalData }) => {
   // Routing
   const router = useRouter();
 
@@ -37,21 +46,18 @@ export default function Proposal({ id, defaultProposalData }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
+  console.log(voteFor);
 
   /**
    * Fetch proposal details
    */
   const fetchProposal = async () => {
-    // Collect proposal from global state (or pull if no proposals exist)
     const proposal = await collectProposalById(id);
 
-    // If proposal does not exist
     if (!proposal.success) {
-      // Return to "/"
       await router.push("/");
     }
 
-    // Else, toggle loading and update data
     setData(proposal.data);
   };
 
@@ -99,9 +105,7 @@ export default function Proposal({ id, defaultProposalData }) {
    * Queues the contract for later execution
    * Only applies to contract in the succeeded state
    */ 
-  const executeWithLoading = async () => {
-
-  };
+  const executeWithLoading = async () => {};
 
   /**
    * Support action button rendering
@@ -127,7 +131,7 @@ export default function Proposal({ id, defaultProposalData }) {
             // Case of already voted
             else {
               const supportText = receipt.support ? "For" : "Against";
-              actions.name = "Votes Cast " + supportText;
+              actions.name = "You Voted " + supportText;
               actions.handler = () => null;
               actions.disabled = true;
             }
@@ -184,18 +188,33 @@ export default function Proposal({ id, defaultProposalData }) {
         actions.handler = () => unlock();
       }
     }
+
+    else if (
+      data.state === 'Defeated' ||
+      data.state === 'Pending'
+    ) {
+      actions = {
+        name: `Proposal ${data.state}`,
+        handler: () => null,
+        disabled: true,
+        color: '#ff385c',
+        background: "#2D0D16",
+      }
+    }
+
     // Else if proposal is in a state where 
     // there is nothing to do
-    else if (data.state === "Pending" || 
-             data.state === "Canceled" ||
-             data.state === "Defeated" || 
+    else if (data.state === "Canceled" ||
              data.state === "Executed" || 
              data.state === "Expired") {
       // Update the button
-      actions.name = "Proposal " + data.state;
-      actions.handler = () => null;
-      actions.disabled = true;
-      actions.customColor = "#4DB858";
+      actions = {
+        name: `Proposal ${data.state}`,
+        handler: () => null,
+        disabled: true,
+        color: '#fc0a54',
+        background: "#fc0a54",
+      }
     }
 
     // Return buttons object
@@ -210,23 +229,21 @@ export default function Proposal({ id, defaultProposalData }) {
     switch(data.state) {
       case "Pending":
       case "Active":
-        return "#4DB858";
+        return "#37C9AC";
       case "Canceled":
       case "Defeated": 
+        return "rgb(255, 56, 92)";
       case "Succeeded": 
       case "Queued": 
       case "Expired": 
       case "Executed":
-        return "var(--color-pink)";
+        return "white";
       default:
         console.error("Unrecognized proposal state");
     }
   };
 
-  // Fetch proposal on page load (and proposals array change)
   useEffect(fetchProposal, [proposals]);
-
-  // Fetch the vote receipt when user is authenticated
   useEffect(fetchReceipt, [authed]);
 
   return (
@@ -235,48 +252,41 @@ export default function Proposal({ id, defaultProposalData }) {
       {/* Page custom meta */}
       <Head>
         {/* Update page title for proposals */}
-        <title>Fish.vote | {data.title}</title>
-        <meta property="og:title" content={`Fish.vote | ${data.title}`} />
-        <meta property="twitter:title" content={`Fish.vote | ${data.title}`} />
+        <title>Vote.vexchange | {data.title}</title>
+        <meta property="og:title" content={`Vote.vexchange | ${data.title}`} />
+        <meta property="twitter:title" content={`Vote.vexchange | ${data.title}`} />
       </Head>
 
-      {/* Delegation modal (hidden when !modalOpen) */}
       <Modal open={modalOpen} openHandler={setModalOpen}>
-        <div className={styles.card__delegate_modal}>
-          <h3>Confirm Voting</h3>
-          <p>
-            You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                            })} 
-            {" "}Votes</span> to this proposal.
-            Don't worry, you'll retain all the votes that have been delegated to
-            you by other token holders. You can change your mind and delegate
-            votes back to yourself at any time on{" "}
-            <a
-              href="https://sybil.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              sybil.org
-            </a>
-            .
-          </p>
-          <div>
-            <input type="radio" value="For" checked={voteFor} onChange={() => setVoteFor(true)}/> For
-            <input type="radio" value="Against" checked={!voteFor} onChange={() => setVoteFor(false)}/> Against
-          </div>
-          {/* Cast votes button */}
-          <button
-            onClick={() => castVoteWithLoading()}
-            disabled={buttonLoading}
-          >
-            {buttonLoading ? "Casting votes..." : "Cast votes"}
-          </button>
-        </div>
+        <>
+          {buttonLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <h3>Confirm Voting</h3>
+              <p>
+                You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                                })} 
+                {" "}votes</span> to this proposal.
+                Don't worry, you'll retain all the votes that have been delegated to
+                you by other token holders.
+              </p>
+
+              <VoteInput onChange={setVoteFor} voteFor={voteFor} />
+          
+              <Button
+                onClick={() => castVoteWithLoading()}
+                disabled={buttonLoading}
+              >
+                {buttonLoading ? "Casting votes..." : "Cast votes"}
+              </Button>
+            </>
+          )}
+        </>
       </Modal>
 
-      {/* Page title breadcrumb */}
       <Breadcrumb
         title={data.title}
         lastRoute={{
@@ -288,74 +298,32 @@ export default function Proposal({ id, defaultProposalData }) {
         proposer={data.proposer}
       />
 
-      {/* Support progress card */}
       <Card title="Support progress" action={supportActions()}>
-        <div className={styles.card__progress}>
-          {/* Render status bar based on vote count */}
-          <div className={styles.card__progress_bar}>
-            <div
-              style={{
-                width:
-                  // If proposal is proposed
-                  data.state === "Proposed"
-                    ? // Force 100% bar
-                      "100"
-                    : // If number of votes > 0 && < 100k
-                    parseFloat(data.votes) >= 0 &&
-                      parseFloat(data.votes) < 100000
-                    ? // Show 1%
-                      "1%"
-                    : // Else, show accurate value
-                      `${Math.min(
-                        (parseFloat(data.votes) / 10000000) * 100,
-                        // Maximum fill: 100%
-                        100
-                      )}%`,
-                backgroundColor: getColorByState(),
-              }}
-            />
-          </div>
+        <ProgressBar
+          color={getColorByState()}
+          votes={currentVotes}
+          state={data.state}
+        />
 
-          {/* Vote cast count */}
-          <div className={styles.card__delegated}>
-            <h4>Votes Cast</h4>
-            <h1>
-              <span style={{ color: getColorByState() }}>
-                For: {parseFloat(data.votesFor).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>{"     "}
-              <span style={{ color: getColorByState() }}>
-                Against: {parseFloat(data.votesAgainst).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-            </h1>
-          </div>
-          <h2>
-            <span style={{ color: getColorByState() }}>
-                Total: {parseFloat(data.votesAgainst + data.votesFor).toLocaleString("us-en", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-          </h2>
-        </div>
+        <VoteCast
+          color={getColorByState()}
+          votesAgainst={data.votesAgainst}
+          votesFor={data.votesFor}
+        />
       </Card>
 
       {/* Proposal details */}
       <Card
+        noPadding
         title="Proposal details"
-        subtext={`${data.signatures.length} action${
+        subtitle={`${data.signatures.length} action${
           // Render (s) if > 1 action
           data.signatures.length === 1 ? "" : "s"
         }`}
       >
-        <div className={styles.card__details}>
+        <div>
           {/* Render governance actions */}
-          <div className={styles.card__details_actions}>
+          <Actions>
             {data.targets.map((contract, i) => {
               // For each contract in proposal
               // Collect contract name
@@ -367,29 +335,23 @@ export default function Proposal({ id, defaultProposalData }) {
               );
 
               return (
-                <div key={i}>
-                  {/* Action number */}
-                  <span>{i + 1}</span>
-
-                  {/* Action details */}
+                <div key={uniqueId('proposal_')}>
+                  <span>{i + 1}:</span>
                   <p>
-                    {/* Action contract */}
-                    <a
-                      href={`https://explore.vechain.org/accounts/${contract}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {name}
-                    </a>
-                    .{signatureElements.map((element) => element)}
+                    <AddressLink address={contract} text={name} />
+                    .{signatureElements.map((element) => (
+                      <React.Fragment key={uniqueId('element_')}>
+                        { element }
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
               );
             })}
-          </div>
+          </Actions>
 
           {/* Proposal description */}
-          <div className={styles.card__details_content}>
+          <Content>
             {data.description.replace(`# ${data.title}`, "") !== "" ? (
               // Render if markdown exists beyond header (thus, description)
               <ReactMarkdown remarkPlugins={[gfm]} linkTarget="_blank">
@@ -403,7 +365,7 @@ export default function Proposal({ id, defaultProposalData }) {
               // If no description:
               <p>No description provided.</p>
             )}
-          </div>
+          </Content>
         </div>
       </Card>
     </Layout>
@@ -442,3 +404,5 @@ export async function getServerSideProps({ params: { id } }) {
     },
   };
 }
+
+export default Proposal;

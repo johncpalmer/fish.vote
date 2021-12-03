@@ -1,9 +1,11 @@
 import { setState, useState, useEffect } from "react"; // Local state management
 import { createContainer } from "unstated-next"; // Global state provider
+import { ethers } from 'ethers';
 import assert from 'assert';
 
 function useVechain() {
   const [address, setAddress] = useState(null); // User address
+  const [vtho, setVTHO] = useState(0); // User address
   const [provider, setProvider] = useState(null); // Vechain provider
 
   /**
@@ -30,7 +32,12 @@ function useVechain() {
       try {
         const sign = provider.vendor.sign('cert', WALLET_SIGN_MSG);
         const { annex } = await sign.request();
+        const account = provider.thor.account(annex.signer);
+        const { energy: energyAsHex } = await account.get();
+        const energy = ethers.BigNumber.from(energyAsHex);
+
         setAddress(annex.signer);
+        setVTHO(energy);
       }
       catch (error) {
         console.error(error);
@@ -52,6 +59,7 @@ function useVechain() {
   return {
     provider,
     address,
+    vtho,
     unlock,
   };
 }

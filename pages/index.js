@@ -1,24 +1,28 @@
-import { InputWithTopLabel } from "@components/Inputs";
-import { ethers } from "ethers";
-import Link from "next/link"; // Routing: Links
-import Card from "@components/Card"; // Component: Card
-import { useRouter } from "next/router"; // Routing: Router
-import Layout from "@components/Layout"; // Component: Layout
-import Switch from "@components/Switch"; // Component: Switch
-import Loader from "react-loader-spinner"; // Loaders
 import { useState } from "react";
+import { ethers } from "ethers";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { truncate } from "lodash";
+
 import vechain from "@state/vechain";
-import governance from "@state/governance"; // Global state: governance
-import styles from "@styles/pages/Home.module.scss"; // Component styles
+import governance from "@state/governance";
+
+import AddressLink from "@components/AddressLink";
+import Button from "@components/Button";
+import Card from "@components/Card";
+import Empty from "@components/Empty";
+import HomeProposalLink from "@components/HomeProposalLink";
+import Input from "@components/Input";
+import Layout from "@components/Layout";
+import Loader from "@components/Loader";
+import Switch from "@components/Switch";
 
 export default function Home() {
-  const router = useRouter(); // Setup router
+  const router = useRouter();
 
   // Global state
   const { address, unlock } = vechain.useContainer();
-  const { proposals, loadingProposals,
-          delegate, delegateToAddress,
-          currentVotes } = governance.useContainer();
+  const { proposals, loadingProposals, delegate, delegateToAddress } = governance.useContainer();
 
   // Local state 
   const [delegateInput, setDelegateInput] = useState("");
@@ -43,10 +47,10 @@ export default function Home() {
       
       // TODO: to reconsider
       case "Pending":
-        return "orange";
+        return "#f5a788";
       
       case "Active":
-        return "#1DB023";
+        return "#37C9AC";
 
       case "Canceled":
         return "#ff0033";
@@ -60,7 +64,7 @@ export default function Home() {
       case "Expired":
       case "Executed":
       default: 
-        return "black";
+        return "#FC0B54";
     }
   };
 
@@ -108,26 +112,23 @@ export default function Home() {
    * being the given input address
    * @param {event} event context from which this is fired
    */
-  const handleDelegate = async (event) => {
+  const handleDelegate = async (type, event) => {
     let delegateAddress = null;
 
-    // Get the delegate's address
-    if (event.target.innerText === 'Delegate') {
+    if (type === 'delegate') {
       delegateAddress = delegateInput;
-    }
-    else if (event.target.innerText === 'Self-Delegate') {
+    } else if (type === 'self') {
       delegateAddress = address;
-    }
-    else {
+    } else {
       console.error("handleDelegate called with unrecognized event", event);
     }
 
     try {
       await delegateToAddress(delegateAddress);
 
-      // Close the delegate input
       setInputVisible(false);
     }
+
     catch (error) {
       console.error("Error during delegation", error);
     }
@@ -139,7 +140,6 @@ export default function Home() {
 
   return (
     <Layout short>
-      {/* Page switch */}
       <center>
         <Switch
           activePath={0}
@@ -148,121 +148,76 @@ export default function Home() {
         />
       </center>
 
-      {/* Delegation card */}
-      <Card shortMargin
-            title="Votes Delegation"
-            action={{
-              name: "Delegate",
-              handler: null
-            }}>
-        <div className={`card__padding ${styles.home__description}`}>
-          <h4>
-            Welcome to the governance portal of Vexchange! 
-          </h4>
-          <p>
-            To participate in the governance process of Vexchange, you first need
-            to decide if you want to delegate your votes to another address who will vote
-            in the long term interest of Vexchange or if you want to vote on your own (also known as self-delegating).
-          </p>
-          {/* If authenticated */}
-          {address 
-            ?  
-            // Show delegation details
-            [
-              (delegate === ethers.constants.AddressZero
-              ? 
-                <>
-                  <h5>You have not delegated yet</h5>
-                  <button onClick={handleDelegate}>Self-Delegate</button>
-                  <button onClick={openDelegateInput}>Delegate to address</button>
-                </>
-              : 
-                <>
-                  <h5>Current delegate: {delegate}</h5>
-                  <button onClick={openDelegateInput}>Change Delegate</button>
-                </>
-              ),
-              <h3>You currently have {currentVotes} votes delegated to you</h3>
-            ]
-            : 
-            <button onClick={unlock}>Connect wallet</button>
-          }
-          <div hidden={!inputVisible}>
-            <InputWithTopLabel
-              labelTitle="Address to delegate to"
+      <Card
+        shortMargin
+        title="Vexchange Governance"
+        action={{ name: "Delegate", handler: null }}
+      >
+        <p>Delegate your votes</p>
+        <p>
+          To participate in the governance process of Vexchange, you first need
+          to decide if you want to delegate your votes to another address who will vote
+          in the long term interest of Vexchange or if you want to vote on your own (also known as self-delegating).
+        </p>
+        { address ? (
+          <>
+            { delegate === ethers.constants.AddressZero ? (
+              <>
+                <p>You have not delegated yet</p>
+                <Button onClick={e => handleDelegate('self', e)}>Self-Delegate</Button>
+                <Button onClick={openDelegateInput}>Delegate to address</Button>
+              </>
+            ) : (
+              <>
+                <p>
+                  Current delegate: 
+                  {" "}
+                  <AddressLink address={delegate} />
+                </p>
+                <Button onClick={openDelegateInput}>Change Delegate</Button>
+              </>
+            )}
+          </>
+        ) : (
+          <Button onClick={unlock}>Connect wallet</Button>
+        )}
+
+        { inputVisible ? (
+          <>
+            <Input
+              label="Address to delegate to"
               type="text"
               value={delegateInput}
-              onChangeHandler={setDelegateInput}
-              placeholder="0x9b8ed0a9......" />
-            <button onClick={handleDelegate}>Delegate</button>
-          </div>
-        </div>
+              onChange={setDelegateInput}
+              placeholder="0x0000000000000000000000000000000000000000" />
+            <Button onClick={e => handleDelegate('delegate', e)}>Delegate</Button>
+          </>
+        ) : null}
       </Card>
 
       {/* Show all automated proposals */}
       <Card
+        noPadding
         title="Top proposals"
-        action={{
-          name: "Create Proposal",
-          handler: routeToCreate,
-        }}
+        action={{ name: "Create Proposal", handler: routeToCreate, }}
       >
         {loadingProposals ? (
-          // If proposals are still loading, show spinner
-          <div className="card__padding">
-            <center>
-              <Loader type="Oval" color="#e7347a" height={50} width={50} />
-            </center>
-          </div>
-        ) : // Check if there are no top proposals 
-        filterTopProposals(proposals).length < 1 ? (
-          // Else if no proposals exist, show empty state
-          <div className="card__padding">
-            <div className={styles.home__empty}>
-              <h3>Nothing here yet</h3>
-              <p>
-                The home page only shows proposals with 400 votes or more. Once
-                there are proposals with more support, they’ll appear here.
-              </p>
-
-              {/* Link to new prpoosals page */}
+          <Loader />
+        ) : filterTopProposals(proposals).length < 1 ? (
+          <Empty
+            content="The home page only shows proposals with 400 votes or more. Once there are proposals with more support, they’ll appear here."
+            link={(
               <Link href="/new">
                 <a>{"Read new proposals ->"}</a>
               </Link>
-            </div>
-          </div>
+            )}
+          />
+          
         ) : (
-          <div className={styles.home__loading}>
-            {filterTopProposals(proposals).map((proposal, i) => {
-              // Else if proposals exist
-              return (
-                // Loop over each proposal and render a proposal link
-                <Link href={`/proposal/${proposal.id}`} key={i}>
-                  <a className={styles.home__proposal}>
-                    {/* Proposal title + vote count */}
-                    <div>
-                      <h4>{proposal.title}</h4>
-                      <span>
-                        {proposal.state === "Active"
-                          ? "10,000,000+ votes"   /* to refactor this */
-                          : formatVoteCount(parseFloat(proposal.votesFor))}
-                      </span>
-                    </div>
-
-                    {/* Proposal current state */}
-                    <div>
-                      <div
-                        style={{
-                          // Render indicator light based on state
-                          backgroundColor: renderStateColor(proposal.state),
-                        }}
-                      />
-                      <span>{proposal.state}</span>
-                    </div>
-                  </a>
-                </Link>
-              );
-            })}
+          <div>
+            {filterTopProposals(proposals).map((proposal, i) => (
+              <HomeProposalLink proposal={proposal} key={i} />
+            ))}
           </div>
         )}
       </Card>

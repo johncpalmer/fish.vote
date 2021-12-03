@@ -1,8 +1,8 @@
-<img src="https://www.fish.vote/vectors/logo-mobile.svg" alt="Fish.Vote logo" width="50" />
+<img src="https://vote.vexchange.io/vectors/logo-mobile.svg" alt="Vote.vexchange logo" width="50" />
 
-# Fish Vote
+# Vote.vexchange
 
-Fish.vote is an app where anyone can create Crowd Proposals on UNI governance. When a proposal gains 10 million delegate votes, it is converted to a formal UNI governance proposal that is voted on by the UNI community.
+Vote.vexchange is an app where anyone can create Crowd Proposals on VEX governance. When a proposal gains 10 million delegate votes, it is converted to a formal VEX governance proposal that is voted on by the VEX community.
 
 ## Run locally
 
