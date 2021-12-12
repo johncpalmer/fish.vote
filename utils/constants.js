@@ -15,6 +15,14 @@ const VEX_CONSTANTS = {
       name: "Timelock",
       address: "0x41D293Ee2924FF67Bd934fC092Be408162448f86",
     },
+    factory: {
+      name: "VexchangeV2Factory",
+      address: "0xb312582c023cc4938cf0faea2fd609b46d7509a2"
+    },
+    router: {
+      name: "Router",
+      address: "0x6c0a6e1d922e0e63901301573370b932ae20dadb",
+    }
   },
   testnet: {
     governor_alpha: {
@@ -29,6 +37,14 @@ const VEX_CONSTANTS = {
       name: "Timelock",
       address: "0xFd883d0947848eeA79bA1425fcE38b6f00dF3ea0",
     },
+    factory: {
+      name: "VexchangeV2Factory",
+      address: "0xd15a91ee3f57313a6129a4a58c73fcbdad34c23c"
+    },
+    router: {
+      name: "Router",
+      address: "0x01d6b50b31c18d7f81ede43935cadf79901b0ea0"
+    }
   }
 }
 
@@ -45,23 +61,80 @@ const VEX_ACTIONS = [
     address: VEX_NETWORK.vex_governance_token.address,
     functions: [
       {
-        name: "transfer",
+        name: "Transfer",
         signature: "transfer(address,uint256)",
-        targets: [
+        args: [
           {
             name: "recipient",
             placeholder: "address",
             type: "text",
           },
-        ],
-        values: [
           {
             name: "amount",
             placeholder: "value",
             type: "number",
           },
         ],
+        values: [],
       },
+      {
+        name: "Approve",
+        signature: "approve(address,uint256)",
+        args: [
+          {
+            name: "spender",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "amount",
+            placeholder: "amount",
+            type: "number"
+          }
+        ],
+        values: [],
+      },
+      {
+        name: "Mint",
+        signature: "mint(address,uint256)",
+        args: [
+          {
+            name: "destination",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "amount",
+            placeholder: "amount",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Burn",
+        signature: "burn(uint256)",
+        args: [
+          {
+            name: "rawAmount",
+            placeholder: "amount",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set minter",
+        signature: "setMinter(address)",
+        args: [
+          {
+            name: "newMinter",
+            placeholder: "address",
+            type: "text"
+          }
+        ],
+        values: []
+      }
     ],
   },
   {
@@ -69,9 +142,9 @@ const VEX_ACTIONS = [
     address: VEX_NETWORK.timelock.address,
     functions: [
       {
-        name: "Set Pending Admin",
+        name: "Set pending admin",
         signature: "setPendingAdmin(address)",
-        targets: [
+        args: [
           {
             name: "admin",
             placeholder: "address",
@@ -80,8 +153,210 @@ const VEX_ACTIONS = [
         ],
         values: [],
       },
+      {
+        name: "Set timelock delay",
+        signature: "setDelay(uint256)",
+        args: [
+          {
+            name: "Delay",
+            placeholder: "time in seconds. Minimum 2 days (172800), maximum 30 days (2592000)",
+            type: "number"
+          }
+        ],
+        values: [],
+      }
     ],
   },
+  {
+    contract: "Factory",
+    address: VEX_NETWORK.factory.address,
+    functions: [
+      {
+        name: "Set platform fee to",
+        signature: "setPlatformFeeTo(address)",
+        args: [
+          {
+            name: "platformFeeTo",
+            placeholder: "address",
+            type: "text"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set default swap fee",
+        signature: "setDefaultSwapFee(uint256)",
+        args: [
+          {
+            name: "swapFee",
+            placeholder: "basis points",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set default platform fee",
+        signature: "setDefaultPlatformFee(uint256)",
+        args: [
+          {
+            name: "platformFee",
+            placeholder: "basis points",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set default recoverer",
+        signature: "setDefaultRecoverer(address)",
+        args: [
+          {
+            name: "default recoverer",
+            placeholder: "address",
+            type: "text"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set swap fee for pair",
+        signature: "setSwapFeeForPair(address,uint256)",
+        args: [
+          {
+            name: "pair",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "swapFee",
+            placeholder: "basis points",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set platform fee for pair",
+        signature: "setPlatformFeeForPair(address,uint256)",
+        args: [
+          {
+            name: "pair",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "platformFee",
+            placeholder: "basis points",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Set recoverer for pair",
+        signature: "setRecovererForPair(address,address)",
+        args: [
+          {
+            name: "pair",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "recoverer",
+            placeholder: "address",
+            type: "text"
+          }
+        ],
+        values: []
+      }
+    ]
+  },
+  {
+    contract: "Router",
+    address: VEX_NETWORK.router.address,
+    functions: [
+      {
+        name: "Remove liquidity",
+        signature: "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
+        args: [
+          {
+            name: "tokenA",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "tokenB",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "liquidity",
+            placeholder: "number of LP tokens",
+            type: "number"
+          },
+          {
+            name: "amountAMin",
+            placeholder: "Amount A minimum",
+            type: "number"
+          },
+          {
+            name: "amountBMin",
+            placeholder: "Amount B minimum",
+            type: "number"
+          },
+          {
+            name: "to",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "deadline",
+            placeholder: "timestamp",
+            type: "number"
+          }
+        ],
+        values: []
+      },
+      {
+        name: "Remove liquidity VET",
+        signature: "removeLiquidity(address,uint256,uint256,uint256,address,uint256)",
+        args: [
+          {
+            name: "token",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "liquidity",
+            placeholder: "number of LP tokens",
+            type: "number"
+          },
+          {
+            name: "amountTokenMin",
+            placeholder: "Token Amount Minimum",
+            type: "number"
+          },
+          {
+            name: "amountVetMin",
+            placeholder: "Amount of VET minimum",
+            type: "number"
+          },
+          {
+            name: "to",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "deadline",
+            placeholder: "timestamp",
+            type: "number"
+          }
+        ],
+        values: []
+      }
+    ]
+  }
 ];
 
 /**

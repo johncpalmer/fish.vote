@@ -21,7 +21,9 @@ const defaultActionState = [null, null, [], []];
 export default function Create() {
   const router = useRouter();
   const { address, unlock } = vechain.useContainer();
-  const { createProposal, inifiniteApproveFactory } = governance.useContainer();
+  const { createProposal } = governance.useContainer();
+
+  // Local state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -48,7 +50,8 @@ export default function Create() {
     setButtonLoading(true);
 
     try {
-      const proposal_address = await createProposal(
+      // Create proposal
+      const proposalId = await createProposal(
         actions.map((action) => action[0]),
         actions.map((action) => action[1]),
         actions.map((action) => action[2]),
@@ -56,8 +59,8 @@ export default function Create() {
         title,
         description
       );
-
-      router.push(`/proposal/${proposal_address}`);
+      // Assuming proposal creation is successful, route to new proposal
+      router.push(`/proposal/${proposalId}`);
     } catch (error) {
       console.log("Error when creating proposal: " + error);
     }

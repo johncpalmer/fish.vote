@@ -1,5 +1,4 @@
 import { find } from 'lodash';
-import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils"; // Ethers conversion utils
 import markdownHeadings from "markdown-headings"; // Markdown headings extraction
 import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
@@ -30,8 +29,7 @@ const getHeader = (markdown) => {
  */
 const parseEvents = async (event) => {
   // Collect block and markdown header
-  const block = event.meta.blockNumber;
-  const markdownHeader = event.decoded.description;
+  const markdownHeader = getHeader(event.decoded.description);
   const proposalId = event.decoded.id;
 
   // Collect proposal vote count
@@ -52,8 +50,8 @@ const parseEvents = async (event) => {
     // Contract state
     state: toProposalState(proposalStateRaw),
     // Votes on both sides
-    votesFor: parseFloat(ethers.utils.formatEther(votesForRaw)),
-    votesAgainst: parseFloat(ethers.utils.formatEther(votesAgainstRaw)), 
+    votesFor: parseFloat(formatEther(votesForRaw)),
+    votesAgainst: parseFloat(formatEther(votesAgainstRaw)),
     // Time of proposal
     timestamp: event.meta.blockTimestamp,
     // Proposal title

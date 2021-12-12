@@ -241,7 +241,7 @@ function useGovernance() {
    * Creates a new CrowdProposal via the CrowdProposalFactory
    * @param {String[]} contracts array of target addresses
    * @param {String[]} functions array of function signatures to be called
-   * @param {String[]} targets array of target params to fill
+   * @param {String[]} funcArgs array of function arguments to fill
    * @param {String[]} values array of function param values to fill
    * @param {String} title of proposal
    * @param {String} description of proposal
@@ -250,7 +250,7 @@ function useGovernance() {
   const createProposal = async (
     contracts,
     functions,
-    targets,
+    funcArgs,
     values,
     title,
     description
@@ -261,7 +261,7 @@ function useGovernance() {
     ${description}`;
 
     // Generate raw calldata
-    const calldataRaw = targets.map((target, i) =>
+    const calldataRaw = funcArgs.map((target, i) =>
       // By zipping target and values arrays if they exist
       typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
     );
@@ -280,6 +280,8 @@ function useGovernance() {
     const valuesPlaceholder = new Array(contracts.length).fill(0);
 
     // TODO: need to convert values[] into number/Bignumber types
+    // fish.vote did this too because they did not have any functions that
+    // Required a transfer of value (i.e. VET)
     // Connex complains that values are not of the correct type
     // Using a placeholder for now
     const clause = proposeMethod.asClause(
@@ -330,7 +332,11 @@ function useGovernance() {
    * @param proposalId
    */
   const queueProposal = async (proposalId) => {
-    console.assert(proposalId, "proposalId should not be null");
+    if (!proposalId) {
+      console.error("proposalId should not be null");
+      return;
+    }
+
     const queueABI = find(GovernorAlphaABI, { name: "queue" });
     const method = governanceContract.method(queueABI);
     const clause = method.asClause(proposalId);
@@ -439,7 +445,7 @@ function useGovernance() {
   /**
    * Collections of user data to run on load
    */
-  const setupUser = async () => {
+  const setupUser = () => {
     // If authenticated
     if (address && provider && vexContract) {
       // Run setup functions

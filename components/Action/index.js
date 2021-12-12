@@ -13,7 +13,7 @@ const Action = ({ onChangeHandler, index }) => {
   // Local state containers
   const [func, setFunc] = useState(null);
   const [values, setValues] = useState([]);
-  const [targets, setTargets] = useState([]);
+  const [args, setArgs] = useState([]);
   const [contract, setContract] = useState(null);
 
   /**
@@ -27,33 +27,33 @@ const Action = ({ onChangeHandler, index }) => {
       setFunc(null);
     }
 
-    // Else, nullify targets and values
-    setTargets([]);
+    // Else, nullify arguments and values
+    setArgs([]);
     setValues([]);
   };
 
   /**
    * Prefill arrays on function selection
    */
-  const updateTargetsAndValues = () => {
+  const updateArgsAndValues = () => {
     // Collect function
     const funcOptions =
       VEX_ACTIONS[contract.value.key].functions[func.value.key];
 
     // Prefill arrays based on function params
-    setTargets(new Array(funcOptions.targets.length).fill(""));
+    setArgs(new Array(funcOptions.args.length).fill(""));
     setValues(new Array(funcOptions.values.length).fill(""));
   };
 
   /**
-   * Update targets array at index
+   * Update args array at index
    * @param {String} value to update
    * @param {Number} index to update at
    */
-  const updateTargetsAtIndex = (value, index) => {
-    let temp = targets;
+  const updateArgsAtIndex = (value, index) => {
+    let temp = args;
     temp[index] = value;
-    setTargets([...temp]);
+    setArgs([...temp]);
   };
 
   /**
@@ -77,8 +77,8 @@ const Action = ({ onChangeHandler, index }) => {
         contract ? contract.value.address : null,
         // Function signature if selected or null
         func ? func.value.signature : null,
-        // Targets array
-        targets,
+        // Args array
+        args,
         // Values array
         values,
       ],
@@ -90,18 +90,18 @@ const Action = ({ onChangeHandler, index }) => {
   useEffect(() => clearChildren(true), [contract]);
   // On function update
   useEffect(() => {
-    // Clear all target/value children
+    // Clear all arg/value children
     clearChildren(false);
 
     // If not null
     if (func) {
-      // Also prefill targets and values arrays
-      updateTargetsAndValues();
+      // Also prefill args and values arrays
+      updateArgsAndValues();
     }
   }, [func]);
 
   // Update state of parent container on any change
-  useEffect(updateParentState, [contract, func, targets, values]);
+  useEffect(updateParentState, [contract, func, args, values]);
 
   return (
     <Wrapper>
@@ -141,27 +141,28 @@ const Action = ({ onChangeHandler, index }) => {
         </>
       ) : null}
 
-      {contract && func ? (
-        // If both contract and function selected, show inputs for targets
+      {VEX_ACTIONS[contract?.value.key]?.functions[func?.value.key] ? (
+        // If both contract and function selected, show inputs for args
         <>
           {VEX_ACTIONS[contract.value.key].functions[
             func.value.key
-            // Filter for all targets under contract + function
-          ].targets.map((target, i) => {
+            // Filter for all args under contract + function
+          ].args.map((arg, i) => {
             return (
               <React.Fragment key={uniqueId('actions_')}>
                 <Spacer height="20" />
                 <ActionInput
                   key={uniqueId('select_')}
-                  labelTitle={target.name}
-                  value={targets[i]}
-                  type={target.type}
-                  placeholder={target.placeholder}
-                  onChangeHandler={updateTargetsAtIndex}
+                  label={arg.name}
+                  value={args[i]}
+                  type={arg.type}
+                  placeholder={arg.placeholder}
+                  onChangeHandler={updateArgsAtIndex}
                   onChangeIndex={i}
                 />
               </React.Fragment>
             );
+
           })}
 
           {VEX_ACTIONS[contract.value.key].functions[func.value.key].values.map(
@@ -172,7 +173,7 @@ const Action = ({ onChangeHandler, index }) => {
                   <Spacer height="20" />
                   <ActionInput
                     key={i}
-                    labelTitle={value.name}
+                    label={value.name}
                     value={values[i]}
                     type={value.type}
                     placeholder={value.placeholder}
