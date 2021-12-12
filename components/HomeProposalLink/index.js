@@ -50,8 +50,8 @@ const HomeProposalLink = ({ proposal }) => (
         </span>
       </div>
       <div>
-      <div style={{ backgroundColor: renderStatusColor(proposal.status) }} />
-        <span>{proposal.status}</span>
+      <div style={{ backgroundColor: renderStatusColor(proposal.state) }} />
+        <span>{proposal.state}</span>
       </div>
     </Wrapper>
   </Link>
