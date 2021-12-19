@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,17 +16,23 @@ import Input from "@components/Input";
 import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import Switch from "@components/Switch";
+import { PROPOSAL_THRESHOLD } from "@utils/constants";
 
 export default function Home() {
   const router = useRouter();
 
   // Global state
   const { address, unlock } = vechain.useContainer();
-  const { proposals, loadingProposals, delegate, delegateToAddress } = governance.useContainer();
+  const { proposals, loadingProposals, delegate, delegateToAddress, currentVotes } = governance.useContainer();
 
   // Local state 
   const [delegateInput, setDelegateInput] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
+  const [allowProposal, setAllowProposal] = useState(false);
+
+  useEffect(async () => {
+      setAllowProposal(currentVotes >= PROPOSAL_THRESHOLD);
+  }, [currentVotes]);
 
   /**
    * Routes clicker to /create
@@ -196,10 +202,11 @@ export default function Home() {
       </Card>
 
       {/* Show all automated proposals */}
+      {/* TODO: Add message (maybe tooltip) to Button if disabled and inform user that votes are below threshold */}
       <Card
         noPadding
         title="Top proposals"
-        action={{ name: "Create Proposal", handler: routeToCreate, }}
+        action={{ name: "Create Proposal", handler: routeToCreate, disabled: !allowProposal }}
       >
         {loadingProposals ? (
           <Loader />
