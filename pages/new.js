@@ -42,15 +42,26 @@ export default function New() {
     );
   };
 
-  console.log(loadingProposals)
   return (
     <Layout short>
       {/* Path switch */}
       <center>
         <Switch
           activePath={1}
-          firstPath={{ name: "Home", path: "/" }}
-          secondPath={{ name: "New", path: "/new" }}
+          paths={[
+            {
+              name: 'Home',
+              url: '/',
+            },
+            {
+              name: 'New',
+              url: '/new',
+            },
+            {
+              name: 'Assets',
+              url: '/assets',
+            },
+          ]}
         />
       </center>
 
