@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
   `}
 
   > div > table {
-    margin-top: 20px;
+    margin-top: 26px;
   }
 `;
 
