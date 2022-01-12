@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react"; // Local state management
-// import { createContainer } from "unstated-next"; // Global state provider
-// import { ethers } from 'ethers';
-// import assert from 'assert';
 import { find, isEmpty } from 'lodash';
+import { utils } from 'ethers';
 
 import VEXABI from "@utils/abi/vex";
 import { VEX_NETWORK } from "@utils/constants";
 
+const balanceOfABI = find(VEXABI, { name: 'balanceOf' });
+
 function useBalances(provider, addresses) {
   const [isLoading, setIsLoading] = useState(false);
   const [balances, setBalances] = useState([]);
-  const balanceOfABI = find(VEXABI, { name: 'balanceOf' });
 
   useEffect(() => {
     const getBalances = () => {
@@ -22,7 +21,7 @@ function useBalances(provider, addresses) {
 
         return {
           address,
-          balance: decoded['0'],
+          balance: utils.formatUnits(decoded['0']),
         };
       });
 

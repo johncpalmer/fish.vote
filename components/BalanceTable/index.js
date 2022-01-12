@@ -21,7 +21,7 @@ const BalanceTable = ({ balances }) => {
         {balances.map(({ balance, address }) => (
           <tr key={address}>
             <td type="addr">
-              <AddressLink address={address} />
+              <AddressLink shorten address={address} />
             </td>
             <td>BoredApeYachtClub Contract</td>
             <td type="num" align="right">
