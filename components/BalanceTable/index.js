@@ -14,7 +14,7 @@ const BalanceTable = ({ balances }) => {
         <tr>
           <th>Address</th>
           <th>Name</th>
-          <th align="right">Amount</th>
+          <th align="center">Amount</th>
           <th align="right">USD Value</th>
         </tr>
       </thead>
