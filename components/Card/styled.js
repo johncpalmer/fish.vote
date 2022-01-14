@@ -14,6 +14,10 @@ export const Wrapper = styled.div`
   ${({ shortMargin }) => shortMargin && css`
     margin-top: 24px;
   `}
+
+  > div > table {
+    margin-top: 26px;
+  }
 `;
 
 export const Header = styled.div`

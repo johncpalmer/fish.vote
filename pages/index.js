@@ -24,7 +24,7 @@ export default function Home() {
   const { address, unlock } = vechain.useContainer();
   const { proposals, loadingProposals, delegate, delegateToAddress } = governance.useContainer();
 
-  // Local state 
+  // Local state
   const [delegateInput, setDelegateInput] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
 
@@ -44,11 +44,11 @@ export default function Home() {
    */
   const renderStateColor = (state) => {
     switch (state) {
-      
+
       // TODO: to reconsider
       case "Pending":
         return "#f5a788";
-      
+
       case "Active":
         return "#37C9AC";
 
@@ -63,7 +63,7 @@ export default function Home() {
       case "Queued":
       case "Expired":
       case "Executed":
-      default: 
+      default:
         return "#FC0B54";
     }
   };
@@ -93,7 +93,7 @@ export default function Home() {
    * @returns {Object[]} of proposals with >= 400 votes
    */
   const filterTopProposals = (proposals) => {
-    
+
     const voteThreshold = 0;
 
     // Filter array for object
@@ -143,8 +143,20 @@ export default function Home() {
       <center>
         <Switch
           activePath={0}
-          firstPath={{ name: "Home", path: "/" }}
-          secondPath={{ name: "New", path: "/new" }}
+          paths={[
+            {
+              name: 'Home',
+              url: '/',
+            },
+            {
+              name: 'New',
+              url: '/new',
+            },
+            {
+              name: 'Assets',
+              url: '/assets',
+            },
+          ]}
         />
       </center>
 
@@ -170,7 +182,7 @@ export default function Home() {
             ) : (
               <>
                 <p>
-                  Current delegate: 
+                  Current delegate:
                   {" "}
                   <AddressLink address={delegate} />
                 </p>
@@ -212,7 +224,7 @@ export default function Home() {
               </Link>
             )}
           />
-          
+
         ) : (
           <div>
             {filterTopProposals(proposals).map((proposal, i) => (

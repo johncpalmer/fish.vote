@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
     border-bottom: 1px solid #1C1C22;
     display: flex;
     padding: 24px;
-    overflow-x: scroll;
+    overflow-x: auto;
 
     > span {
       color: #ACACAB;

@@ -5,7 +5,7 @@ const VEX_CONSTANTS = {
   mainnet: {
     governor_alpha: {
       name: "Governor",
-      address: "0xAE6d4be61A36984dfbE7399A73B59c92b994E9F7",
+      address: "0xa0a636893Ed688076286174Bc23b34C31BED3089",
     },
     vex_governance_token: {
       name: "VEX",
@@ -22,6 +22,10 @@ const VEX_CONSTANTS = {
     router: {
       name: "Router",
       address: "0x6c0a6e1d922e0e63901301573370b932ae20dadb",
+    },
+    wvet: {
+      name: "Wrapped VET",
+      address: "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997"
     }
   },
   testnet: {
@@ -44,6 +48,10 @@ const VEX_CONSTANTS = {
     router: {
       name: "Router",
       address: "0x01d6b50b31c18d7f81ede43935cadf79901b0ea0"
+    },
+    wvet: {
+      name: "Wrapped VET",
+      address: "0x93E5Fa8011612FAB061eF58CbAB9262d2e76407b"
     }
   }
 }
