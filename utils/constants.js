@@ -5,7 +5,7 @@ const VEX_CONSTANTS = {
   mainnet: {
     governor_alpha: {
       name: "Governor",
-      address: "0xAE6d4be61A36984dfbE7399A73B59c92b994E9F7",
+      address: "0xa0a636893Ed688076286174Bc23b34C31BED3089",
     },
     vex_governance_token: {
       name: "VEX",
