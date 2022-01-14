@@ -1,8 +1,6 @@
-import { VEX_CONSTANTS, VEX_NETWORK } from "@utils/constants"; // Constants
-console.log(VEX_CONSTANTS)
+import { VEX_NETWORK } from "@utils/constants"; // Constants
 import vechain from "@state/vechain";
-
-import useBalances from "@hooks/useBalances";
+import assets from "@state/assets";
 
 import BalanceTable from "@components/BalanceTable";
 import Card from "@components/Card";
@@ -15,11 +13,7 @@ import Switch from "@components/Switch";
 export default function Assets() {
   const { provider } = vechain.useContainer();
 
-  const { balances, isLoading } = useBalances(provider, [
-    VEX_NETWORK.governor_alpha.address, // governer alpha
-    VEX_NETWORK.timelock.address, // timelock
-    VEX_NETWORK.vex_governance_token.address, // timelock
-  ])
+  const { balances, isLoading } = assets.useContainer();
 
   return (
     <Layout short>
@@ -48,7 +42,7 @@ export default function Assets() {
       <Card shortMargin>
         <Description>
           <h5>Assets Overview</h5>
-          <p>The DAO's assets are held in the <a href={`https://explore.vechain.org/accounts/${VEX_NETWORK.timelock.address}`}>Timelock smart contract</a>. LP tokens collected as platform fees are held by the fee collector smart contract, and are periodically converted to WVET and transferred to the Timelock.</p>
+          <p>The Vexchange DAO's assets are held in the <a href={`https://explore.vechain.org/accounts/${VEX_NETWORK.timelock.address}`} rel="noopener noreferrer" target="_blank">Timelock smart contract</a>. LP tokens collected as platform fees are held by the fee collector smart contract, and are periodically converted to WVET and transferred to the Timelock for spending.</p>
         </Description>
       </Card>
 

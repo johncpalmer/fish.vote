@@ -1,31 +1,35 @@
 import React from "react";
-import numeral from 'numeral';
-
+import { formatDollarAmount, formatNumber } from "@utils/functions"
 import AddressLink from '../AddressLink';
 
 import { Wrapper } from './styled';
+import tokenInfo from "@state/tokenInfo";
 
 const BalanceTable = ({ balances }) => {
-  const formatNumber = num => numeral(num).format('$0,0.00');
+    const { tokens } = tokenInfo.useContainer();
 
-  return (
+    return (
     <Wrapper>
       <thead>
         <tr>
           <th>Address</th>
-          <th>Description</th>
+          <th>Name</th>
           <th align="right">Amount</th>
+          <th align="right">USD Value</th>
         </tr>
       </thead>
       <tbody>
-        {balances.map(({ balance, address }) => (
+        {balances.map(({ balance, address, name }) => (
           <tr key={address}>
             <td type="addr">
               <AddressLink shorten address={address} />
             </td>
-            <td>BoredApeYachtClub Contract</td>
+            <td>{name}</td>
+            <td type="num" align="center">
+                {formatNumber(balance)}
+            </td>
             <td type="num" align="right">
-              {formatNumber(balance)}
+              {formatDollarAmount(balance * tokens[address].usdPrice)}
             </td>
           </tr>
         ))}
