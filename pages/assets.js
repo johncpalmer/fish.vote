@@ -1,5 +1,5 @@
-import { VEX_NETWORK } from "@utils/constants"; // Constants
-
+import { VEX_CONSTANTS, VEX_NETWORK } from "@utils/constants"; // Constants
+console.log(VEX_CONSTANTS)
 import vechain from "@state/vechain";
 
 import useBalances from "@hooks/useBalances";
@@ -48,7 +48,7 @@ export default function Assets() {
       <Card shortMargin>
         <Description>
           <h5>Assets Overview</h5>
-          <p>Minim ipsum sint velit nostrud ea in aliqua sit pariatur. Et ullamco laborum aute enim nisi duis id anim voluptate magna. Nulla consectetur velit incididunt reprehenderit Lorem nostrud occaecat amet sunt do dolore.</p>
+          <p>The DAO's assets are held in the <a href={`https://explore.vechain.org/accounts/${VEX_NETWORK.timelock.address}`}>Timelock smart contract</a>. LP tokens collected as platform fees are held by the fee collector smart contract, and are periodically converted to WVET and transferred to the Timelock.</p>
         </Description>
       </Card>
 
