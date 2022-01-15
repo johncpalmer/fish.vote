@@ -46,7 +46,6 @@ const Proposal = ({ id, defaultProposalData }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
-  console.log(voteFor);
 
   /**
    * Fetch proposal details
@@ -301,8 +300,8 @@ const Proposal = ({ id, defaultProposalData }) => {
       <Card title="Support progress" action={supportActions()}>
         <ProgressBar
           color={getColorByState()}
-          votes={currentVotes}
-          state={data.state}
+          votesAgainst={data.votesAgainst}
+          votesFor={data.votesFor}
         />
 
         <VoteCast
