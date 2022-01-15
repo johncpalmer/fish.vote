@@ -31,11 +31,8 @@ const Header = () => {
    * @returns {String}
    */
   const returnVoteCount = () => {
-    if (vex === 0) {
-      return "0";
-    }
 
-    return vex ? `${numeral(vex).format('0,0')} VEX` : 'LOADING...';
+    return vex !== null ? `${numeral(vex).format('0,0')} VEX` : 'LOADING...';
   };
 
   const connectWalletWithLoading = async () => {
@@ -51,7 +48,7 @@ const Header = () => {
         <Link href="/">
           <a
             style={{
-              display: 'block' 
+              display: 'block'
             }}
           >
             <Image
