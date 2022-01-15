@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { uniqueId } from 'lodash'
-
 import { VEX_ACTIONS } from "@utils/constants";
 
 import Spacer from "@components/Spacer";
@@ -149,12 +147,11 @@ const Action = ({ onChangeHandler, index }) => {
             // Filter for all args under contract + function
           ].args.map((arg, i) => {
             return (
-              <React.Fragment key={uniqueId('actions_')}>
+              <React.Fragment key={"arg_"+i}>
                 <Spacer height="20" />
                 <ActionInput
-                  key={uniqueId('select_')}
                   label={arg.name}
-                  value={args[i]}
+                  value={args[i] || ""}
                   type={arg.type}
                   placeholder={arg.placeholder}
                   onChangeHandler={updateArgsAtIndex}
@@ -162,19 +159,17 @@ const Action = ({ onChangeHandler, index }) => {
                 />
               </React.Fragment>
             );
-
           })}
 
           {VEX_ACTIONS[contract.value.key].functions[func.value.key].values.map(
             // Filter for all values under contract + function
             (value, i) => {
               return (
-              <React.Fragment key={uniqueId('actions_interior_')}>
+              <React.Fragment key={"val_"+i}>
                   <Spacer height="20" />
                   <ActionInput
-                    key={i}
                     label={value.name}
-                    value={values[i]}
+                    value={values[i] || ""}
                     type={value.type}
                     placeholder={value.placeholder}
                     onChangeHandler={updateValuesAtIndex}
