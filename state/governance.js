@@ -10,6 +10,7 @@ import VEXABI from "@utils/abi/vex";
 import { VEX_NETWORK } from "@utils/constants";
 import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
 
+import ErrorToast from "@components/ErrorToast";
 import SuccessToast from "@components/SuccessToast";
 import PendingToast from "@components/PendingToast";
 
@@ -92,8 +93,8 @@ function useGovernance() {
   }
 
 
-  /** 
-   * Delegates to an address 
+  /**
+   * Delegates to an address
    * @param {String} newDelegate address for CrowdProposal
    */
   const delegateToAddress = async (newDelegate) => {
@@ -120,22 +121,28 @@ function useGovernance() {
 
     // Wait for tx to be confirmed and mined
     while(!txReceipt) {
-      await ticker.next(); 
+      await ticker.next();
       txReceipt = await txVisitor.getReceipt();
     }
 
     if (!txReceipt.reverted) {
       toast.update(id, {
-        render: <SuccessToast tx={txReceipt} />,
+        render: (
+          <SuccessToast
+            tx={txReceipt}
+            action="Delegated"
+          />
+        ),
         type: "success",
         isLoading: false,
         autoClose: 5000
       });
     } else {
       toast.update(id, {
-        render: "Something went wrong",
+        render: <ErrorToast />,
         type: "error",
         isLoading: false,
+        autoClose: 5000
       });
     }
 
@@ -146,9 +153,9 @@ function useGovernance() {
     return txReceipt;
   };
 
-  /** 
+  /**
    * Votes for or against concerning a contract
-   * @param {String} id proposal id of the contract we're interacting with 
+   * @param {String} id proposal id of the contract we're interacting with
    * @param {boolean} voteFor true if voting in agreement, false for disagreement
    */
   const castVote = async (id, voteFor) => {
@@ -159,22 +166,39 @@ function useGovernance() {
     const txResponse = await provider.vendor.sign('tx', [clause])
                               .signer(address) // This modifier really necessary?
                               .comment("Sign to cast your vote for Proposal ID " + id)
-                              .request();    
+                              .request();
 
+    const toastID = toast.loading(<PendingToast tx={txResponse} />);
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     const ticker = provider.thor.ticker();
 
     // Wait for tx to be confirmed and mined
     while(!txReceipt) {
-      await ticker.next(); 
+      await ticker.next();
       txReceipt = await txVisitor.getReceipt();
     }
-    
-    // Handle failed tx 
-    if (txReceipt.reverted) {
-      console.error("Submitting proposal failed");
-      return;
+
+    // Handle failed tx
+    if (!txReceipt.reverted) {
+      toast.update(toastID, {
+        render: (
+          <SuccessToast
+            tx={txReceipt}
+            action="Voted"
+          />
+        ),
+        type: "success",
+        isLoading: false,
+        autoClose: 5000
+      });
+    } else {
+      toast.update(toastID, {
+        render: <ErrorToast />,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000
+      });
     }
 
     // Recollect proposals with updated information
@@ -257,7 +281,7 @@ function useGovernance() {
   ) => {
     // Generate post markdown
     const postMarkdown = `# ${title}
-    
+
     ${description}`;
 
     // Generate raw calldata
@@ -296,25 +320,41 @@ function useGovernance() {
     const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
                                   .comment("Sign to submit Proposal to GovernorAlpha")
-                                  .request();    
+                                  .request();
 
+    const id = toast.loading(<PendingToast tx={txResponse} />);
     const txVisitor = provider.thor.transaction(txResponse.txid);
-
+    let txReceipt = null;
     // ticker object to track the creation of blocks on chain
     const ticker = provider.thor.ticker();
-    let txReceipt = null;
 
-    // Wait for tx to be confirmed and mined     
+    // Wait for tx to be confirmed and mined
     while(!txReceipt) {
-      await ticker.next(); 
+      await ticker.next();
       txReceipt = await txVisitor.getReceipt();
       console.log("txReceipt:", txReceipt);
     }
-    
-    // Handle failed tx 
-    if (txReceipt.reverted) {
-      console.error("Submitting proposal failed");
-      return;
+
+    // Handle failed tx
+    if (!txReceipt.reverted) {
+      toast.update(id, {
+        render: (
+          <SuccessToast
+            tx={txReceipt}
+            action="Proposed"
+          />
+        ),
+        type: "success",
+        isLoading: false,
+        autoClose: 5000
+      });
+    } else {
+      toast.update(id, {
+        render: <ErrorToast />,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000
+      });
     }
 
     const proposalId = parseInt(txReceipt.outputs[0].events[0].data.substring(0,66));

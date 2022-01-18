@@ -1,12 +1,11 @@
 import Header from '@components/Header';
 import Footer from '@components/Footer';
-import Modal from "@components/Modal";
 
-import { Content, Sizer } from './styled'
+import { Wrapper, Content, Sizer } from './styled'
 
-export default function Layout({ children, short, proposal }) {
+export default function Layout({ children, short }) {
   return (
-    <div>
+    <Wrapper>
       <Header />
 
       <Content short={short}>
@@ -14,7 +13,7 @@ export default function Layout({ children, short, proposal }) {
       </Content>
 
       <Footer />
-    </div>
+    </Wrapper>
   );
 }
 

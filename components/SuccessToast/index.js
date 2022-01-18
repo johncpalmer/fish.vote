@@ -1,8 +1,8 @@
 import { Wrapper } from './styled'
 
-const SuccessToast = ({ tx }) => (
+const SuccessToast = ({ tx, action }) => (
   <Wrapper>
-    Successfully delegated
+    Successfully { action }
     <div>
       <a
         href={`https://explore.vechain.org/transactions/${tx?.meta?.txID}`}

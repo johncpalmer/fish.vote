@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { uniqueId } from "lodash";
+import { toast } from 'react-toastify';
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
@@ -24,6 +25,10 @@ import VoteCast from "@components/VoteCast";
 import VoteInput from "@components/VoteInput";
 import { Content } from "@components/Card/styled";
 import Loader from "@components/Loader";
+
+
+import SuccessToast from "@components/SuccessToast";
+import PendingToast from "@components/PendingToast";
 
 const Proposal = ({ id, defaultProposalData }) => {
   // Routing
@@ -68,15 +73,14 @@ const Proposal = ({ id, defaultProposalData }) => {
   }
 
   /**
-   * Casts the vote on GovernorAlpha 
+   * Casts the vote on GovernorAlpha
    * on the blockchain
    */
   const castVoteWithLoading = async () => {
-    setButtonLoading(true); // Toggle loading
-
     try {
       // Call delegation with contract
       await castVote(data.id, voteFor);
+
       // Close modal if open
       setModalOpen(false);
     } catch (error) {
@@ -89,7 +93,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   /**
    * Queues the contract for later execution
    * Only applies to contract in the succeeded state
-   */ 
+   */
   const queueWithLoading = async () => {
     setButtonLoading(true);
     try {
@@ -99,11 +103,11 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
     setButtonLoading(false);
   };
-  
+
   /**
    * Queues the contract for later execution
    * Only applies to contract in the succeeded state
-   */ 
+   */
   const executeWithLoading = async () => {};
 
   /**
@@ -143,13 +147,13 @@ const Proposal = ({ id, defaultProposalData }) => {
             actions.loading = true;
             actions.handler = () => null;
           }
-        } 
+        }
         else {
           // Else, present insufficient balance
           actions.name = "Insufficient Balance";
           actions.handler = () => null;
           actions.disabled = true;
-        }        
+        }
       }
       else {
         // If not authenticated, prompt for connecting
@@ -168,7 +172,7 @@ const Proposal = ({ id, defaultProposalData }) => {
         actions.name = "Connect wallet";
         actions.handler = () => unlock();
       }
-    }  
+    }
     // If proposal is in a queued state
     else if (data.state === "Queued") {
       if (authed) {
@@ -176,7 +180,7 @@ const Proposal = ({ id, defaultProposalData }) => {
         // actions.name = "Execute Proposal";
         // actions.handler = () => executeWithLoading();
         // actions.disabled = false;
-        
+
         // If not, show that not yet ETA and disable action
         // actions.name = "Not yet ETA";
         // actions.handler = () => null;
@@ -201,10 +205,10 @@ const Proposal = ({ id, defaultProposalData }) => {
       }
     }
 
-    // Else if proposal is in a state where 
+    // Else if proposal is in a state where
     // there is nothing to do
     else if (data.state === "Canceled" ||
-             data.state === "Executed" || 
+             data.state === "Executed" ||
              data.state === "Expired") {
       // Update the button
       actions = {
@@ -217,7 +221,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
 
     // Return buttons object
-    return actions;  
+    return actions;
   };
 
   /**
@@ -230,11 +234,11 @@ const Proposal = ({ id, defaultProposalData }) => {
       case "Active":
         return "#37C9AC";
       case "Canceled":
-      case "Defeated": 
+      case "Defeated":
         return "rgb(255, 56, 92)";
-      case "Succeeded": 
-      case "Queued": 
-      case "Expired": 
+      case "Succeeded":
+      case "Queued":
+      case "Expired":
       case "Executed":
         return "white";
       default:
@@ -267,14 +271,14 @@ const Proposal = ({ id, defaultProposalData }) => {
                 You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
                                                   minimumFractionDigits: 2,
                                                   maximumFractionDigits: 2,
-                                                })} 
+                                                })}
                 {" "}votes</span> to this proposal.
                 Don't worry, you'll retain all the votes that have been delegated to
                 you by other token holders.
               </p>
 
               <VoteInput onChange={setVoteFor} voteFor={voteFor} />
-          
+
               <Button
                 onClick={() => castVoteWithLoading()}
                 disabled={buttonLoading}
