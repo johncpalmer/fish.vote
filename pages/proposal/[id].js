@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { uniqueId } from "lodash";
-import { toast } from 'react-toastify';
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
@@ -27,9 +26,6 @@ import { Content } from "@components/Card/styled";
 import Loader from "@components/Loader";
 
 
-import SuccessToast from "@components/SuccessToast";
-import PendingToast from "@components/PendingToast";
-
 const Proposal = ({ id, defaultProposalData }) => {
   // Routing
   const router = useRouter();
@@ -49,7 +45,7 @@ const Proposal = ({ id, defaultProposalData }) => {
 
   // Local state
   const [data, setData] = useState(JSON.parse(defaultProposalData));
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const [castingVote, setCastingVote] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
@@ -66,13 +62,13 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
 
     setData(proposal.data);
-    if (proposal.data.state === "Queued") { 
+    if (proposal.data.state === "Queued") {
       setEta(await getEta(data.id))
     }
   };
 
   const fetchReceipt = async () => {
-    if (authed) {
+    if (authed && data) {
       const receipt = await getReceipt(data.id);
       setReceipt(receipt);
     }
@@ -83,6 +79,7 @@ const Proposal = ({ id, defaultProposalData }) => {
    * on the blockchain
    */
   const castVoteWithLoading = async () => {
+    setCastingVote(true);
     try {
       // Call delegation with contract
       await castVote(data.id, voteFor);
@@ -92,8 +89,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     } catch (error) {
       console.error("Error when voting", error);
     }
-    await fetchProposal();
-    setButtonLoading(false); // Toggle loading
+    setCastingVote(false);
   };
 
   /**
@@ -101,27 +97,23 @@ const Proposal = ({ id, defaultProposalData }) => {
    * Only applies to contract in the succeeded state
    */
   const queueWithLoading = async () => {
-    setButtonLoading(true);
     try {
       await queueProposal(id);
     } catch (error) {
       console.error("Error when queuing", error);
     }
-    setButtonLoading(false);
   };
 
   /**
    * Executes the contract
    * Only applies to contract in the queued state and ETA passed
-   */ 
+   */
   const executeWithLoading = async () => {
-    setButtonLoading(true);
     try {
       await executeProposal(id);
     } catch (error) {
       console.error("Error when executing", error);
     }
-    setButtonLoading(false);
   };
 
   /**
@@ -190,14 +182,14 @@ const Proposal = ({ id, defaultProposalData }) => {
     // If proposal is in a queued state
     else if (data.state === "Queued") {
       if (authed && eta) {
-        //ETA has arrived, execute proposal possible
+        // ETA has arrived, execute proposal possible
         if (+eta * 1000 < Date.now()) {
           actions.name = "Execute Proposal";
           actions.handler = () => executeWithLoading();
           actions.disabled = false;
-        } 
-        else {   
-        //ETA not yet, disable action
+        }
+        // ETA not yet, disable action
+        else {
           const waitHours = Math.ceil((+eta * 1000 - Date.now()) / 3600000)
           actions.name = "Timelock Pending";
           actions.handler = () => null;
@@ -266,7 +258,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   };
 
   useEffect(fetchProposal, [proposals]);
-  useEffect(fetchReceipt, [authed]);
+  useEffect(fetchReceipt, [authed, data]);
 
   return (
     // Pass proposal prop to prevent title/meta overlap
@@ -274,16 +266,14 @@ const Proposal = ({ id, defaultProposalData }) => {
       {/* Page custom meta */}
       <Head>
         {/* Update page title for proposals */}
-        <title>Vote.vexchange | {data.title}</title>
-        <meta property="og:title" content={`Vote.vexchange | ${data.title}`} />
-        <meta property="twitter:title" content={`Vote.vexchange | ${data.title}`} />
+        <title>gov.vexchange | {data.title}</title>
+        <meta property="og:title" content={`gov.vexchange | ${data.title}`} />
+        <meta property="twitter:title" content={`gov.vexchange | ${data.title}`} />
       </Head>
 
       <Modal open={modalOpen} openHandler={setModalOpen}>
         <>
-          {buttonLoading ? (
-            <Loader />
-          ) : (
+          {
             <>
               <h3>Confirm Voting</h3>
               <p>
@@ -300,12 +290,12 @@ const Proposal = ({ id, defaultProposalData }) => {
 
               <Button
                 onClick={() => castVoteWithLoading()}
-                disabled={buttonLoading}
+                disabled={castingVote}
               >
-                {buttonLoading ? "Casting votes..." : "Cast votes"}
+                {castingVote ? "Casting votes..." : "Cast votes"}
               </Button>
             </>
-          )}
+          }
         </>
       </Modal>
 

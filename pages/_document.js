@@ -7,13 +7,13 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="title" content="Vote.vexchange" />
-          <meta name="description" content="Crowd Proposals for Vexchange governance" />
+          <meta name="title" content="gov.vexchange" />
+          <meta name="description" content="Vexchange governance portal" />
 
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://vote.vexchange.io" />
-          <meta property="og:description" content="Crowd proposals for Vexchange governance" />
-          <meta property="og:image" content="https://vote.vexchange.io/twitter-card.png" />
+          <meta property="og:url" content="https://gov.vexchange.io" />
+          <meta property="og:description" content="Vexchange governance portal" />
+          <meta property="og:image" content="https://gov.vexchange.io/twitter-card.png" />
 
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content="https://vote.vexchange.io" />
@@ -23,7 +23,7 @@ class MyDocument extends Document {
           />
           <meta
             property="twitter:image"
-            content="https://vote.vexchange.io/twitter-card.png"
+            content="https://gov.vexchange.io/twitter-card.png"
           />
 
           {/* Favicon */}

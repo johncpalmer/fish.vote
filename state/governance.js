@@ -13,6 +13,7 @@ import GovernorAlphaABI from "@utils/abi/GovernorAlpha";
 import ErrorToast from "@components/ErrorToast";
 import SuccessToast from "@components/SuccessToast";
 import PendingToast from "@components/PendingToast";
+import { waitForNumBlocks } from "@utils/functions";
 
 function useGovernance() {
   // Global state
@@ -95,7 +96,7 @@ function useGovernance() {
   /**
    * Obtains the eta for a proposal after it was queued
    * @param {string} proposalId of the proposal of interest
-   * @returns {eta} 
+   * @returns {eta}
    */
   const getEta = async (proposalId) => {
     // Filter for all ProposalQueued events
@@ -131,7 +132,7 @@ function useGovernance() {
                               .request();
 
 
-    const id = toast.loading(<PendingToast tx={txResponse} />);
+    const toastID = toast.loading(<PendingToast tx={txResponse} />);
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     const ticker = provider.thor.ticker();
@@ -143,7 +144,7 @@ function useGovernance() {
     }
 
     if (!txReceipt.reverted) {
-      toast.update(id, {
+      toast.update(toastID, {
         render: (
           <SuccessToast
             tx={txReceipt}
@@ -154,8 +155,9 @@ function useGovernance() {
         isLoading: false,
         autoClose: 5000
       });
-    } else {
-      toast.update(id, {
+    }
+    else {
+      toast.update(toastID, {
         render: <ErrorToast />,
         type: "error",
         isLoading: false,
@@ -196,7 +198,8 @@ function useGovernance() {
       txReceipt = await txVisitor.getReceipt();
     }
 
-    // Handle failed tx
+    await waitForNumBlocks(ticker, 2);
+
     if (!txReceipt.reverted) {
       toast.update(toastID, {
         render: (
@@ -209,7 +212,9 @@ function useGovernance() {
         isLoading: false,
         autoClose: 5000
       });
-    } else {
+    }
+    // Handle failed tx
+    else {
       toast.update(toastID, {
         render: <ErrorToast />,
         type: "error",
@@ -339,7 +344,7 @@ function useGovernance() {
                                   .comment("Sign to submit Proposal to GovernorAlpha")
                                   .request();
 
-    const id = toast.loading(<PendingToast tx={txResponse} />);
+    const toastID = toast.loading(<PendingToast tx={txResponse} />);
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     // ticker object to track the creation of blocks on chain
@@ -349,12 +354,11 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
     // Handle failed tx
     if (!txReceipt.reverted) {
-      toast.update(id, {
+      toast.update(toastID, {
         render: (
           <SuccessToast
             tx={txReceipt}
@@ -366,7 +370,7 @@ function useGovernance() {
         autoClose: 5000
       });
     } else {
-      toast.update(id, {
+      toast.update(toastID, {
         render: <ErrorToast />,
         type: "error",
         isLoading: false,
@@ -402,6 +406,8 @@ function useGovernance() {
                               .comment("Sign to queue proposal " + proposalId)
                               .request();
 
+    const toastID = toast.loading(<PendingToast tx={txResponse} />);
+
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
     const ticker = provider.thor.ticker();
@@ -410,13 +416,28 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
-    // Handle failed tx
-    if (txReceipt.reverted) {
-      console.error("Queuing proposal failed");
-      return;
+    if (!txReceipt.reverted) {
+      toast.update(toastID, {
+        render: (
+            <SuccessToast
+                tx={txReceipt}
+                action="Proposal Queued"
+            />
+        ),
+        type: "success",
+        isLoading: false,
+        autoClose: 5000
+      });
+    }
+    else {
+      toast.update(toastID, {
+        render: <ErrorToast />,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000
+      });
     }
 
     // Regenerate proposals
@@ -436,6 +457,7 @@ function useGovernance() {
                               .signer(address) // This modifier really necessary?
                               .comment("Sign to execute proposal " + proposalId)
                               .request();
+    const toastID = toast.loading(<PendingToast tx={txResponse} />);
 
     const txVisitor = provider.thor.transaction(txResponse.txid);
     let txReceipt = null;
@@ -445,13 +467,28 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
-    // Handle failed tx
-    if (txReceipt.reverted) {
-      console.error("Executing proposal failed");
-      return;
+    if (!txReceipt.reverted) {
+      toast.update(toastID, {
+        render: (
+            <SuccessToast
+                tx={txReceipt}
+                action="Proposal Executed"
+            />
+        ),
+        type: "success",
+        isLoading: false,
+        autoClose: 5000
+      });
+    }
+    else {
+      toast.update(toastID, {
+        render: <ErrorToast />,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000
+      });
     }
 
     // Regenerate proposals
