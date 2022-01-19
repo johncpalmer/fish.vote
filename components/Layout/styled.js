@@ -5,11 +5,10 @@ export const Wrapper = styled.div`
 `
 
 export const Content = styled.div`
-  flex: 1;
+  flex-grow: 1;
 
   ${({ short }) => short && css`
     padding-top: 34px;
-    height: 100%;
   `}
 `
 
