@@ -115,6 +115,10 @@ export const Content = styled.div`
   color: white;
   padding: ${({ noPadding }) => noPadding ? 0 : '24px'};
 
+  label:first-of-type {
+    margin-top: 0;
+  }
+
   p {
     color: white;
   }
