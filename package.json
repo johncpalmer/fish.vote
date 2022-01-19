@@ -29,6 +29,7 @@
     "react-tippy": "^1.4.0",
     "react-toast": "^1.0.3",
     "react-toastify": "^8.1.0",
+    "react-tooltip": "^4.2.21",
     "remark-gfm": "^1.0.0",
     "styled-components": "^5.3.3",
     "unstated-next": "^1.1.0"

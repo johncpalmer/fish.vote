@@ -496,6 +496,8 @@ const generateActionSignatureHTML = (signature, bytes) => {
   return elements;
 };
 
+const PROPOSAL_THRESHOLD = 100_000
+
 // Export constants
 export {
   collectNameByContract,
@@ -503,4 +505,5 @@ export {
   VEX_NETWORK,
   VEX_CONSTANTS,
   VEX_ACTIONS,
+  PROPOSAL_THRESHOLD
 };

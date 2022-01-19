@@ -41,7 +41,9 @@ const Proposal = ({ id, defaultProposalData }) => {
     getReceipt,
     collectProposalById,
     castVote,
-    queueProposal
+    queueProposal,
+    executeProposal,
+    getEta
   } = governance.useContainer();
   const { address: authed, unlock } = vechain.useContainer();
 
@@ -51,6 +53,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
+  const [eta, setEta] = useState(null)
 
   /**
    * Fetch proposal details
@@ -63,6 +66,9 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
 
     setData(proposal.data);
+    if (proposal.data.state === "Queued") { 
+      setEta(await getEta(data.id))
+    }
   };
 
   const fetchReceipt = async () => {
@@ -105,10 +111,18 @@ const Proposal = ({ id, defaultProposalData }) => {
   };
 
   /**
-   * Queues the contract for later execution
-   * Only applies to contract in the succeeded state
-   */
-  const executeWithLoading = async () => {};
+   * Executes the contract
+   * Only applies to contract in the queued state and ETA passed
+   */ 
+  const executeWithLoading = async () => {
+    setButtonLoading(true);
+    try {
+      await executeProposal(id);
+    } catch (error) {
+      console.error("Error when executing", error);
+    }
+    setButtonLoading(false);
+  };
 
   /**
    * Support action button rendering
@@ -175,16 +189,21 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
     // If proposal is in a queued state
     else if (data.state === "Queued") {
-      if (authed) {
-        // TODO: Check if eta has arrived
-        // actions.name = "Execute Proposal";
-        // actions.handler = () => executeWithLoading();
-        // actions.disabled = false;
-
-        // If not, show that not yet ETA and disable action
-        // actions.name = "Not yet ETA";
-        // actions.handler = () => null;
-        // actions.disabled = true;
+      if (authed && eta) {
+        //ETA has arrived, execute proposal possible
+        if (+eta * 1000 < Date.now()) {
+          actions.name = "Execute Proposal";
+          actions.handler = () => executeWithLoading();
+          actions.disabled = false;
+        } 
+        else {   
+        //ETA not yet, disable action
+          const waitHours = Math.ceil((+eta * 1000 - Date.now()) / 3600000)
+          actions.name = "Timelock Pending";
+          actions.handler = () => null;
+          actions.disabled = true;
+          actions.tooltipText = `Proposal can be executed in ${waitHours} hours`
+        }
       }
       else {
         actions.name = "Connect wallet";
@@ -216,7 +235,7 @@ const Proposal = ({ id, defaultProposalData }) => {
         handler: () => null,
         disabled: true,
         color: '#fc0a54',
-        background: "#fc0a54",
+        background: "#2D0D16",
       }
     }
 

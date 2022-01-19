@@ -92,6 +92,23 @@ function useGovernance() {
     return receipt;
   }
 
+  /**
+   * Obtains the eta for a proposal after it was queued
+   * @param {string} proposalId of the proposal of interest
+   * @returns {eta} 
+   */
+  const getEta = async (proposalId) => {
+    // Filter for all ProposalQueued events
+    if (governanceContract === null) return '';
+
+    const proposalQueuedABI = find(GovernorAlphaABI, {name: 'ProposalQueued' });
+    const proposalQueuedEvent = governanceContract.event(proposalQueuedABI);
+    const filter = proposalQueuedEvent.filter([{}]);
+    const events = await filter.apply(0, 20);
+    const eventById = events.find(e => e.decoded.id === proposalId)
+    return eventById.decoded.eta;
+  }
+
 
   /**
    * Delegates to an address
@@ -406,6 +423,41 @@ function useGovernance() {
     await collectProposals();
   }
 
+  const executeProposal = async (proposalId) => {
+    if (!proposalId) {
+      console.error("proposalId should not be null");
+      return;
+    }
+
+    const executeABI = find(GovernorAlphaABI, { name: "execute" });
+    const method = governanceContract.method(executeABI);
+    const clause = method.asClause(proposalId);
+    const txResponse = await provider.vendor.sign('tx', [clause])
+                              .signer(address) // This modifier really necessary?
+                              .comment("Sign to execute proposal " + proposalId)
+                              .request();
+
+    const txVisitor = provider.thor.transaction(txResponse.txid);
+    let txReceipt = null;
+    const ticker = provider.thor.ticker();
+
+    // Wait for tx to be confirmed and mined
+    while(!txReceipt) {
+      await ticker.next();
+      txReceipt = await txVisitor.getReceipt();
+      console.log("txReceipt:", txReceipt);
+    }
+
+    // Handle failed tx
+    if (txReceipt.reverted) {
+      console.error("Executing proposal failed");
+      return;
+    }
+
+    // Regenerate proposals
+    await collectProposals();
+  }
+
   const collectProposals = async () => {
     // Toggle loading
     setLoadingProposals(true);
@@ -520,9 +572,11 @@ function useGovernance() {
     currentVotes,
     proposals,
     getReceipt,
+    getEta,
     loadingProposals,
     createProposal,
     queueProposal,
+    executeProposal,
     collectProposalById,
     delegateToAddress,
     castVote,

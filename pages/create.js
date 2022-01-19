@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isMobile } from 'react-device-detect';
+import { Tooltip } from 'react-tippy';
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
@@ -16,12 +17,14 @@ import Action from "@components/Action";
 import Layout from "@components/Layout";
 import Breadcrumb from "@components/Breadcrumb";
 
+import { PROPOSAL_THRESHOLD } from "@utils/constants";
+
 const defaultActionState = [null, null, [], []];
 
 export default function Create() {
   const router = useRouter();
   const { address, unlock } = vechain.useContainer();
-  const { createProposal } = governance.useContainer();
+  const { createProposal, currentVotes } = governance.useContainer();
 
   // Local state
   const [title, setTitle] = useState("");
@@ -31,6 +34,12 @@ export default function Create() {
   const [actions, setActions] = useState(
     [defaultActionState]
   );
+
+  const [allowProposal, setAllowProposal] = useState(false);
+
+  useEffect(async () => {
+      setAllowProposal(currentVotes >= PROPOSAL_THRESHOLD);
+  }, [currentVotes]);
 
   /**
    * Update actions array at index
@@ -146,15 +155,27 @@ export default function Create() {
               </p>
 
               {address ? (
-                <Button
-                  onClick={createProposalWithLoading}
-                  disabled={buttonLoading}
+                <Tooltip
+                  interactive
+                  useContext
+                  distance={20}
+                  position='top'
+                  trigger='mouseenter'
+                  disabled={currentVotes > PROPOSAL_THRESHOLD}
+                  title="Ensure you have at least 100,000 Votes to submit a proposal"
                 >
-                  {buttonLoading ? "Submitting Proposal..." : "Submit Proposal"}
-                </Button>
+
+                  <Button
+                    onClick={createProposalWithLoading}
+                    disabled={buttonLoading || !allowProposal}
+                  >
+                    {buttonLoading ? "Submitting Proposal..." : "Submit Proposal"}
+                  </Button>
+                </Tooltip>
               ) : (
                 <Button onClick={unlock}>Connect wallet</Button>
               )}
+
             </Submit>
           </Card>
         </>
