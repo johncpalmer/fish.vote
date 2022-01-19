@@ -24,5 +24,9 @@ export const Wrapper = styled.table`
   td[type="addr"] {
     font-family: "VCR", sans-serif;
   }
+
+  td[type="num"] {
+    text-align: right;
+  }
 `;
 

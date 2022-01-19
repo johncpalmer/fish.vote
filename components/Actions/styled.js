@@ -24,5 +24,9 @@ export const Wrapper = styled.div`
       color: #ACACAB;
       margin-right: 12px;
     }
+
+    > p {
+      margin: 0;
+    }
   }
 `

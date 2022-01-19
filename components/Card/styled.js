@@ -10,21 +10,19 @@ export const Wrapper = styled.div`
   );
   margin-bottom: 24px;
   border-radius: 8px;
-  padding: ${({ noPadding }) => noPadding ? 0 : '24px'};
+
   ${({ shortMargin }) => shortMargin && css`
     margin-top: 24px;
   `}
-
-  > div > table {
-    margin-top: 26px;
-  }
 `;
 
 export const Header = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: ${({ noPadding }) => !noPadding ? 0 : '24px'};
+  padding: 0 24px;
+  min-height: 72px;
+  border-bottom: 1px solid #1C1C22;
 `
 
 export const Title = styled.div`
@@ -115,10 +113,9 @@ export const Actions = styled.div`
 export const Content = styled.div`
   font-family: "Inter", sans-serif;
   color: white;
-  padding: 24px;
+  padding: ${({ noPadding }) => noPadding ? 0 : '24px'};
 
   p {
     color: white;
   }
-
 `

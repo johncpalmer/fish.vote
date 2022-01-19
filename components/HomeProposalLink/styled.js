@@ -15,6 +15,10 @@ export const Wrapper = styled.a`
     color: #ACACAB;
   }
 
+  &:first-of-type {
+    border-top: none;
+  }
+
   &:last-of-type {
     border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
     border-bottom: none;

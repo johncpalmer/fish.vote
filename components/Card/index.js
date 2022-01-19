@@ -2,9 +2,10 @@ import { useMemo } from 'react'
 import { Tooltip } from 'react-tippy';
 
 import {
+  Content,
   Header,
-  Title,
   Subtitle,
+  Title,
   Wrapper,
 } from './styled';
 
@@ -31,7 +32,7 @@ const Card = ({
   return (
     <Wrapper shortMargin={shortMargin} noPadding={noPadding}>
       { title ? (
-        <Header noPadding={noPadding}>
+        <Header>
           <Title>
             {title}
           </Title>
@@ -62,7 +63,7 @@ const Card = ({
           </div>
         </Header>
       ) : null}
-      <div>{children}</div>
+      <Content noPadding={noPadding}>{children}</Content>
     </Wrapper>
   )
 }
