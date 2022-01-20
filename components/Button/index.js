@@ -6,9 +6,11 @@ const Button = ({
   color,
   disabled,
   onClick,
+  className,
 }) => {
   return (
     <Wrapper
+      className={className}
       background={background}
       color={color}
       disabled={disabled}

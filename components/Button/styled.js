@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 export const Wrapper = styled.button`
   background-color: ${({ background }) => background ? background : '#f5a78814'};

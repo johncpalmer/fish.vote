@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { truncate } from "lodash";
 
-import { Wrapper } from './styled';
+import {
+  State,
+  Status,
+  Title,
+  Wrapper,
+} from './styled';
 
 /**
  * Renders status icon color based on status
@@ -10,11 +15,11 @@ import { Wrapper } from './styled';
  */
 const renderStatusColor = (status) => {
   switch (status) {
-    case "Terminated":
+    case "Defeated":
       return "#ff0033";
-    case "In Progress":
+    case "Queued":
       return "#EFC223";
-    case "Proposed":
+    default:
       return "#1DB023";
   }
 };
@@ -41,18 +46,24 @@ const formatVoteCount = (votes) => {
 const HomeProposalLink = ({ proposal }) => (
   <Link href={`/proposal/${proposal.id || proposal.contract}`} passHref>
     <Wrapper>
-      <div>
+      <Title>
         <h4>{truncate(proposal.title, { length: 70 })}</h4>
         <span>
           {proposal.state === "Active"
             ? "10,000,000+ votes"   /* to refactor this */
             : formatVoteCount(parseFloat(proposal.votesFor))}
         </span>
-      </div>
-      <div>
-      <div style={{ backgroundColor: renderStatusColor(proposal.state) }} />
-        <span>{proposal.state}</span>
-      </div>
+      </Title>
+
+      <State>
+        <Status>
+          <div style={{ backgroundColor: renderStatusColor(proposal.state) }}></div>
+        </Status>
+        <div>
+          <span>{proposal.state}</span>
+        </div>
+      </State>
+
     </Wrapper>
   </Link>
 );

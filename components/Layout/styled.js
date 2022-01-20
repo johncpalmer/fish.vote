@@ -1,15 +1,15 @@
-import styled, { css } from 'styled-components'
+import styled from '@emotion/styled'
+import { css } from '@emotion/react'
 
 export const Wrapper = styled.div`
   height: 100%;
 `
 
 export const Content = styled.div`
-  flex: 1;
+  flex-grow: 1;
 
   ${({ short }) => short && css`
     padding-top: 34px;
-    height: 100%;
   `}
 `
 

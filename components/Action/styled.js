@@ -1,8 +1,7 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 export const Wrapper = styled.div`
-  padding: 24px 28px;
-  padding-top: 0;
+  padding: 24px;
   border-bottom: 1px solid #1C1C22;
 
   label {

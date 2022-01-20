@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 export const Wrapper = styled.div`
   position: relative;
@@ -23,6 +23,10 @@ export const Wrapper = styled.div`
     > span {
       color: #ACACAB;
       margin-right: 12px;
+    }
+
+    > p {
+      margin: 0;
     }
   }
 `

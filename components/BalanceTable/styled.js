@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 export const Wrapper = styled.table`
   width: 100%;
@@ -23,6 +23,10 @@ export const Wrapper = styled.table`
   td[type="num"],
   td[type="addr"] {
     font-family: "VCR", sans-serif;
+  }
+
+  td[type="num"] {
+    text-align: right;
   }
 `;
 

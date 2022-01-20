@@ -95,7 +95,7 @@ function useGovernance() {
   /**
    * Obtains the eta for a proposal after it was queued
    * @param {string} proposalId of the proposal of interest
-   * @returns {eta} 
+   * @returns {eta}
    */
   const getEta = async (proposalId) => {
     // Filter for all ProposalQueued events
@@ -349,7 +349,6 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
     // Handle failed tx
@@ -410,7 +409,6 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
     // Handle failed tx
@@ -445,7 +443,6 @@ function useGovernance() {
     while(!txReceipt) {
       await ticker.next();
       txReceipt = await txVisitor.getReceipt();
-      console.log("txReceipt:", txReceipt);
     }
 
     // Handle failed tx

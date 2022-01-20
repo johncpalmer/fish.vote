@@ -66,9 +66,8 @@ export default function New() {
       </center>
 
       {/* About card */}
-      <Card shortMargin>
+      <Card shortMargin title="Creating a Proposal">
         <Description>
-          <h5>Creating a proposal</h5>
           <p>
             On Vote.Vexchange, anyone can publish a{" "}
             <a

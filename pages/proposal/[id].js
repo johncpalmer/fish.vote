@@ -66,7 +66,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
 
     setData(proposal.data);
-    if (proposal.data.state === "Queued") { 
+    if (proposal.data.state === "Queued") {
       setEta(await getEta(data.id))
     }
   };
@@ -113,7 +113,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   /**
    * Executes the contract
    * Only applies to contract in the queued state and ETA passed
-   */ 
+   */
   const executeWithLoading = async () => {
     setButtonLoading(true);
     try {
@@ -195,8 +195,8 @@ const Proposal = ({ id, defaultProposalData }) => {
           actions.name = "Execute Proposal";
           actions.handler = () => executeWithLoading();
           actions.disabled = false;
-        } 
-        else {   
+        }
+        else {
         //ETA not yet, disable action
           const waitHours = Math.ceil((+eta * 1000 - Date.now()) / 3600000)
           actions.name = "Timelock Pending";

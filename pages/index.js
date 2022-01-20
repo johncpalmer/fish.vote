@@ -27,7 +27,7 @@ export default function Home() {
   // Local state
   const [delegateInput, setDelegateInput] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
- 
+
   /**
    * Routes clicker to /create
    * @param {MouseEvent} e event to track

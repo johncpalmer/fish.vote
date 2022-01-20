@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   margin: 20px 0px;
@@ -25,7 +26,6 @@ export const Block = styled.div`
   font-family: VCR, sans-serif;
   text-transform: uppercase;
   color: ${({ secondary }) => secondary ? '#ff385c' : '#37C9AC'};
-
 
   ${({ secondary }) => secondary ? css`
     background: linear-gradient(96.84deg, rgba(255, 56, 92, 0.16) 1.04%, rgb(255, 56, 92, 0.08) 98.99%);

@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components'
+import { css } from '@emotion/react'
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = css`
   @font-face {
     font-family: "VCR";
     src: local("VCR"), url(/fonts/VCR_OSD_MONO.ttf) format("truetype");
@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
   * {
     --color-bg: #030309;
     --color-orange: #f5a788;
-    
+
     --toastify-color-dark: #121218;
     --toastify-color-progress-dark: #f5a788;
     --toastify-color-success: #37C9AC;
@@ -39,6 +39,7 @@ const GlobalStyle = createGlobalStyle`
   p {
     color: #ACACAB;
     line-height: 1.5;
+    margin-top: 0;
   }
 
   // BNC Onboard lightbox setup

@@ -1,74 +1,119 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
-export const Wrapper = styled.header`
+import { Title } from '../../design'
+import theme from '../../design/theme'
+import colors from '../../design/colors'
+import sizes from '../../design/sizes'
+
+export const HeaderButtonContainer = styled.div`
+  display: flex;
+  margin-right: 8px;
+  z-index: 1;
+`
+
+export const HeaderAbsoluteContainer = styled.div`
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }
+`
+
+export const LinksContainer = styled.div`
+  display: flex;
+`
+
+export const HeaderContainer = styled.div`
+  height: ${theme.header.height}px;
   position: sticky;
   top: 0;
-  height: 72px;
-  top: 0px;
-  left: 0px;
-  z-index: 999;
-  width: 100%;
-  background-color: var(--color-bg);
+  border-bottom: 1px solid ${colors.border};
   display: flex;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.01);
-  border-bottom: 1px solid #1C1C22;
-  backdrop-filter: blur(40px);
+  align-items: center;
   flex-shrink: 0;
-  padding: 0 40px;
 
-  @media screen and (max-width: 600px) {
-    padding: 0 20px;
-  }
-`
-
-export const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-export const Auth = styled.div`
-  display: flex;
-  align-items: center;
-  justify-items: center;
-`
-
-export const AuthConnected = styled.div`
-  display: flex;
-  align-items: center;
-  color: white;
-
-  span {
-    font-family: "VCR", sans-serif;
-    color: var(--color-orange);
+  @media (max-width: ${sizes.lg}px) {
+    padding: 16px 24px;
+    border-bottom: none;
   }
 
-  button {
-    outline: none;
-    background-color: #f5a78814;
-    border: none;
-    user-select: none;
-    cursor: pointer;
-    padding: 12px 16px;
-    border-radius: 8px;
-    will-change: transform;
-    margin-left: 20px;
+  z-index: ${props => (props.isMenuOpen ? 50 : 10)};
 
-    span {
-      margin: 0px 0.5rem 0px 0.25rem;
-      vertical-align: middle;
-      color: white;
-      font-family: "VCR", sans-serif;
+  // The backdrop for the menu does not show up if we enable the backdrop-filter
+  // for the header nav. To get around that, just set 'none'
+  ${props => {
+    if (props.isMenuOpen) {
+      return null
     }
 
-    div {
-      vertical-align: middle;
-    }
+    return `
+      backdrop-filter: blur(40px);
+      /**
+       * Firefox desktop come with default flag to have backdrop-filter disabled
+       * Firefox Android also currently has bug where backdrop-filter is not being applied
+       * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
+       **/
+      @-moz-document url-prefix() {
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+    `
+  }}
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background: rgba(255, 255, 255, 0.01);
+  }
+`
+
+export const LogoContainer = styled.div`
+  padding-left: 40px;
+  display: flex;
+
+  @media (max-width: ${sizes.md}px) {
+    padding-left: 0;
+  }
+`
+
+export const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 28px;
+  height: 100%;
+  opacity: ${props => (props.isSelected ? '1' : '0.48')};
+
+  &:hover {
+    opacity: ${props => (props.isSelected ? theme.hover.opacity : '1')};
   }
 
-  button:focus,
-  button:hover {
-    opacity: 0.64px;
+  @media (max-width: ${sizes.lg}px) {
+    padding: 0px 0px 40px 48px;
+  }
+`
+
+export const SecondaryMobileNavItem = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    padding: 0px 0px 24px 48px;
+  }
+`
+
+export const NavLinkText = styled(Title)`
+  letter-spacing: 1.5px;
+  font-size: 14px;
+  line-height: 20px;
+
+  @media (max-width: ${sizes.lg}px) {
+    font-size: 24px;
   }
 `
