@@ -62,6 +62,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
 
     setData(proposal.data);
+    console.log("fetchproposal", proposal.data)
     if (proposal.data.state === "Queued") {
       setEta(await getEta(data.id))
     }
@@ -404,6 +405,7 @@ export async function getServerSideProps({ params: { id } }) {
     };
   }
 
+  console.log("SSP", allProposals);
   // Else, return retrieved content
   return {
     // As prop
