@@ -1,5 +1,4 @@
-
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 export const Wrapper = styled.a`
   border-top: 1px solid #1C1C22;

@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components'
+import { css } from '@emotion/react'
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = css`
   @font-face {
     font-family: "VCR";
     src: local("VCR"), url(/fonts/VCR_OSD_MONO.ttf) format("truetype");

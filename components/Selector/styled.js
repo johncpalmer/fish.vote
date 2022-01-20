@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 export const Indicator = styled.div`
   background-color: #f5a78814;

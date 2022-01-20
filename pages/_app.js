@@ -1,6 +1,7 @@
 import StateProvider from "@state/index";
 import { ToastContainer } from 'react-toastify';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
+import { Global } from '@emotion/react'
 
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import "react-responsive-modal/styles.css";
@@ -24,7 +25,7 @@ export default function Unify({ Component, pageProps }) {
   return (
     <StateProvider>
       <Component {...pageProps} />
-      <GlobalStyle />
+      <Global styles={GlobalStyle} />
       <StyledToastContainer theme="dark" />
     </StateProvider>
   );
