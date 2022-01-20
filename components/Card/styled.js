@@ -23,7 +23,7 @@ export const Header = styled.div`
   justify-content: space-between;
   padding: 0 24px;
   min-height: 72px;
-  border-bottom: 1px solid #1C1C22;
+  border-bottom: 1px solid #282828;
 `
 
 export const Title = styled.div`

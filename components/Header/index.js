@@ -1,92 +1,26 @@
+import React, { useState } from 'react'
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import numeral from 'numeral';
+import AccountStatus from '../AccountStatus'
+import Logo from '../Logo'
 
-import vechain from "@state/vechain";
-import governance from "@state/governance";
+import { HeaderContainer, LogoContainer } from './styled.js';
 
-import Address from "@components/Address";
-import Button from '@components/Button'
-
-import {
-  Wrapper,
-  Logo,
-  Auth,
-  AuthConnected,
-} from './styled'
-
-const Header = () => {
-  const { vex, currentVotes } = governance.useContainer();
-  const { address, unlock } = vechain.useContainer();
-
-  // Connect wallet modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const onOpenModal = () => setModalOpen(true);
-  const onCloseModal = () => setModalOpen(false);
-
-  /**
-   * Returns VEX balance for authenticated user
-   * @returns {String}
-   */
-  const returnVoteCount = () => {
-
-    return vex !== null ? `${numeral(vex).format('0,0')} VEX` : 'LOADING...';
-  };
-
-  const connectWalletWithLoading = async () => {
-      await unlock();
-
-      // Close modal after wallet connection, successful or not
-      setModalOpen(false);
-  };
+function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <Wrapper>
-      <Logo>
-        <Link href="/">
-          <a
-            style={{
-              display: 'block'
-            }}
-          >
-            <Image
-              src="/vectors/logo-mobile.svg"
-              alt="Vexchange logo"
-              width={40}
-              height={40}
-            />
-          </a>
-        </Link>
-      </Logo>
+    <HeaderContainer
+      isMenuOpen={isMenuOpen}
+      className="d-flex align-items-center"
+    >
+      <LogoContainer>
+        <Logo />
+      </LogoContainer>
 
-      <Auth>
-        {address ? (
-          // Authenticated state
-          <AuthConnected>
-            <div>
-              You have
-              {" "}
-              <span>{numeral(currentVotes).format('0,0')} votes</span>
-              {" "}
-              and
-              {" "}
-              <span>{returnVoteCount()}</span>
-            </div>
+      <AccountStatus variant="desktop" />
 
-            <Button onClick={unlock}>
-              <Address shorten address={address} />
-            </Button>
-          </AuthConnected>
-        ) : (
-          <Button onClick={connectWalletWithLoading}>
-            Connect wallet
-          </Button>
-        )}
-      </Auth>
-    </Wrapper>
-  );
+    </HeaderContainer>
+  )
 }
 
-export default Header;
+export default Header

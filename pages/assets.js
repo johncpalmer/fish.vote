@@ -39,9 +39,8 @@ export default function Assets() {
       </center>
 
       {/* About card */}
-      <Card shortMargin>
+      <Card shortMargin title="Assets Overview">
         <Description>
-          <h5>Assets Overview</h5>
           <p>The Vexchange DAO's assets are held in the <a href={`https://explore.vechain.org/accounts/${VEX_NETWORK.timelock.address}`} rel="noopener noreferrer" target="_blank">Timelock smart contract</a>. LP tokens collected as platform fees are held by the fee collector smart contract, and are periodically converted to WVET and transferred to the Timelock for spending.</p>
         </Description>
       </Card>
