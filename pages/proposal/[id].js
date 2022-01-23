@@ -224,11 +224,19 @@ const Proposal = ({ id, defaultProposalData }) => {
       }
     }
 
+    else if (data.state === 'Executed') {
+      actions = {
+        name: `Proposal ${data.state}`,
+        handler: () => null,
+        disabled: true,
+        color: '#37C9AC',
+        background: "#1A2628",
+      }
+    }
+
     // Else if proposal is in a state where
     // there is nothing to do
-    else if (data.state === "Canceled" ||
-             data.state === "Executed" ||
-             data.state === "Expired") {
+    else if (data.state === "Canceled" || data.state === "Expired") {
       // Update the button
       actions = {
         name: `Proposal ${data.state}`,
@@ -258,6 +266,7 @@ const Proposal = ({ id, defaultProposalData }) => {
       case "Succeeded":
       case "Queued":
       case "Expired":
+        return "#37C9AC";
       case "Executed":
         return "white";
       default:

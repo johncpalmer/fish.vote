@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { truncate } from "lodash";
+import styled from '@emotion/styled'
 
 import vechain from "@state/vechain";
 import governance from "@state/governance";
@@ -16,6 +17,10 @@ import Input from "@components/Input";
 import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import Switch from "@components/Switch";
+
+const ChangeDelegate = styled.div`
+  padding-bottom: ${ props => props.inputVisible ? '24px' : '0' };
+`
 
 export default function Home() {
   const router = useRouter();
@@ -163,7 +168,6 @@ export default function Home() {
       <Card
         shortMargin
         title="Vexchange Governance"
-        action={{ name: "Delegate", handler: null }}
       >
         <p>Delegate your votes</p>
         <p>
@@ -180,14 +184,14 @@ export default function Home() {
                 <Button onClick={openDelegateInput}>Delegate to address</Button>
               </>
             ) : (
-              <>
+              <ChangeDelegate inputVisible={inputVisible}>
                 <p>
                   Current delegate:
                   {" "}
                   <AddressLink address={delegate} />
                 </p>
                 <Button onClick={openDelegateInput}>Change Delegate</Button>
-              </>
+              </ChangeDelegate>
             )}
           </>
         ) : (
