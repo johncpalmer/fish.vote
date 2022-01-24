@@ -43,7 +43,8 @@ const Proposal = ({ id, defaultProposalData }) => {
     castVote,
     queueProposal,
     executeProposal,
-    getEta
+    getEta,
+    collectVotesAtBlock
   } = governance.useContainer();
   const { address: authed, unlock } = vechain.useContainer();
 
@@ -54,6 +55,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   const [voteFor, setVoteFor] = useState(true);
   const [receipt, setReceipt] = useState(null);
   const [eta, setEta] = useState(null)
+  const [votesForProposal, setVotesForProposal] = useState(null)
 
   /**
    * Fetch proposal details
@@ -75,6 +77,13 @@ const Proposal = ({ id, defaultProposalData }) => {
     if (authed) {
       const receipt = await getReceipt(data.id);
       setReceipt(receipt);
+    }
+  }
+
+  const fetchVotes = async () => {
+    if (authed && data) {
+      const votes = await collectVotesAtBlock(data.startBlock);
+      setVotesForProposal(votes);
     }
   }
 
@@ -136,10 +145,10 @@ const Proposal = ({ id, defaultProposalData }) => {
     if (data.state === "Active") {
       // Check for authentication
       if (authed) {
-        // If user has effective votes
-        if (currentVotes > 0) {
-          // If user hasn't already voted
-          if (receipt) {
+        if (receipt && votesForProposal !== null) {
+          // If user has effective votes
+          if (votesForProposal > 0) {
+            // If user hasn't already voted
             if (!receipt.hasVoted) {
               // Enable votes (open modal)
               actions.name = "Cast Votes";
@@ -153,20 +162,21 @@ const Proposal = ({ id, defaultProposalData }) => {
               actions.disabled = true;
             }
           }
-          // Receipt still loading
           else {
-            actions.text = "Loading";
-            actions.loadingText = "Loading";
-            actions.disabled = true;
-            actions.loading = true;
+            // Else, present insufficient balance
+            actions.name = "Insufficient Balance";
             actions.handler = () => null;
+            actions.disabled = true;
+            actions.tooltipText = `You had insufficient votes when the proposal was created.`
           }
-        }
+        }   
+        // Receipt and votes still loading
         else {
-          // Else, present insufficient balance
-          actions.name = "Insufficient Balance";
-          actions.handler = () => null;
+          actions.text = "Loading";
+          actions.loadingText = "Loading";
           actions.disabled = true;
+          actions.loading = true;
+          actions.handler = () => null;
         }
       }
       else {
@@ -276,6 +286,7 @@ const Proposal = ({ id, defaultProposalData }) => {
 
   useEffect(fetchProposal, [proposals]);
   useEffect(fetchReceipt, [authed]);
+  useEffect(fetchVotes, [authed, data])
 
   return (
     // Pass proposal prop to prevent title/meta overlap
@@ -296,7 +307,7 @@ const Proposal = ({ id, defaultProposalData }) => {
             <>
               <h3>Confirm Voting</h3>
               <p>
-                You are voting with your <span>{parseFloat(currentVotes).toLocaleString("us-en", {
+                You are voting with your <span>{parseFloat(votesForProposal).toLocaleString("us-en", {
                                                   minimumFractionDigits: 2,
                                                   maximumFractionDigits: 2,
                                                 })}

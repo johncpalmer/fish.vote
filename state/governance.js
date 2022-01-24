@@ -66,6 +66,20 @@ function useGovernance() {
     setCurrentVotes(currentVotes);
   }
 
+    /**
+   * Optains the valid votes at a specific block
+   * @param {string} proposalId of the proposal of interest
+   */
+     const collectVotesAtBlock = async (blockNumber) => {
+      const priorVotesABI = find(VEXABI, { name: "getPriorVotes"});
+      const method = vexContract.method(priorVotesABI);
+      const priorVotesRaw = (await method.call(address, blockNumber)).data;
+      const priorVotes = parseFloat(ethers.utils.formatEther(priorVotesRaw));
+
+      return priorVotes
+    }
+
+
   /**
    * Collect delegates of the user updates in state
    */
@@ -577,6 +591,7 @@ function useGovernance() {
     collectProposalById,
     delegateToAddress,
     castVote,
+    collectVotesAtBlock
   };
 }
 
