@@ -28,6 +28,10 @@ const VEX_CONSTANTS = {
     wvet: {
       name: "Wrapped VET",
       address: "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997"
+    },
+    vester: {
+      name: "TreasuryVester",
+      address: "0x8Fc3737CF99984961b43f86ce5C82cfaa4B49657"
     }
   },
   testnet: {
@@ -56,6 +60,11 @@ const VEX_CONSTANTS = {
     wvet: {
       name: "Wrapped VET",
       address: "0x93E5Fa8011612FAB061eF58CbAB9262d2e76407b"
+    },
+    // Just a placeholder, this address does not contain a contract
+    vester: {
+      name: "TreasuryVester",
+      address: "0x8Fc3737CF99984961b43f86ce5C82cfaa4B49657"
     }
   }
 }
