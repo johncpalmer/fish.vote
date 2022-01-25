@@ -11,7 +11,7 @@ function useTokenInfo()
         let result;
         if (MAINNET)
         {
-            result = await axios.get("https://api.vexchange.io/v1/tokens");
+            result = (await axios.get("https://api.vexchange.io/v1/tokens")).data;
         }
         else
         {

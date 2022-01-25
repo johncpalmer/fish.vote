@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Wrapper } from './styled'
+import { VEX_NETWORK } from "@utils/constants";
 
 const PendingToast = ({ tx }) => {
   const [hanging, setHanging] = useState(false);
@@ -36,7 +37,7 @@ const PendingToast = ({ tx }) => {
           You can also check the transaction status
           {" "}
           <a
-            href={`https://explore.vechain.org/transactions/${tx?.txid}`}
+            href={`${VEX_NETWORK.explorer_base_url}transactions/${tx?.txid}`}
             target="_blank"
             rel="noopener noreferrer"
           >

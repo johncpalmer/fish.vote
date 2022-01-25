@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import Link from "next/link";
 import { isMobile } from 'react-device-detect';
+import { VEX_NETWORK } from "@utils/constants";
 
 import {
   Header,
@@ -40,7 +41,7 @@ const Breadcrumb = ({
           {" "}
           { !isMobile ? (
             <a
-              href={`https://explore.vechain.org/accounts/${proposer}`}
+              href={`${VEX_NETWORK.explorer_base_url}accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -48,7 +49,7 @@ const Breadcrumb = ({
             </a>
           ) : (
             <a
-              href={`https://explore.vechain.org/accounts/${proposer}`}
+              href={`${VEX_NETWORK.explorer_base_url}accounts/${proposer}`}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -5,7 +5,7 @@ import { VEX_NETWORK } from "@utils/constants"; // Constants
 // Setup provider at global scope
 // Mainly for use in /api/proposals
 // Because that is rendered at the backend, not frontend
-const net = new SimpleNet("https://testnet.veblocks.net")
+const net = new SimpleNet(VEX_NETWORK.node_url)
 const driver = await Driver.connect(net)
 const globalProvider = new Framework(driver);
 

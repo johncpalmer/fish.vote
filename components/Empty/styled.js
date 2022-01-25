@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 export const Wrapper = styled.div`
   text-align: center;
   max-width: 320px;
-  margin: 70px auto;
+  margin: 0 auto;
+  padding: 24px;
+
 
   h3 {
     font-weight: 500;

@@ -4,8 +4,6 @@ import numeral from 'numeral'
 
 const { commify, formatEther } = utils
 
-export const getExploreURI = () => 'https://explore.vechain.org'
-
 export const getDefaultSignificantDecimalsFromAssetDecimals = decimals => {
   switch (decimals) {
     case 18:

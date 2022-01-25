@@ -2,6 +2,7 @@ import { setState, useState, useEffect } from "react"; // Local state management
 import { createContainer } from "unstated-next"; // Global state provider
 import { ethers } from 'ethers';
 import assert from 'assert';
+import { VEX_NETWORK, MAINNET } from "@utils/constants";
 
 function useVechain() {
   const [address, setAddress] = useState(null); // User address
@@ -51,9 +52,10 @@ function useVechain() {
   useEffect(async () => {
     // Initialize the connex provider
     const { Connex } = await import('@vechain/connex');
+    const network = MAINNET ? "main" : "test";
     const connex = new Connex({
-                            node: 'https://testnet.veblocks.net',
-                            network: 'test'
+                            node: VEX_NETWORK.node_url,
+                            network: network
                            })
     setProvider(connex);
     setTicker(connex.thor.ticker());

@@ -9,6 +9,7 @@ import { truncateAddress, copyTextToClipboard, userAccount } from '../../utils'
 
 import ButtonArrow from '../ButtonArrow'
 import Indicator from '../Indicator'
+import { VEX_NETWORK } from "@utils/constants";
 
 import {
   AccountStatusContainer,
@@ -80,7 +81,7 @@ function AccountStatus({ variant }) {
 
   const handleOpenExplore = useCallback(() => {
     if (address) {
-      window.open(`https://explore.vechain.org/accounts/${address}`)
+      window.open(`${VEX_NETWORK.explorer_base_url}accounts/${address}`)
     }
   }, [address])
 
