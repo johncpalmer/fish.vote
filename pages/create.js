@@ -148,10 +148,8 @@ export default function Create() {
           <Card title="Submit your proposal">
             <Submit>
               <p>
-                After your proposal is created, it will appear at the bottom of
-                the New page. If it receives more than 400 delegate votes, your
-                proposal will appear on the Home page. You can terminate your
-                proposal at any time after creation.
+                After your proposal is created, it will appear at the top of
+                the New page.
               </p>
 
               {address ? (

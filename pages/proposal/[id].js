@@ -314,8 +314,6 @@ const Proposal = ({ id, defaultProposalData }) => {
                                                   maximumFractionDigits: 2,
                                                 })}
                 {" "}votes</span> to this proposal.
-                Don't worry, you'll retain all the votes that have been delegated to
-                you by other token holders.
               </p>
 
               <VoteInput onChange={setVoteFor} voteFor={voteFor} />
