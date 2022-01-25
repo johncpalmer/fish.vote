@@ -27,7 +27,7 @@ const getHeader = (markdown) => {
  * @param {ProposalCreated} event raw event JSON
  * @returns {Object[]} containing contract details
  */
-const parseEvents = async (event) => {
+const parseProposals = async (event) => {
   // Collect block and markdown header
   const markdownHeader = getHeader(event.decoded.description);
   const proposalId = event.decoded.id;
@@ -85,7 +85,7 @@ export const collectProposals = async () => {
 
   // For each event
   const proposals = // Parse to appropriate return format
-  (await Promise.all(events.map((event) => parseEvents(event))))
+  (await Promise.all(events.map((event) => parseProposals(event))))
     // Filter out terminated proposals
     // Might want to filter out other categories of proposals too
     .filter((proposal) => proposal.state !== "Canceled");

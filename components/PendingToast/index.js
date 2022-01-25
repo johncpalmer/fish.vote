@@ -7,9 +7,9 @@ const PendingToast = ({ tx }) => {
   const [annoyed, setAnnoyed] = useState(false);
 
   useEffect(() => {
-    setInterval(() => setHanging(true), 10000);
-    setInterval(() => setQuestion(true), 15000);
-    setInterval(() => setAnnoyed(true), 20000);
+    setInterval(() => setHanging(true), 20000);
+    setInterval(() => setQuestion(true), 25000);
+    setInterval(() => setAnnoyed(true), 30000);
   }, [])
 
   return (
@@ -22,7 +22,7 @@ const PendingToast = ({ tx }) => {
       ) : null}
       { question ? (
         <div style={{ marginTop: '8px' }}>
-          <a 
+          <a
             href="https://vechaininsider.com/vechain/everything-you-need-to-know-about-vethor-vtho/"
             target="_blank"
             rel="noopener noreferrer"
@@ -35,7 +35,7 @@ const PendingToast = ({ tx }) => {
         <div style={{ marginTop: '8px' }}>
           You can also check the transaction status
           {" "}
-          <a 
+          <a
             href={`https://explore.vechain.org/transactions/${tx?.txid}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -47,5 +47,5 @@ const PendingToast = ({ tx }) => {
     </Wrapper>
   )
 }
-  
+
 export default PendingToast;

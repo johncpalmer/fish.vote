@@ -7,6 +7,8 @@ function useVechain() {
   const [address, setAddress] = useState(null); // User address
   const [vtho, setVTHO] = useState(0); // User address
   const [provider, setProvider] = useState(null); // Vechain provider
+  const [ticker, setTicker] = useState(null);
+  const [tick, setTick] = useState(null);
 
   /**
    * Unlock wallet, store vechain provider and address
@@ -49,17 +51,26 @@ function useVechain() {
   useEffect(async () => {
     // Initialize the connex provider
     const { Connex } = await import('@vechain/connex');
-    const connex = new Connex({ 
+    const connex = new Connex({
                             node: 'https://testnet.veblocks.net',
                             network: 'test'
                            })
     setProvider(connex);
+    setTicker(connex.thor.ticker());
   }, []);
+
+  useEffect(async () => {
+    if (ticker) {
+      let _tick = await ticker.next();
+      setTick(_tick);
+    }
+  }, [ticker, tick]);
 
   return {
     provider,
     address,
     vtho,
+    tick,
     unlock,
   };
 }
