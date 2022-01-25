@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { truncate } from "lodash";
 import styled from '@emotion/styled'
 
 import vechain from "@state/vechain";
@@ -74,41 +73,24 @@ export default function Home() {
   };
 
   /**
-   * Format vote count as locale-parsed string
-   * @param {Number} votes count
-   * @returns {String} vote count
-   */
-  const formatVoteCount = (votes) => {
-    // Formatter settings
-    const formatSettings = {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    };
-
-    // Return vote count string
-    return `${votes.toLocaleString("us-en", formatSettings)} vote${
-      // Adding a (s) if vote !== 1
-      votes === 1 ? "" : "s"
-    }`;
-  };
-
-  /**
-   * Filter proposals with greater than or equal to 400 votes
+   * Filter proposals that are in the Pending, Active, Succeeded, or Queued state
    * @param {Object[]} proposals list
-   * @returns {Object[]} of proposals with >= 400 votes
+   * @returns {Object[]} of proposals that are in those 4 states
    */
-  const filterTopProposals = (proposals) => {
-
-    const voteThreshold = 0;
-
+  const filterOngoingProposals = (proposals) => {
     // Filter array for object
     const voteFilter = proposals.filter(
       // Where votes value >= 400
-      (proposal) => parseFloat(proposal.votesFor) >= voteThreshold
+      (proposal) =>
+          proposal.state === "Pending" ||
+          proposal.state === "Active" ||
+          proposal.state === "Succeeded" ||
+          proposal.state === "Queued"
     );
-    // Return array sorted by votes
+
+    // Return array sorted by descending id
     return voteFilter.sort((a, b) =>
-      parseFloat(a.votesFor) < parseFloat(b.votesFor) ? 1 : -1
+      parseInt(a.id) < parseInt(b.id) ? 1 : -1
     );
   };
 
@@ -154,8 +136,8 @@ export default function Home() {
               url: '/',
             },
             {
-              name: 'New',
-              url: '/new',
+              name: 'All',
+              url: '/all',
             },
             {
               name: 'Assets',
@@ -211,28 +193,27 @@ export default function Home() {
         ) : null}
       </Card>
 
-      {/* Show all automated proposals */}
-      {/* TODO: Add message (maybe tooltip) to Button if disabled and inform user that votes are below threshold */}
+      {/* Show all ongoing proposals */}
       <Card
         noPadding
-        title="Top proposals"
+        title="Ongoing proposals"
         action={{ name: "Create Proposal", handler: routeToCreate }}
       >
         {loadingProposals ? (
           <Loader />
-        ) : filterTopProposals(proposals).length < 1 ? (
+        ) : filterOngoingProposals(proposals).length < 1 ? (
           <Empty
-            content="The home page only shows proposals with 400 votes or more. Once there are proposals with more support, they’ll appear here."
+            content="The home page only shows relevant proposals which are in the Pending, Active, Succeeded, or Queued state."
             link={(
-              <Link href="/new">
-                <a>{"Read new proposals ->"}</a>
+              <Link href="/all">
+                <a>{"Read all proposals ->"}</a>
               </Link>
             )}
           />
 
         ) : (
           <div>
-            {filterTopProposals(proposals).map((proposal, i) => (
+            {filterOngoingProposals(proposals).map((proposal, i) => (
               <HomeProposalLink proposal={proposal} key={i} />
             ))}
           </div>

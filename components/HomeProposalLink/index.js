@@ -49,15 +49,13 @@ const HomeProposalLink = ({ proposal }) => (
       <Title>
         <h4>{truncate(proposal.title, { length: 70 })}</h4>
         <span>
-          {proposal.state === "Active"
-            ? "10,000,000+ votes"   /* to refactor this */
-            : formatVoteCount(parseFloat(proposal.votesFor))}
+          {formatVoteCount(parseFloat(proposal.votesFor + proposal.votesAgainst))}
         </span>
       </Title>
 
       <State>
         <Status>
-          <div style={{ backgroundColor: renderStatusColor(proposal.state) }}></div>
+          <div style={{ backgroundColor: renderStatusColor(proposal.state) }} />
         </Status>
         <div>
           <span>{proposal.state}</span>

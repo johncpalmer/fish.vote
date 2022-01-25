@@ -27,8 +27,8 @@ export default function Assets() {
               url: '/',
             },
             {
-              name: 'New',
-              url: '/new',
+              name: 'All',
+              url: '/all',
             },
             {
               name: 'Assets',
