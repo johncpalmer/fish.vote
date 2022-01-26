@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { isMobile } from 'react-device-detect';
 import { VEX_NETWORK } from "@utils/constants";
-
+import Address from "@components/Address";
 import {
   Header,
   Details,
