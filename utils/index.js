@@ -18,17 +18,17 @@ export const getDefaultSignificantDecimalsFromAssetDecimals = decimals => {
 
 export const userAccount = {
   get: (account) => {
-    const savedAccount = localStorage.getItem('wallet')
-    return savedAccount ?? account
+    const savedAccount = localStorage.getItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`);
+    return savedAccount ?? account;
   },
   set: (account) => {
-    localStorage.setItem('wallet', account)
+    localStorage.setItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`, account);
   },
   remove: () => {
-    localStorage.removeItem('wallet')
-    window.location.href = '/'
-  }
-}
+    localStorage.removeItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`);
+    window.location.href = "/";
+  },
+};
 
 export const copyTextToClipboard = text => {
   const textField = document.createElement('textarea')

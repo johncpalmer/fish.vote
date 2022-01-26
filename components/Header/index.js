@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import Link from "next/link";
 import AccountStatus from '../AccountStatus'
 import Logo from '../Logo'
 
@@ -13,12 +13,13 @@ function Header() {
       isMenuOpen={isMenuOpen}
       className="d-flex align-items-center"
     >
-      <LogoContainer>
-        <Logo />
-      </LogoContainer>
+      <Link href="/">
+        <LogoContainer>
+          <Logo />
+        </LogoContainer>
+      </Link>
 
       <AccountStatus variant="desktop" />
-
     </HeaderContainer>
   )
 }
