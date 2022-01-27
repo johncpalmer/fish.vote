@@ -1,6 +1,7 @@
 import { utils } from 'ethers'
 import currency from 'currency.js'
 import numeral from 'numeral'
+import { VEX_NETWORK_NAME } from "@utils/constants";
 
 const { commify, formatEther } = utils
 
@@ -18,14 +19,14 @@ export const getDefaultSignificantDecimalsFromAssetDecimals = decimals => {
 
 export const userAccount = {
   get: (account) => {
-    const savedAccount = localStorage.getItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`);
+    const savedAccount = localStorage.getItem(`governance-wallet-${VEX_NETWORK_NAME}`);
     return savedAccount ?? account;
   },
   set: (account) => {
-    localStorage.setItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`, account);
+    localStorage.setItem(`governance-wallet-${VEX_NETWORK_NAME}`, account);
   },
   remove: () => {
-    localStorage.removeItem(`governance-wallet-${process.env.NEXT_PUBLIC_VECHAIN_MAINNET}`);
+    localStorage.removeItem(`governance-wallet-${VEX_NETWORK_NAME}`);
     window.location.href = "/";
   },
 };

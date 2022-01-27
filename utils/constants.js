@@ -75,6 +75,9 @@ const MAINNET = process.env.NEXT_PUBLIC_VECHAIN_MAINNET === "true";
 // Return network array based on network
 const VEX_NETWORK = VEX_CONSTANTS[MAINNET ? "mainnet" : "testnet"]
 
+// Return network name
+const VEX_NETWORK_NAME = MAINNET ? "mainnet" : "testnet"
+
 // Declare possible governance actions
 const VEX_ACTIONS = [
   {
@@ -518,6 +521,7 @@ export {
   generateActionSignatureHTML,
   MAINNET,
   VEX_NETWORK,
+  VEX_NETWORK_NAME,
   VEX_CONSTANTS,
   VEX_ACTIONS,
   PROPOSAL_THRESHOLD
