@@ -42,6 +42,8 @@ function useGovernance() {
    * Collect VEX balance and updates in state
    */
   const collectVexBalance = async () => {
+    if (!vexContract) return null
+
     // Collect raw balance
     const balanceOfABI = find(VEXABI, { name: "balanceOf" });
     const method = vexContract.method(balanceOfABI);
@@ -49,6 +51,7 @@ function useGovernance() {
 
     // Format balance to readable format
     const balance = parseFloat(ethers.utils.formatEther(balanceRaw));
+
     // Update balance in state
     setVex(balance);
   };
@@ -57,6 +60,8 @@ function useGovernance() {
    * Collect current effective votes of the user and updates in state
    */
   const collectCurrentVotes = async () => {
+    if (!vexContract) return null
+
     const currentVotesABI = find(VEXABI, { name: "getCurrentVotes"});
     const method = vexContract.method(currentVotesABI);
     const currentVotesRaw = (await method.call(address)).data;
@@ -71,6 +76,8 @@ function useGovernance() {
    * @param {string} proposalId of the proposal of interest
    */
      const collectVotesAtBlock = async (blockNumber) => {
+       if (!vexContract) return null
+
       const priorVotesABI = find(VEXABI, { name: "getPriorVotes"});
       const method = vexContract.method(priorVotesABI);
       const priorVotesRaw = (await method.call(address, blockNumber)).data;
@@ -84,6 +91,8 @@ function useGovernance() {
    * Collect delegates of the user updates in state
    */
   const collectDelegates = async () => {
+    if (!vexContract) return null
+
     // Collect delegate
     const delegatesABI = find(VEXABI, { name: "delegates" });
     const method = vexContract.method(delegatesABI);
@@ -99,6 +108,8 @@ function useGovernance() {
    * @returns {Receipt} an object as defined in GovernorAlpha
    */
   const getReceipt = async (proposalId) => {
+    if (!governanceContract) return null
+
     const getReceiptABI = find(GovernorAlphaABI, { name: "getReceipt" });
     const method = governanceContract.method(getReceiptABI);
     const receipt = (await method.call(proposalId, address)).decoded[0];
@@ -609,7 +620,7 @@ function useGovernance() {
   useEffect(setupGovernance, [provider]);
 
   // Setup governance parameters on auth
-  useEffect(setupUser, [address]);
+  useEffect(setupUser, [address, provider, vexContract]);
 
   useEffect(collectProposalsOnLoad, []);
 

@@ -106,7 +106,7 @@ function AccountStatus({ variant }) {
     )
   }
 
-  const returnVoteCount = () => {
+  const getUserVexAmount = () => {
     return vex !== null ? `${numeral(vex).format('0,0')} VEX` : 'LOADING...';
   };
 
@@ -125,7 +125,7 @@ function AccountStatus({ variant }) {
           &nbsp;
           and
           &nbsp;
-          <span>{returnVoteCount()}</span>
+          <span>{getUserVexAmount()}</span>
         </VotesDescription>
       ) : null}
 

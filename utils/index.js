@@ -1,6 +1,7 @@
 import { utils } from 'ethers'
 import currency from 'currency.js'
 import numeral from 'numeral'
+import { VEX_NETWORK_NAME } from "@utils/constants";
 
 const { commify, formatEther } = utils
 
@@ -18,17 +19,17 @@ export const getDefaultSignificantDecimalsFromAssetDecimals = decimals => {
 
 export const userAccount = {
   get: (account) => {
-    const savedAccount = localStorage.getItem('wallet')
-    return savedAccount ?? account
+    const savedAccount = localStorage.getItem(`governance-wallet-${VEX_NETWORK_NAME}`);
+    return savedAccount ?? account;
   },
   set: (account) => {
-    localStorage.setItem('wallet', account)
+    localStorage.setItem(`governance-wallet-${VEX_NETWORK_NAME}`, account);
   },
   remove: () => {
-    localStorage.removeItem('wallet')
-    window.location.href = '/'
-  }
-}
+    localStorage.removeItem(`governance-wallet-${VEX_NETWORK_NAME}`);
+    window.location.href = "/";
+  },
+};
 
 export const copyTextToClipboard = text => {
   const textField = document.createElement('textarea')

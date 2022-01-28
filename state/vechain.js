@@ -1,8 +1,9 @@
-import { setState, useState, useEffect } from "react"; // Local state management
+import { useState, useEffect } from "react"; // Local state management
 import { createContainer } from "unstated-next"; // Global state provider
 import { ethers } from 'ethers';
 import assert from 'assert';
 import { VEX_NETWORK, MAINNET } from "@utils/constants";
+import { userAccount } from '../utils';
 
 function useVechain() {
   const [address, setAddress] = useState(null); // User address
@@ -16,7 +17,6 @@ function useVechain() {
    * Sets address to null if wallet already connected
    */
   const unlock = async () => {
-
     // If already connected to wallet
     if (address && provider) {
       setAddress(null);
@@ -39,6 +39,7 @@ function useVechain() {
         const { energy: energyAsHex } = await account.get();
         const energy = ethers.BigNumber.from(energyAsHex);
 
+        userAccount.set(annex.signer);
         setAddress(annex.signer);
         setVTHO(energy);
       }
@@ -57,6 +58,12 @@ function useVechain() {
                             node: VEX_NETWORK.node_url,
                             network: network
                            })
+
+    const account = userAccount.get();
+    if (account) {
+      setAddress(account);
+    }
+
     setProvider(connex);
     setTicker(connex.thor.ticker());
   }, []);
