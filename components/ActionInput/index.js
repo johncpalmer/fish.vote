@@ -7,6 +7,7 @@ const ActionInput = ({
   onChangeIndex,
   placeholder,
   type,
+  decimalPlaces,
 }) => {
   return (
     <Wrapper>
@@ -17,7 +18,7 @@ const ActionInput = ({
         id={label}
         type={type}
         value={value}
-        onChange={(e) => onChangeHandler(e.target.value, onChangeIndex)}
+        onChange={(e) => onChangeHandler(e.target.value, decimalPlaces, onChangeIndex)}
         placeholder={placeholder}
       />
     </Wrapper>

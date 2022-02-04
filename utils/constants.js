@@ -1,4 +1,6 @@
 import { ethers } from "ethers";
+import { find } from "lodash";
+import { getAddress } from "ethers/lib/utils";
 
 // Declare constants by network
 const VEX_CONSTANTS = {
@@ -19,7 +21,7 @@ const VEX_CONSTANTS = {
     },
     factory: {
       name: "VexchangeV2Factory",
-      address: "0xb312582c023cc4938cf0faea2fd609b46d7509a2"
+      address: "0xB312582C023Cc4938CF0faEA2fd609b46D7509A2"
     },
     router: {
       name: "Router",
@@ -51,11 +53,11 @@ const VEX_CONSTANTS = {
     },
     factory: {
       name: "VexchangeV2Factory",
-      address: "0xd15a91ee3f57313a6129a4a58c73fcbdad34c23c"
+      address: "0xD15A91EE3f57313A6129A4a58c73fcBDAd34c23c"
     },
     router: {
       name: "Router",
-      address: "0x01d6b50b31c18d7f81ede43935cadf79901b0ea0"
+      address: "0x01d6B50b31C18D7f81EDe43935caDF79901B0ea0"
     },
     wvet: {
       name: "Wrapped VET",
@@ -97,6 +99,7 @@ const VEX_ACTIONS = [
             name: "amount",
             placeholder: "value",
             type: "number",
+            decimals: 18
           },
         ],
         values: [],
@@ -113,7 +116,8 @@ const VEX_ACTIONS = [
           {
             name: "amount",
             placeholder: "amount",
-            type: "number"
+            type: "number",
+            decimals: 18
           }
         ],
         values: [],
@@ -130,7 +134,8 @@ const VEX_ACTIONS = [
           {
             name: "amount",
             placeholder: "amount",
-            type: "number"
+            type: "number",
+            decimals: 18
           }
         ],
         values: []
@@ -142,7 +147,8 @@ const VEX_ACTIONS = [
           {
             name: "rawAmount",
             placeholder: "amount",
-            type: "number"
+            type: "number",
+            decimals: 18
           }
         ],
         values: []
@@ -184,7 +190,8 @@ const VEX_ACTIONS = [
           {
             name: "Delay",
             placeholder: "time in seconds. Minimum 2 days (172800), maximum 30 days (2592000)",
-            type: "number"
+            type: "number",
+            decimals: 0
           }
         ],
         values: [],
@@ -214,7 +221,8 @@ const VEX_ACTIONS = [
           {
             name: "swapFee",
             placeholder: "basis points",
-            type: "number"
+            type: "number",
+            decimals: 0
           }
         ],
         values: []
@@ -226,7 +234,8 @@ const VEX_ACTIONS = [
           {
             name: "platformFee",
             placeholder: "basis points",
-            type: "number"
+            type: "number",
+            decimals: 0
           }
         ],
         values: []
@@ -255,7 +264,8 @@ const VEX_ACTIONS = [
           {
             name: "swapFee",
             placeholder: "basis points",
-            type: "number"
+            type: "number",
+            decimals: 0
           }
         ],
         values: []
@@ -272,7 +282,8 @@ const VEX_ACTIONS = [
           {
             name: "platformFee",
             placeholder: "basis points",
-            type: "number"
+            type: "number",
+            decimals: 0
           }
         ],
         values: []
@@ -296,91 +307,6 @@ const VEX_ACTIONS = [
       }
     ]
   },
-  {
-    contract: "Router",
-    address: VEX_NETWORK.router.address,
-    functions: [
-      {
-        name: "Remove liquidity",
-        signature: "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
-        args: [
-          {
-            name: "tokenA",
-            placeholder: "address",
-            type: "text"
-          },
-          {
-            name: "tokenB",
-            placeholder: "address",
-            type: "text"
-          },
-          {
-            name: "liquidity",
-            placeholder: "number of LP tokens",
-            type: "number"
-          },
-          {
-            name: "amountAMin",
-            placeholder: "Amount A minimum",
-            type: "number"
-          },
-          {
-            name: "amountBMin",
-            placeholder: "Amount B minimum",
-            type: "number"
-          },
-          {
-            name: "to",
-            placeholder: "address",
-            type: "text"
-          },
-          {
-            name: "deadline",
-            placeholder: "timestamp",
-            type: "number"
-          }
-        ],
-        values: []
-      },
-      {
-        name: "Remove liquidity VET",
-        signature: "removeLiquidity(address,uint256,uint256,uint256,address,uint256)",
-        args: [
-          {
-            name: "token",
-            placeholder: "address",
-            type: "text"
-          },
-          {
-            name: "liquidity",
-            placeholder: "number of LP tokens",
-            type: "number"
-          },
-          {
-            name: "amountTokenMin",
-            placeholder: "Token Amount Minimum",
-            type: "number"
-          },
-          {
-            name: "amountVetMin",
-            placeholder: "Amount of VET minimum",
-            type: "number"
-          },
-          {
-            name: "to",
-            placeholder: "address",
-            type: "text"
-          },
-          {
-            name: "deadline",
-            placeholder: "timestamp",
-            type: "number"
-          }
-        ],
-        values: []
-      }
-    ]
-  }
 ];
 
 /**
@@ -410,20 +336,28 @@ const collectNameByContract = (contract) => {
 
 /**
  * Parses hexstring based on function signature types for appropriate params
+ * @param {String} contractAddress address of the contract
  * @param {String} signature function signature
  * @param {String} bytes HexString
  * @returns {Object[String[], String[]]} Two arrays, one for types and one for parsed params
  */
-const generateActionBySignatureBytes = (signature, bytes) => {
+const generateActionBySignatureBytes = (contractAddress, signature, bytes) => {
   // Collect types array from signature
   const typesString = signature.split("(").pop().split(")")[0];
   const typesArray = typesString.split(",");
+
+  // Use checksum address
+  const contract = find(VEX_ACTIONS, { address: getAddress(contractAddress) });
+  const func = find(contract.functions, { signature: signature });
+  const args = func.args;
 
   // Setup bytes hexstring (removing 0x prefix)
   let tempBytes = bytes.substring(2);
 
   // Setup array to hold parsed params
   let parsedParams = [];
+
+  let argsIndex = 0;
 
   // For each type of typesArray
   for (const type of typesArray) {
@@ -454,12 +388,13 @@ const generateActionBySignatureBytes = (signature, bytes) => {
         tempBytes = tempBytes.substring(64, tempBytes.length);
 
         // Parse uint256 as decimal value
-        const decimalUint256 = ethers.utils.formatUnits(parsedUint256, 18);
+        const decimalUint256 = ethers.utils.formatUnits(parsedUint256, args[argsIndex].decimals);
 
         // Updated parsedParams array
         parsedParams.push(decimalUint256);
         break;
     }
+    ++argsIndex;
   }
 
   // Return array of function types and parsed params
@@ -468,13 +403,14 @@ const generateActionBySignatureBytes = (signature, bytes) => {
 
 /**
  * Uses generateActionBySignatureBytes to return renderable HTML for actions
+ * @param {String} contractName name of the contract
  * @param {String} signature function signature
  * @param {String} bytes HexString
  * @returns {HTMLElement[]} array of elements ot render
  */
-const generateActionSignatureHTML = (signature, bytes) => {
+const generateActionSignatureHTML = (contractName, signature, bytes) => {
   // Collect parsed params
-  const { parsed } = generateActionBySignatureBytes(signature, bytes);
+  const { parsed } = generateActionBySignatureBytes(contractName, signature, bytes);
   // Generate signature name
   const signatureName = signature.split("(")[0];
 
@@ -497,7 +433,8 @@ const generateActionSignatureHTML = (signature, bytes) => {
           {param}
         </a>
       );
-    } else {
+    }
+    else {
       // Else, span
       elements.push(<span>{param}</span>);
     }

@@ -19,7 +19,18 @@ import Breadcrumb from "@components/Breadcrumb";
 
 import { PROPOSAL_THRESHOLD } from "@utils/constants";
 
-const defaultActionState = [null, null, [], []];
+const defaultActionState = [
+    // contract address
+    null,
+    // function
+    null,
+    // function arguments array
+    [],
+    // function argument decimals array
+    [],
+    // values array
+    []
+];
 
 export default function Create() {
   const router = useRouter();
@@ -64,13 +75,14 @@ export default function Create() {
         actions.map((action) => action[1]),
         actions.map((action) => action[2]),
         actions.map((action) => action[3]),
+        actions.map((action) => action[4]),
         title,
         description
       );
       // Assuming proposal creation is successful, route to new proposal
       router.push(`/proposal/${proposalId}`);
     } catch (error) {
-      console.log("Error when creating proposal: " + error);
+      console.error("Error when creating proposal: " + error);
     }
 
   };

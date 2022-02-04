@@ -40,7 +40,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     getEta,
     collectVotesAtBlock
   } = governance.useContainer();
-  const { address: authed, provider, tick,  unlock } = vechain.useContainer();
+  const { address: authed, tick, unlock } = vechain.useContainer();
 
   // Local state
   const [data, setData] = useState(JSON.parse(defaultProposalData));
@@ -65,7 +65,7 @@ const Proposal = ({ id, defaultProposalData }) => {
   }
 
   const refreshVotesAndState = async () => {
-    if (tick && provider && governanceContract)
+    if (tick && governanceContract)
     {
       const proposalsABI = find(GovernorAlphaABI, {name: 'proposals'});
       const proposalsMethod = governanceContract.method(proposalsABI);
@@ -86,7 +86,7 @@ const Proposal = ({ id, defaultProposalData }) => {
       })
     }
   }
-  
+
   const fetchVotes = async () => {
     if (authed && data) {
       const votes = await collectVotesAtBlock(data.startBlock);
@@ -172,7 +172,7 @@ const Proposal = ({ id, defaultProposalData }) => {
             actions.disabled = true;
             actions.tooltipText = `You had insufficient votes when the proposal was created.`
           }
-        }   
+        }
         // Receipt and votes still loading
         else {
           actions.text = "Loading";
@@ -287,7 +287,7 @@ const Proposal = ({ id, defaultProposalData }) => {
     }
   };
 
-  useEffect(refreshVotesAndState, [tick, provider, governanceContract]);
+  useEffect(refreshVotesAndState, [tick, governanceContract]);
   useEffect(fetchETAForQueued, [proposals]);
   useEffect(fetchReceipt, [authed, data]);
   useEffect(fetchVotes, [authed, data])
@@ -372,6 +372,7 @@ const Proposal = ({ id, defaultProposalData }) => {
               const name = collectNameByContract(contract);
               // Collect signature data
               const signatureElements = generateActionSignatureHTML(
+                contract,
                 data.signatures[i],
                 data.calldatas[i]
               );

@@ -254,9 +254,10 @@ function useGovernance() {
    * Generates padded bytes based on type and value
    * @param {String} type solidity type
    * @param {String} value matching to solidity type
+   * @param {Number} decimalPlaces number of decimal places (if applicable)
    * @returns {String} emulating ethers.Bytes
    */
-  const generateBytesByType = async (type, value) => {
+  const generateBytesByType = async (type, value, decimalPlaces) => {
     switch (type) {
       // If type of value is address:
       case "address":
@@ -267,12 +268,16 @@ function useGovernance() {
 
         // Pad address for 20 bytes and drop 0x
         return ethers.utils.hexZeroPad(value, 32).substring(2);
+
       // Else if, type of value is uint256
       case "uint256":
+        // assume decimal places to be 0 if unspecified in VEX_ACTIONS
+        if (decimalPlaces === undefined) { decimalPlaces = 0; }
+
         // Format value with appropriate decimals
         const valueDecimals = ethers.utils.parseUnits(
-          Number(value).toFixed(18),
-          18
+          Number(value).toFixed(decimalPlaces),
+          decimalPlaces
         );
         // Convert BigNumber to HexString
         const valueHex = valueDecimals.toHexString();
@@ -285,9 +290,10 @@ function useGovernance() {
    * Generates bytes per function
    * @param {String} signature of function
    * @param {String[]} values of function params
+   * @param {Number[]} decimals of values
    * @returns {String} emulating ethers.Bytes
    */
-  const generateBytes = async (signature, values) => {
+  const generateBytes = async (signature, values, decimals) => {
     // Collect types array from signature
     const typesString = signature.split("(").pop().split(")")[0];
     const typesArray = typesString.split(",");
@@ -297,7 +303,7 @@ function useGovernance() {
       typesArray.map(
         async (type, i) =>
           // Generate bytes by type
-          await generateBytesByType(type, values[i])
+          await generateBytesByType(type, values[i], decimals[i])
       )
     );
 
@@ -310,6 +316,7 @@ function useGovernance() {
    * @param {String[]} contracts array of target addresses
    * @param {String[]} functions array of function signatures to be called
    * @param {String[]} funcArgs array of function arguments to fill
+   * @param {Number[]} argDecimals array of decimals for integer function arguments
    * @param {String[]} values array of function param values to fill
    * @param {String} title of proposal
    * @param {String} description of proposal
@@ -319,6 +326,7 @@ function useGovernance() {
     contracts,
     functions,
     funcArgs,
+    argDecimals,
     values,
     title,
     description
@@ -333,14 +341,16 @@ function useGovernance() {
       // By zipping target and values arrays if they exist
       typeof values[i] !== "undefined" ? [...target, ...values[i]] : [...target]
     );
+
     // Convert stringified calldata to bytes
     const calldataBytes = await Promise.all(
       functions.map(
         async (func, i) =>
           // By generating bytes for each individual function signature and param values
-          await generateBytes(func, calldataRaw[i])
+          await generateBytes(func, calldataRaw[i], argDecimals[i])
       )
     );
+
     // Create a new proposal
     const proposeABI = find(GovernorAlphaABI, { name: "propose" });
     const proposeMethod = governanceContract.method(proposeABI);
@@ -391,7 +401,8 @@ function useGovernance() {
         isLoading: false,
         autoClose: 5000
       });
-    } else {
+    }
+    else {
       toast.update(toastID, {
         render: <ErrorToast />,
         type: "error",

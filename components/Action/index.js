@@ -12,6 +12,7 @@ const Action = ({ onChangeHandler, index }) => {
   const [func, setFunc] = useState(null);
   const [values, setValues] = useState([]);
   const [args, setArgs] = useState([]);
+  const [argDecimals, setArgDecimals] = useState([]);
   const [contract, setContract] = useState(null);
 
   /**
@@ -27,6 +28,7 @@ const Action = ({ onChangeHandler, index }) => {
 
     // Else, nullify arguments and values
     setArgs([]);
+    setArgDecimals([]);
     setValues([]);
   };
 
@@ -40,18 +42,24 @@ const Action = ({ onChangeHandler, index }) => {
 
     // Prefill arrays based on function params
     setArgs(new Array(funcOptions.args.length).fill(""));
+    setArgs(new Array(funcOptions.args.length).fill(""));
     setValues(new Array(funcOptions.values.length).fill(""));
   };
 
   /**
    * Update args array at index
    * @param {String} value to update
+   * @param {Number} decimalPlaces number of decimal places for the value, undefined if not applicable (such as for strings/addresses)
    * @param {Number} index to update at
    */
-  const updateArgsAtIndex = (value, index) => {
+  const updateArgsAtIndex = (value, decimalPlaces, index) => {
     let temp = args;
     temp[index] = value;
     setArgs([...temp]);
+
+    let decimalTemp = argDecimals;
+    decimalTemp[index] = decimalPlaces;
+    setArgDecimals([...decimalTemp]);
   };
 
   /**
@@ -77,6 +85,8 @@ const Action = ({ onChangeHandler, index }) => {
         func ? func.value.signature : null,
         // Args array
         args,
+        // Arg decimals array
+        argDecimals,
         // Values array
         values,
       ],
@@ -99,7 +109,7 @@ const Action = ({ onChangeHandler, index }) => {
   }, [func]);
 
   // Update state of parent container on any change
-  useEffect(updateParentState, [contract, func, args, values]);
+  useEffect(updateParentState, [contract, func, args, argDecimals, values]);
 
   return (
     <Wrapper>
@@ -152,6 +162,7 @@ const Action = ({ onChangeHandler, index }) => {
                 <ActionInput
                   label={arg.name}
                   value={args[i] || ""}
+                  decimalPlaces={arg.decimals}
                   type={arg.type}
                   placeholder={arg.placeholder}
                   onChangeHandler={updateArgsAtIndex}
@@ -175,7 +186,7 @@ const Action = ({ onChangeHandler, index }) => {
                     onChangeHandler={updateValuesAtIndex}
                     onChangeIndex={i}
                   />
-                </React.Fragment>
+              </React.Fragment>
               );
             }
           )}
