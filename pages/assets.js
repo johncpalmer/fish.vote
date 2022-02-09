@@ -1,5 +1,4 @@
 import { VEX_NETWORK } from "@utils/constants"; // Constants
-import vechain from "@state/vechain";
 import assets from "@state/assets";
 
 import BalanceTable from "@components/BalanceTable";
@@ -8,12 +7,21 @@ import Description from "@components/Description";
 import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import Switch from "@components/Switch";
+import Vester from "@components/Vester";
 
 
 export default function Assets() {
-  const { provider } = vechain.useContainer();
 
-  const { balances, isLoading } = assets.useContainer();
+  const { balances, isLoading, vester, isLoadingVester, claimVEXFromVester } = assets.useContainer();
+
+  const handleClaim = async () => {
+    try {
+      await claimVEXFromVester()
+    }
+    catch (error) {
+        console.error("Error during claim VEX for DAO", error);
+    }
+  }
 
   return (
     <Layout short>
@@ -52,6 +60,14 @@ export default function Assets() {
           <Loader />
         ) : (
           <BalanceTable balances={balances} />
+        )}
+      </Card>
+
+      <Card title="Treasury Vester">
+        {isLoadingVester ? (
+          <Loader />
+        ) : (
+          <Vester vester={vester} handleClaim={handleClaim}/>
         )}
       </Card>
 
