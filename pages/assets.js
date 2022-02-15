@@ -55,7 +55,7 @@ export default function Assets() {
         </Description>
       </Card>
 
-      <Card title="Assets">
+      <Card title="Timelock">
         {isLoading ? (
           <Loader />
         ) : (
