@@ -20,18 +20,18 @@ const Vester = ({ vester, handleClaim }) => {
         </tr>
       </thead>
       <tbody>
-          <tr key={vester.address}>
-            <td type="addr">
-              <AddressLink shorten address={VEX_NETWORK.vex_governance_token.address} />
-            </td>
-            <td>VEX</td>
-            <td type="num" align="center">
-                {formatNumber(vester.vexBalance)}
-            </td>
-            <td type="num" align="right">
-              {formatNumber(vester.claimableAmount)}
-            </td>
-            <td align="right">
+        <tr key={vester.address}>
+          <td type="addr" data-label="Address">
+            <AddressLink shorten address={VEX_NETWORK.vex_governance_token.address} />
+          </td>
+          <td data-label="Name">VEX</td>
+          <td type="num" align="center" data-label="Balance">
+              {formatNumber(vester.vexBalance)}
+          </td>
+          <td type="num" align="right" data-label="Amount Claimable">
+            {formatNumber(vester.claimableAmount)}
+          </td>
+          <td align="right">
             {address ? (
               <Button
                 onClick={handleClaim}
@@ -43,8 +43,8 @@ const Vester = ({ vester, handleClaim }) => {
             ) : (
               <Button onClick={unlock}>Connect wallet</Button>
             )}
-            </td>
-          </tr>
+          </td>
+        </tr>
       </tbody>
     </Wrapper>
   )
