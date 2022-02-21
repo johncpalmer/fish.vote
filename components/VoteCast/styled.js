@@ -40,4 +40,14 @@ export const Total = styled.div`
   text-align: right;
   color: #ACACAB;
   margin-top: 24px;
+  @media screen and (max-width: 600px) {
+    text-align: left;
+  }
+`
+export const QuorumStatus = styled.div`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
+  text-align: left;
+  color: #ACACAB;
+  margin-top: 24px;
 `
