@@ -2,6 +2,7 @@ import { utils } from 'ethers'
 import currency from 'currency.js'
 import numeral from 'numeral'
 import { VEX_NETWORK_NAME } from "@utils/constants";
+import dayjs from 'dayjs';
 
 const { commify, formatEther } = utils
 
@@ -30,6 +31,14 @@ export const userAccount = {
     window.location.href = "/";
   },
 };
+
+export const getProposalEndDate = (timestamp, startBlock, endBlock) => {
+  const startDate = dayjs.unix(timestamp)
+  const blocksInBetween = endBlock - startBlock
+  const numberOfSeconds = blocksInBetween * 10
+
+  return startDate.add(numberOfSeconds, 'seconds').unix()
+}
 
 export const copyTextToClipboard = text => {
   const textField = document.createElement('textarea')

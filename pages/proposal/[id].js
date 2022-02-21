@@ -337,6 +337,8 @@ const Proposal = ({ id, defaultProposalData }) => {
         }}
         state={data.state}
         created={data.timestamp}
+        startBlock={data.startBlock}
+        endBlock={data.endBlock}
         proposer={data.proposer}
       />
 

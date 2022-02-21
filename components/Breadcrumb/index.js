@@ -11,12 +11,15 @@ import {
   Title,
   Wrapper,
 } from './styled'
+import { getProposalEndDate } from "../../utils";
 
 const Breadcrumb = ({
   title,
   lastRoute: { path, name } = {},
   state,
   created,
+  startBlock,
+  endBlock,
   proposer,
 }) => (
   <Wrapper>
@@ -34,7 +37,7 @@ const Breadcrumb = ({
 
     {created && proposer ? (
       <Details>
-        <span>Created {dayjs.unix(created).format("MMMM D, YYYY")}</span>
+        <span>Period of voting: {dayjs.unix(created).format("MMMM D, YYYY")} until {dayjs.unix(getProposalEndDate(created, startBlock, endBlock)).format("MMMM D, YYYY")}</span>
         <div />
         <span>
           Proposed by
