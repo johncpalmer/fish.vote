@@ -33,7 +33,7 @@ const VoteCast = ({ votesFor, votesAgainst }) => (
       </Total>
 
       <QuorumStatus>
-        Quorum reached? {parseFloat(votesAgainst + votesFor) > QUORUM_TOTAL_VEX ? 'YES' : 'NO'}
+        Quorum reached? {((votesAgainst + votesFor) >= QUORUM_TOTAL_VEX) ? 'YES' : 'NO'}
       </QuorumStatus>
     </BlockWrapper>
   </Wrapper>
