@@ -8,7 +8,7 @@ import {
 } from './styled'
 
 const VoteCast = ({ votesFor, votesAgainst }) => (
-  <Wrapper>
+  <Wrapper noMargin>
     <BlockWrapper>
       <Block>
         {parseFloat(votesFor).toLocaleString("us-en", {
