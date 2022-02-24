@@ -37,7 +37,7 @@ const Breadcrumb = ({
 
     {created && proposer ? (
       <Details>
-        <span>Voting Period: {dayjs.unix(created).format("MMMM D, YYYY Z")} until {dayjs.unix(getProposalEndDate(created, startBlock, endBlock)).format("MMMM D, YYYY Z")}</span>
+        <span>Voting Period: {dayjs.unix(created).format("MMMM D, YYYY")} until {dayjs.unix(getProposalEndDate(created, startBlock, endBlock)).format("MMMM D, YYYY")}</span>
         <div />
         <span>
           Proposed by
