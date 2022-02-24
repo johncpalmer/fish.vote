@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
-  margin: 20px 0px;
+  margin: ${({ noMargin }) => noMargin ? 0 : '20px 0'};
 `
 
 export const BlockWrapper = styled.div`
@@ -39,5 +39,13 @@ export const Total = styled.div`
   text-transform: uppercase;
   text-align: right;
   color: #ACACAB;
-  margin-top: 24px;
+  @media screen and (max-width: 600px) {
+    text-align: left;
+  }
+`
+export const QuorumStatus = styled.div`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
+  text-align: left;
+  color: #ACACAB;
 `

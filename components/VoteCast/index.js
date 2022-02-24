@@ -1,12 +1,14 @@
+import { QUORUM_TOTAL_VEX } from '@utils/constants';
 import {
   Wrapper,
   BlockWrapper,
   Block,
   Total,
+  QuorumStatus,
 } from './styled'
 
 const VoteCast = ({ votesFor, votesAgainst }) => (
-  <Wrapper>
+  <Wrapper noMargin>
     <BlockWrapper>
       <Block>
         {parseFloat(votesFor).toLocaleString("us-en", {
@@ -22,12 +24,18 @@ const VoteCast = ({ votesFor, votesAgainst }) => (
       </Block>
     </BlockWrapper>
 
-    <Total>
-      Total: {parseFloat(votesAgainst + votesFor).toLocaleString("us-en", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
-    </Total>
+    <BlockWrapper>
+      <Total>
+        Total: {parseFloat(votesAgainst + votesFor).toLocaleString("us-en", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </Total>
+
+      <QuorumStatus>
+        Quorum reached? {((votesAgainst + votesFor) >= QUORUM_TOTAL_VEX) ? 'YES' : 'NO'}
+      </QuorumStatus>
+    </BlockWrapper>
   </Wrapper>
 )
 
