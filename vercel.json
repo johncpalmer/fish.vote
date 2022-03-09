@@ -5,7 +5,7 @@
       "maxDuration": 30
     }
   },
-  "helpers": [
+  "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
