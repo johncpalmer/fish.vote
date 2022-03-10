@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { VEX_NETWORK } from "@utils/constants";
 import { utils, ethers } from "ethers";
+import FeeCollectorABI from "@utils/abi/FeeCollector";
 import VEXABI from "@utils/abi/vex";
 import TreasuryVesterABI from "@utils/abi/TreasuryVester";
 
@@ -20,12 +21,15 @@ function useAssets()
     const DISPLAYED_ASSETS = [
         VEX_NETWORK.vex_governance_token,
         VEX_NETWORK.wvet,
+        VEX_NETWORK.vex_wvet
         ];
 
     const [balances, setBalances] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [vester, setVester] = useState(null);
     const [isLoadingVester, setIsLoadingVester] = useState(true);
+    const [feeCollector, setFeeCollector] = useState(null);
+    const [isLoadingFeeCollector, setIsLoadingFeeCollector] = useState(true);
     const [updateBalances, setUpdateBalances] = useState(false);
 
     useEffect(() => {
@@ -83,6 +87,27 @@ function useAssets()
             setIsLoadingVester(false);
         }
 
+        const getFeeCollector = async () => {
+          setIsLoadingFeeCollector(true);
+          const balanceOfABI = find(VEXABI, { name: 'balanceOf' });
+
+          const balancePromises = DISPLAYED_ASSETS.map(async token => {
+              const balanceOfMethod = provider.thor.account(token.address).method(balanceOfABI);
+              const { decoded } = await balanceOfMethod.call(VEX_NETWORK.fee_collector.address);
+
+              return {
+                  address: token.address,
+                  name: token.name,
+                  balance: utils.formatUnits(decoded['0']),
+              };
+          });
+
+          Promise.all(balancePromises).then(data => {
+              setFeeCollector(data);
+              setIsLoadingFeeCollector(false);
+          })
+      }
+
         if ((isEmpty(balances) || updateBalances) && provider) {
             getBalances();
             setUpdateBalances(false)
@@ -91,6 +116,11 @@ function useAssets()
             getVester();
             setUpdateBalances(false)
         }
+
+        if ((!feeCollector || updateBalances) && provider && VEX_NETWORK.fee_collector) {
+          getFeeCollector();
+          setUpdateBalances(false)
+      }
     }, [provider, updateBalances]);
 
     const claimVEXFromVester = async () => {
@@ -140,6 +170,54 @@ function useAssets()
         // Update balances of assets and vester
         setUpdateBalances(true);
       };
+
+      const claimFromCollector = async (token) => {
+        const claimABI = find(FeeCollectorABI, { name: 'SweepDesired' })
+        const method = provider.thor.account(VEX_NETWORK.fee_collector.address).method(claimABI);;
+
+        const clause = method.asClause(token);
+        const txResponse = await provider.vendor.sign('tx', [clause])
+                                  .signer(address) // This modifier really necessary?
+                                  .comment("Sign to claim tokens for DAO")
+                                  .request();
+    
+        const toastID = toast.loading(<PendingToast tx={txResponse} />);
+        const txVisitor = provider.thor.transaction(txResponse.txid);
+        let txReceipt = null;
+        const ticker = provider.thor.ticker();
+    
+        // Wait for tx to be confirmed and mined
+        while(!txReceipt) {
+          await ticker.next();
+          txReceipt = await txVisitor.getReceipt();
+        }
+    
+        if (!txReceipt.reverted) {
+          toast.update(toastID, {
+            render: (
+              <SuccessToast
+                tx={txReceipt}
+                action="Claimed tokens"
+              />
+            ),
+            type: "success",
+            isLoading: false,
+            autoClose: 5000
+          });
+        }
+        // Handle failed tx
+        else {
+          toast.update(toastID, {
+            render: <ErrorToast />,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000
+          });
+        }
+    
+        // Update balances of assets and vester
+        setUpdateBalances(true);
+      };
     
 
     return {
@@ -147,7 +225,10 @@ function useAssets()
         vester,
         isLoading,
         isLoadingVester,
-        claimVEXFromVester
+        feeCollector,
+        isLoadingFeeCollector,
+        claimVEXFromVester,
+        claimFromCollector
     }
 }
 

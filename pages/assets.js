@@ -8,18 +8,38 @@ import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import Switch from "@components/Switch";
 import Vester from "@components/Vester";
+import FeeCollector from "@components/FeeCollector";
 
 
 export default function Assets() {
 
-  const { balances, isLoading, vester, isLoadingVester, claimVEXFromVester } = assets.useContainer();
+  const {
+    balances,
+    isLoading,
+    vester,
+    isLoadingVester,
+    feeCollector,
+    isLoadingFeeCollector,
+    claimVEXFromVester,
+    claimFromCollector
+  } = assets.useContainer();
 
-  const handleClaim = async () => {
+  const handleClaimVEXFromVester = async () => {
     try {
       await claimVEXFromVester()
     }
     catch (error) {
         console.error("Error during claim VEX for DAO", error);
+    }
+  }
+
+
+  const handleClaimFromCollector = async (token) => {
+    try {
+     await claimFromCollector(token)
+    }
+    catch (error) {
+        console.error("Error during claim WVET for DAO from Collector", error);
     }
   }
 
@@ -67,9 +87,17 @@ export default function Assets() {
         {isLoadingVester ? (
           <Loader />
         ) : (
-          <Vester vester={vester} handleClaim={handleClaim}/>
+          <Vester vester={vester} handleClaim={handleClaimVEXFromVester}/>
         )}
       </Card>
+
+      {feeCollector &&  <Card title="Fee Collector">
+        {isLoadingFeeCollector ? (
+          <Loader />
+        ) : (
+          <FeeCollector feeCollector={feeCollector} handleClaim={handleClaimFromCollector}/>
+        )}
+      </Card>}
 
     </Layout>
   );

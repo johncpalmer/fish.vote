@@ -37,6 +37,14 @@ const VEX_CONSTANTS = {
     vester: {
       name: "TreasuryVester",
       address: "0x8Fc3737CF99984961b43f86ce5C82cfaa4B49657"
+    },
+    fee_collector: {
+      name: "FeeCollector",
+      address: "0x17D252083c79Db33866295078ED955B04e1C61c8"
+    },
+    vex_wvet: {
+      name: "VEX/WVET",
+      address: "0x39cd888a1583498AD30E716625AE1a00ff51286D"
     }
   },
   testnet: {
