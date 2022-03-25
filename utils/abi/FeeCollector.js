@@ -1,4 +1,4 @@
-const FeeCollectorABI = [
+export const SWEEP_DESIRED_MANUAL_ABI = [
   {
     "inputs": [
         {
@@ -14,4 +14,13 @@ const FeeCollectorABI = [
 }
 ];
 
-export default FeeCollectorABI;
+export const SWEEP_DESIRED_ABI = [
+{
+    "inputs": [],
+    "name": "SweepDesired",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}
+]
+

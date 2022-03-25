@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { VEX_NETWORK } from "@utils/constants";
 import { utils, ethers } from "ethers";
-import FeeCollectorABI from "@utils/abi/FeeCollector";
+import { SWEEP_DESIRED_ABI, SWEEP_DESIRED_MANUAL_ABI} from "@utils/abi/FeeCollector";
 import VEXABI from "@utils/abi/vex";
 import TreasuryVesterABI from "@utils/abi/TreasuryVester";
 
@@ -172,10 +172,14 @@ function useAssets()
       };
 
       const claimFromCollector = async (token) => {
-        const claimABI = find(FeeCollectorABI, { name: 'SweepDesired' })
+        const isWVET = (token === VEX_NETWORK.wvet.address);
+        const claimABI = isWVET ? find(SWEEP_DESIRED_ABI, { name: 'SweepDesired' }) 
+                                : find(SWEEP_DESIRED_MANUAL_ABI, { name: 'SweepDesired' })
+
         const method = provider.thor.account(VEX_NETWORK.fee_collector.address).method(claimABI);;
 
-        const clause = method.asClause(token);
+        const clause = isWVET ? method.asClause()
+                              : method.asClause(token);
         const txResponse = await provider.vendor.sign('tx', [clause])
                                   .signer(address) // This modifier really necessary?
                                   .comment("Sign to claim tokens for DAO")

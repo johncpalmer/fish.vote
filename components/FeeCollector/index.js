@@ -7,7 +7,8 @@ import AddressLink from '../AddressLink';
 import { Wrapper } from './styled';
 
 const FeeCollector = ({ feeCollector, handleClaim }) => {
-  const { address, unlock } = vechain.useContainer();
+  const { address , unlock } = vechain.useContainer();
+  const account = address
     return (
     <Wrapper>
       <thead>
@@ -29,7 +30,7 @@ const FeeCollector = ({ feeCollector, handleClaim }) => {
                 {formatNumber(balance)}
             </td>
             <td align="right">
-            {address ? (
+            {account ? (
               <Button
                 onClick={() => handleClaim(address)}
                 background={null}
