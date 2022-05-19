@@ -222,6 +222,18 @@ function useAssets()
         // Update balances of assets and vester
         setUpdateBalances(true);
       };
+
+      const getUsdTokenPrice = async (tokenAddress, pairs, tokens ) => {
+        if (tokens[tokenAddress]) return tokens[tokenAddress].usdPrice
+        //It must be an LP token
+        const totalSupplyABI = find(VEXABI, { name: "totalSupply" });
+        const totalSupplyMethod = provider.thor.account(tokenAddress).method(totalSupplyABI);
+        const tokenSupply  = utils.formatUnits((await totalSupplyMethod.call()).decoded[0]);
+        const pairInfo = pairs[tokenAddress]
+        const { token0, token0Reserve, token1, token1Reserve } = pairInfo
+        const tokenPrice = (token0.usdPrice * token0Reserve + token1.usdPrice * token1Reserve) / tokenSupply
+        return tokenPrice
+      };
     
 
     return {
@@ -232,7 +244,8 @@ function useAssets()
         feeCollector,
         isLoadingFeeCollector,
         claimVEXFromVester,
-        claimFromCollector
+        claimFromCollector,
+        getUsdTokenPrice
     }
 }
 
