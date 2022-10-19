@@ -7,9 +7,11 @@ import AddressLink from '../AddressLink';
 
 import { Wrapper } from './styled';
 
-const Vester = ({ vester, handleClaim }) => {
-  const { address, unlock } = vechain.useContainer();
-    return (
+const Vester = ({ data, handleClaim }) => {
+  const { address: userAddress, unlock } = vechain.useContainer();
+  const { address, balance, claimableAmount } = data;
+
+  return (
     <Wrapper>
       <thead>
         <tr>
@@ -20,19 +22,19 @@ const Vester = ({ vester, handleClaim }) => {
         </tr>
       </thead>
       <tbody>
-        <tr key={vester.address}>
+        <tr key={address}>
           <td type="addr" data-label="Address">
             <AddressLink shorten address={VEX_NETWORK.vex_governance_token.address} />
           </td>
           <td data-label="Name">VEX</td>
           <td type="num" align="center" data-label="Balance">
-              {formatNumber(vester.vexBalance)}
+              {formatNumber(balance)}
           </td>
           <td type="num" align="right" data-label="Amount Claimable">
-            {formatNumber(vester.claimableAmount)}
+            {formatNumber(claimableAmount)}
           </td>
           <td align="right">
-            {address ? (
+            {userAddress ? (
               <Button
                 onClick={handleClaim}
                 background={null}

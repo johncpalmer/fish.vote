@@ -7,6 +7,7 @@ import {
   Subtitle,
   Title,
   Wrapper,
+  Footer,
 } from './styled';
 
 import Button from '../Button'
@@ -25,12 +26,14 @@ const Card = ({
   children,
   shortMargin,
   subtitle,
+  special = false,
   title,
   noPadding,
+  footer,
 }) => {
 
   return (
-    <Wrapper shortMargin={shortMargin} noPadding={noPadding}>
+    <Wrapper shortMargin={shortMargin} noPadding={noPadding} special={special}>
       { title ? (
         <Header>
           <Title>
@@ -63,7 +66,12 @@ const Card = ({
           </div>
         </Header>
       ) : null}
-      <Content noPadding={noPadding}>{children}</Content>
+      <Content noPadding={noPadding}>
+        {children}
+        <Footer>
+          { footer }
+        </Footer>
+      </Content>
     </Wrapper>
   )
 }

@@ -2,7 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
   background-color: #121218;
   background-image: linear-gradient(
     96.84deg,
@@ -11,9 +12,14 @@ export const Wrapper = styled.div`
   );
   margin-bottom: 24px;
   border-radius: 8px;
+  height: 100%;
 
   ${({ shortMargin }) => shortMargin && css`
     margin-top: 24px;
+  `}
+
+  ${({ special }) => special && css`
+     border: 1px solid #F5A788;
   `}
 `;
 
@@ -115,6 +121,10 @@ export const Content = styled.div`
   font-family: "Inter", sans-serif;
   color: white;
   padding: ${({ noPadding }) => noPadding ? 0 : '24px'};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   label:first-of-type {
     margin-top: 0;
@@ -123,4 +133,11 @@ export const Content = styled.div`
   p {
     color: white;
   }
+`
+
+export const Footer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+
 `

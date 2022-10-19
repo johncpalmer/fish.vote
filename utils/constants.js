@@ -5,6 +5,21 @@ import { getAddress } from "ethers/lib/utils";
 // Total VEX to reach quorum
 const QUORUM_TOTAL_VEX = 1000000
 
+
+const vex_governance_token = {
+  name: "VEX",
+  address: "0x0BD802635eb9cEB3fCBe60470D2857B86841aab6",
+}
+
+const wvet = {
+  name: "Wrapped VET",
+  address: "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997"
+}
+
+const vex_wvet = {
+  name: "VEX/WVET",
+  address: "0x39cd888a1583498AD30E716625AE1a00ff51286D"
+}
 // Declare constants by network
 const VEX_CONSTANTS = {
   mainnet: {
@@ -14,13 +29,18 @@ const VEX_CONSTANTS = {
       name: "Governor",
       address: "0xa0a636893Ed688076286174Bc23b34C31BED3089",
     },
-    vex_governance_token: {
-      name: "VEX",
-      address: "0x0BD802635eb9cEB3fCBe60470D2857B86841aab6",
+    distributor: {
+      name: "Distributor",
+      address: "0x72ee1c849b7353ad1452e56af136e4b0ff68a07e",
+      displayed_assests: [wvet]
     },
+    vex_governance_token,
+    vex_wvet,
+    wvet,
     timelock: {
       name: "Timelock",
       address: "0x41D293Ee2924FF67Bd934fC092Be408162448f86",
+      displayed_assests: [wvet, vex_governance_token, vex_wvet]
     },
     factory: {
       name: "VexchangeV2Factory",
@@ -30,22 +50,20 @@ const VEX_CONSTANTS = {
       name: "Router",
       address: "0x6c0a6e1d922e0e63901301573370b932ae20dadb",
     },
-    wvet: {
-      name: "Wrapped VET",
-      address: "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997"
-    },
     vester: {
       name: "TreasuryVester",
       address: "0x8Fc3737CF99984961b43f86ce5C82cfaa4B49657"
     },
-    fee_collector: {
-      name: "FeeCollector",
-      address: "0x17D252083c79Db33866295078ED955B04e1C61c8"
+    wvet_fee_collector: {
+      name: "WVETFeeCollector",
+      address: "0xc2ccf0af1b34367b639d0fd7bb4335da12bcc798",
+      displayed_assests: [wvet]
     },
-    vex_wvet: {
-      name: "VEX/WVET",
-      address: "0x39cd888a1583498AD30E716625AE1a00ff51286D"
-    }
+    vex_fee_collector: {
+      name: "VEXFeeCollector",
+      address: "0x10445a86645838306194c07f81ebd00bb7b82598",
+      displayed_assests: [wvet, vex_governance_token]
+    },
   },
   testnet: {
     node_url: "https://testnet.veblocks.net",
