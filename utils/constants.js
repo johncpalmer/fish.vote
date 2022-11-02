@@ -196,6 +196,48 @@ const VEX_ACTIONS = [
     ],
   },
   {
+    contract: "WVET Token",
+    address: VEX_NETWORK.wvet.address,
+    functions: [
+      {
+        name: "Transfer",
+        signature: "transfer(address,uint256)",
+        args: [
+          {
+            name: "recipient",
+            placeholder: "address",
+            type: "text",
+          },
+          {
+            name: "amount",
+            placeholder: "value",
+            type: "number",
+            decimals: 18
+          },
+        ],
+        values: [],
+      },
+      {
+        name: "Approve",
+        signature: "approve(address,uint256)",
+        args: [
+          {
+            name: "spender",
+            placeholder: "address",
+            type: "text"
+          },
+          {
+            name: "amount",
+            placeholder: "amount",
+            type: "number",
+            decimals: 18
+          }
+        ],
+        values: [],
+      },
+    ],
+  },
+  {
     contract: "Timelock",
     address: VEX_NETWORK.timelock.address,
     functions: [
